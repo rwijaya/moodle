@@ -2909,6 +2909,7 @@ function is_viewing($context, $user = null, $withcapability = '') {
  */
 function is_enrolled($context, $user = null, $withcapability = '', $onlyactive = false) {
     global $USER, $DB;
+    static $courseuserenrolled = array();
 
     // first find the course context
     $coursecontext = get_course_context($context);
@@ -2926,6 +2927,11 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
     } else if (isguestuser($userid)) {
         // guest account can not be enrolled anywhere
         return false;
+    }
+
+    $courseuser = trim('cid'.$coursecontext->instanceid . 'uid'.$userid);
+    if (!empty($courseuserenrolled) && array_key_exists($courseuser, $courseuserenrolled) && !$onlyactive) {
+        return true;
     }
 
     if ($coursecontext->instanceid == SITEID) {
@@ -2974,6 +2980,11 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
     if ($withcapability and !has_capability($withcapability, $context, $userid)) {
         return false;
     }
+
+    if (count($courseuserenrolled) >= 100) {
+        array_shift($courseuserenrolled);
+    }
+    $courseuserenrolled[$courseuser] = true;
 
     return true;
 }
