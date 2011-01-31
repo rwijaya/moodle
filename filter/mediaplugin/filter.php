@@ -49,92 +49,92 @@ class filter_mediaplugin extends moodle_text_filter {
         $newtext = $text; // fullclone is slow and not needed here
 
         if (!empty($CFG->filter_mediaplugin_enable_mp3)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.mp3)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.mp3)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_mp3_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_ogg)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.ogg)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.ogg)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_ogg_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_ogv)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.ogv)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.ogv)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_ogv_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_swf)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.swf)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.swf)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_swf_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_flv)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.flv)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.flv)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_flv_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_mov)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.mov)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.mov)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_qt_callback', $newtext);
 
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.mp4)(\?d=([\d]{1,4}%?)x([\d]{1,4}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.mp4)(\?d=([\d]{1,4}%?)x([\d]{1,4}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_qt_callback', $newtext);
 
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.m4v)(\?d=([\d]{1,4}%?)x([\d]{1,4}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.m4v)(\?d=([\d]{1,4}%?)x([\d]{1,4}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_qt_callback', $newtext);
 
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.m4a)(\?d=([\d]{1,4}%?)x([\d]{1,4}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.m4a)(\?d=([\d]{1,4}%?)x([\d]{1,4}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_qt_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_wmv)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.wmv)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.wmv)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_wmp_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_mpg)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.mpe?g)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.mpe?g)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_qt_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_avi)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.avi)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.avi)(\?d=([\d]{1,3}%?)x([\d]{1,3}%?))?"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_wmp_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_ram)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.ram)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.ram)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_real_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_rpm)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.rpm)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.rpm)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_real_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_rm)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.rm)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.rm)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_real_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_youtube)) {
             //see MDL-23903 for description of recent changes to this regex
             //$search = '/<a.*?href="([^<]*)youtube.com\/watch\?v=([^"]*)"[^>]*>(.*?)<\/a>/is';
-            $search = '/<a( +[^>]+?)?\s+href="(([^"]+youtube\.com)\/watch\?v=([^"]*))"[^>]*>(.*?)<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="(([^"]+youtube\.com)\/watch\?v=([^"]*))"[^>]*>(.*?)<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_youtube_callback', $newtext);
 
-            $search = '/<a( +[^>]+?)?\s+href="(([^"]+youtube\.com)\/v\/([^"]*))"[^>]*>(.*?)<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="(([^"]+youtube\.com)\/v\/([^"]*))"[^>]*>(.*?)<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_youtube_callback', $newtext);
         }
 
         if (!empty($CFG->filter_mediaplugin_enable_img)) {
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.jpg)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.jpg)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_img_callback', $newtext);
 
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.png)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.png)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_img_callback', $newtext);
 
-            $search = '/<a( +[^>]+?)?\s+href="([^"]+\.gif)"[^>]*>.*?<\/a>/is';
+            $search = '/<a(\s+[^>]+?)?\s+href="([^"]+\.gif)"[^>]*>.*?<\/a>/is';
             $newtext = preg_replace_callback($search, 'filter_mediaplugin_img_callback', $newtext);
         }
 
