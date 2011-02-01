@@ -1962,7 +1962,7 @@ function get_course_category_tree($id = 0, $depth = 0) {
  * Recursive function to print out all the categories in a nice format
  * with or without courses included
  */
-function print_whole_category_list($category=NULL, $displaylist=NULL, $parentslist=NULL, $depth=-1, $showcourses = true) {
+function print_whole_category_list($category = NULL, $displaylist = NULL, $parentslist = NULL, $depth = -1, $showcourses = true, $countcourses = 0) {
     global $CFG;
 
     // maxcategorydepth == 0 meant no limit
@@ -1976,7 +1976,7 @@ function print_whole_category_list($category=NULL, $displaylist=NULL, $parentsli
 
     if ($category) {
         if ($category->visible or has_capability('moodle/category:viewhiddencategories', get_context_instance(CONTEXT_SYSTEM))) {
-            print_category_info($category, $depth, $showcourses);
+            print_category_info($category, $depth, $showcourses, $countcourses);
         } else {
             return;  // Don't bother printing children of invisible categories
         }
@@ -1999,7 +1999,7 @@ function print_whole_category_list($category=NULL, $displaylist=NULL, $parentsli
             $down = $last ? false : true;
             $first = false;
 
-            print_whole_category_list($cat, $displaylist, $parentslist, $depth + 1, $showcourses);
+            print_whole_category_list($cat, $displaylist, $parentslist, $depth + 1, $showcourses, $countcourses);
         }
     }
 }
@@ -2025,7 +2025,7 @@ function make_categories_options() {
  * Prints the category info in indented fashion
  * This function is only used by print_whole_category_list() above
  */
-function print_category_info($category, $depth=0, $showcourses = false) {
+function print_category_info($category, $depth = 0, $showcourses = false, $numofcourses = 0) {
     global $CFG, $DB, $OUTPUT;
 
     $strsummary = get_string('summary');
@@ -2037,7 +2037,11 @@ function print_category_info($category, $depth=0, $showcourses = false) {
     static $coursecount = null;
     if (null === $coursecount) {
         // only need to check this once
-        $coursecount = $DB->count_records('course') <= FRONTPAGECOURSELIMIT;
+        if (!empty($numofcourses)) {
+            $coursecount = $numofcourses <= FRONTPAGECOURSELIMIT;
+        } else {
+            $coursecount = count_records('course') <= FRONTPAGECOURSELIMIT;
+        }
     }
 
     if ($showcourses and $coursecount) {
@@ -2367,7 +2371,7 @@ function print_course($course, $highlightterms = '') {
  * Prints custom user information on the home page.
  * Over time this can include all sorts of information
  */
-function print_my_moodle() {
+function print_my_moodle($countcourses = 0) {
     global $USER, $CFG, $DB, $OUTPUT;
 
     if (!isloggedin() or isguestuser()) {
@@ -2412,7 +2416,7 @@ function print_my_moodle() {
         unset($course);
         unset($host);
 
-        if ($DB->count_records("course") > (count($courses) + 1) ) {  // Some courses not being displayed
+        if ($countcourses > (count($courses) + 1) ) {  // Some courses not being displayed
             echo "<table width=\"100%\"><tr><td align=\"center\">";
             print_course_search("", false, "short");
             echo "</td><td align=\"center\">";

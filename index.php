@@ -144,6 +144,7 @@
         $frontpagelayout = $CFG->frontpage;
     }
 
+    $countcourses = $DB->count_records('course');
     foreach (explode(',',$frontpagelayout) as $v) {
         switch ($v) {     /// Display the main part of the front page.
             case FRONTPAGENEWS:
@@ -181,9 +182,9 @@
                 if (isloggedin() and !has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM)) and !isguestuser() and empty($CFG->disablemycourses)) {
                     echo html_writer::tag('a', get_string('skipa', 'access', moodle_strtolower(get_string('mycourses'))), array('href'=>'#skipmycourses', 'class'=>'skip-block'));
                     echo $OUTPUT->heading(get_string('mycourses'), 2, 'headingblock header');
-                    print_my_moodle();
+                    print_my_moodle($countcourses);
                     echo html_writer::tag('span', '', array('class'=>'skip-block-to', 'id'=>'skipmycourses'));
-                } else if ((!has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM)) and !isguestuser()) or ($DB->count_records('course') <= FRONTPAGECOURSELIMIT)) {
+                } else if ((!has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM)) and !isguestuser()) or ($countcourses <= FRONTPAGECOURSELIMIT)) {
                     // admin should not see list of courses when there are too many of them
                     echo html_writer::tag('a', get_string('skipa', 'access', moodle_strtolower(get_string('availablecourses'))), array('href'=>'#skipavailablecourses', 'class'=>'skip-block'));
                     echo $OUTPUT->heading(get_string('availablecourses'), 2, 'headingblock header');
@@ -196,7 +197,7 @@
                 echo html_writer::tag('a', get_string('skipa', 'access', moodle_strtolower(get_string('categories'))), array('href'=>'#skipcategories', 'class'=>'skip-block'));
                 echo $OUTPUT->heading(get_string('categories'), 2, 'headingblock header');
                 echo $OUTPUT->box_start('generalbox categorybox');
-                print_whole_category_list(NULL, NULL, NULL, -1, false);
+                print_whole_category_list(NULL, NULL, NULL, -1, false, $countcourses);
                 echo $OUTPUT->box_end();
                 print_course_search('', false, 'short');
                 echo html_writer::tag('span', '', array('class'=>'skip-block-to', 'id'=>'skipcategories'));

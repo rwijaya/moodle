@@ -72,8 +72,9 @@ if (!$adminediting) {
 
 /// Print form for creating new categories
     $countcategories = $DB->count_records('course_categories');
+    $countcourses = $DB->count_records('course');
 
-    if ($countcategories > 1 || ($countcategories == 1 && $DB->count_records('course') > 200)) {
+    if ($countcategories > 1 || ($countcategories == 1 && $countcourses > 200)) {
         $strcourses = get_string('courses');
         $strcategories = get_string('categories');
 
@@ -85,7 +86,7 @@ if (!$adminediting) {
         echo $OUTPUT->heading($strcategories);
         echo $OUTPUT->skip_link_target();
         echo $OUTPUT->box_start('categorybox');
-        print_whole_category_list();
+        print_whole_category_list(NULL, NULL,NULL, -1, true, $countcourses);
         echo $OUTPUT->box_end();
         print_course_search();
     } else {
