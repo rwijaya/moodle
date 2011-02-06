@@ -2904,6 +2904,7 @@ function is_viewing($context, $user = null, $withcapability = '') {
  */
 function is_enrolled($context, $user = null, $withcapability = '', $onlyactive = false) {
     global $USER, $DB;
+    static $isenrolledcache = array();
 
     // first find the course context
     $coursecontext = get_course_context($context);
@@ -2921,6 +2922,23 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
     } else if (isguestuser($userid)) {
         // guest account can not be enrolled anywhere
         return false;
+    }
+
+    $courseuser = trim('cid'.$coursecontext->instanceid . 'uid'.$userid);
+
+    //creates the 1-element at top, or invalidtes the cache if user/course changes
+    if (!isset($isenrolledcache[$courseuser])) {
+        $isenrolledcache= array($courseuser => array());
+    }
+
+    //returns cached values for onlyactive
+    if ($onlyactive && isset($isenrolledcache[$courseuser]['onlyactive'])) {
+        return $isenrolledcache[$courseuser]['onlyactive'];
+    }
+
+    //returns cached values for !onlyactive
+    if (!$onlyactive && isset($isenrolledcache[$courseuser]['notactive'])) {
+        return $isenrolledcache[$courseuser]['notactive'];
     }
 
     if ($coursecontext->instanceid == SITEID) {
@@ -2945,10 +2963,12 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
                 if ($e->timeend and $e->timeend < $now) {
                     continue;
                 }
+                $isenrolledcache[$courseuser]['onlyactive'] = true;
                 $result = true;
                 break;
             }
             if (!$result) {
+                $isenrolledcache[$courseuser]['onlyactive'] = false;
                 return false;
             }
 
@@ -2961,14 +2981,17 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
                      WHERE ue.userid = :userid AND u.deleted = 0";
             $params = array('userid'=>$userid, 'courseid'=>$coursecontext->instanceid);
             if (!$DB->record_exists_sql($sql, $params)) {
+                $isenrolledcache[$courseuser]['notactive'] = false;
                 return false;
             }
         }
     }
 
     if ($withcapability and !has_capability($withcapability, $context, $userid)) {
+        unset($isenrolledcache);
         return false;
     }
+    $isenrolledcache[$courseuser]['notactive'] = true;
 
     return true;
 }
