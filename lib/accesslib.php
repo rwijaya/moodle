@@ -2907,7 +2907,7 @@ function is_viewing($context, $user = null, $withcapability = '') {
  * @return bool
  */
 function is_enrolled($context, $user = null, $withcapability = '', $onlyactive = false) {
-    global $USER, $DB;
+    global $USER, $DB, $PAGE;
 
     // first find the course context
     $coursecontext = get_course_context($context);
@@ -2925,6 +2925,22 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
     } else if (isguestuser($userid)) {
         // guest account can not be enrolled anywhere
         return false;
+    }
+
+    $courseuser = trim('cid'.$coursecontext->instanceid . 'uid'.$userid);
+    //Invalidtes the cache if user/course changes
+    if(!$PAGE->current_courseuserenrolled($courseuser)) {
+        $PAGE->initialize_courseuserenrolled($courseuser);
+    }
+
+    //returns cached values for onlyactive
+    if($onlyactive && $PAGE->get_courseuserenrolled($courseuser, 'onlyactive')) {
+        return true;
+    }
+
+    //returns cached values for notactive
+    if (!$onlyactive && $PAGE->get_courseuserenrolled($courseuser, 'notactive')) {
+        return true;
     }
 
     if ($coursecontext->instanceid == SITEID) {
@@ -2949,10 +2965,12 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
                 if ($e->timeend and $e->timeend < $now) {
                     continue;
                 }
+                $PAGE->set_courseuserenrolled($courseuser, 'onlyactive', true);
                 $result = true;
                 break;
             }
             if (!$result) {
+                $PAGE->set_courseuserenrolled($courseuser,'onlyactive', false);
                 return false;
             }
 
@@ -2965,14 +2983,17 @@ function is_enrolled($context, $user = null, $withcapability = '', $onlyactive =
                      WHERE ue.userid = :userid AND u.deleted = 0";
             $params = array('userid'=>$userid, 'courseid'=>$coursecontext->instanceid);
             if (!$DB->record_exists_sql($sql, $params)) {
+                $PAGE->set_courseuserenrolled($courseuser,'notactive', false);
                 return false;
             }
         }
     }
 
     if ($withcapability and !has_capability($withcapability, $context, $userid)) {
+        $PAGE->initialize_courseuserenrolled(); //initialize courseuser cache
         return false;
     }
+    $PAGE->set_courseuserenrolled($courseuser,'notactive', true);
 
     return true;
 }

@@ -86,6 +86,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property-read theme_config $theme Returns the initialised theme for this page.
  * @property-read string $title The title that should go in the <head> section of the HTML of this page.
  * @property-read moodle_url $url The moodle url object for this page.
+ * @property-read array $courseuserenrolled The caching of is_enrolled.
  */
 class moodle_page {
     /**#@+ Tracks the where we are in the generation of the page. */
@@ -225,6 +226,8 @@ class moodle_page {
     protected $_https_login_required = false;
 
     protected $_popup_notification_allowed = true;
+
+    protected $_courseuserenrolled = array();
 
 /// Magic getter methods =============================================================
 /// Due to the __get magic below, you normally do not call these as $PAGE->magic_get_x
@@ -1525,6 +1528,77 @@ class moodle_page {
         $caps = $this->_othereditingcaps;
         $caps[] = $this->_blockseditingcap;
         return $caps;
+    }
+
+    /**
+     * Initialize the courseuserenrolled property
+     *
+     * @param string $courseuser - formatted value cid###uid### (# represent course/user id)
+     */
+    public function initialize_courseuserenrolled($courseuser) {
+        $this->_courseuserenrolled = array();
+        $this->_courseuserenrolled[$courseuser] = array();
+    }
+
+    /**
+     * Cache both courseid and userid and the result of is_enrolled value
+     * if different pair is requested, the cache is invalidated
+     *
+     * @param string $courseuser - formatted value cid###uid### (# represent course/user id)
+     * @param string $activetype
+     * @param bool $activetypevalue
+     *
+     */
+    public function set_courseuserenrolled($courseuser, $activetype, $activetypevalue) {
+        if (!array_key_exists($courseuser, $this->_courseuserenrolled) || is_null($activetype)) {
+            $this->_courseuserenrolled = array();
+            $this->_courseuserenrolled[$courseuser] = array();
+        }
+
+        if ($activetype == 'onlyactive') {
+            $this->_courseuserenrolled[$courseuser]['onlyactive'] = $activetypevalue;
+        }
+        if ($activetype == 'notactive') {
+            $this->_courseuserenrolled[$courseuser]['notactive'] = $activetypevalue;
+        }
+    }
+
+    /**
+     * Get the cache value of the requested courseid and userid
+     *
+     * @param string $courseuser - formatted value cid###uid### (# represent course/user id)
+     * @param string $activetype
+     * @param bool $activetypevalue
+     *
+     * @return  true if course and user match the active status, otherwise false
+     *
+     */
+    public function get_courseuserenrolled($courseuser, $activetype) {
+        if (!array_key_exists($courseuser, $this->_courseuserenrolled) || empty($this->_courseuserenrolled[$courseuser])) {
+            return false;
+        }
+        if ($activetype == 'onlyactive' && isset($this->_courseuserenrolled[$courseuser]['onlyactive']) && $this->_courseuserenrolled[$courseuser]['onlyactive']) {
+            return true;
+        }
+        if ($activetype == 'notactive' && isset($this->_courseuserenrolled[$courseuser]['notactive']) && $this->_courseuserenrolled[$courseuser]['notactive']) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check the courseid and userid cache value
+     *
+     * @param string $courseuser - formatted value cid###uid### (# represent course/user id)
+     *
+     * @return  true if courseid and userid match with the current cache value, otherwise false
+     */
+    public function current_courseuserenrolled($courseuser) {
+        if (array_key_exists($courseuser, $this->_courseuserenrolled)) {
+            return true;
+        }
+
+        return false;
     }
 
 /// Deprecated fields and methods for backwards compatibility ==================
