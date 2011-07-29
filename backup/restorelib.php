@@ -1761,10 +1761,6 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
             $prev_grade_items = grade_item::fetch_all(array('courseid'=>$restore->course_id));
             $prev_grade_cats  = grade_category::fetch_all(array('courseid'=>$restore->course_id));
 
-             // if any categories already present, skip restore of categories from backup
-            if (count($prev_grade_items) > 1 or count($prev_grade_cats) > 1) {
-                $restoreall = false;
-            }
             unset($prev_grade_items);
             unset($prev_grade_cats);
         }
@@ -1952,10 +1948,6 @@ define('RESTORE_GROUPS_GROUPINGS', 3);
             $prev_grade_items = grade_item::fetch_all(array('courseid'=>$restore->course_id));
             $prev_grade_cats  = grade_category::fetch_all(array('courseid'=>$restore->course_id));
 
-             // if any categories already present, skip restore of categories from backup - course item or category already exist
-            if (count($prev_grade_items) > 1 or count($prev_grade_cats) > 1) {
-                $restoreall = false;
-            }
             unset($prev_grade_items);
             unset($prev_grade_cats);
 

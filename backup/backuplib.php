@@ -1552,11 +1552,9 @@
         $status = backup_gradebook_grade_letters_info($bf,$preferences);
 
         // Now backup grade_item (inside grade_category)
-        if ($backupall) {
-            $status = backup_gradebook_category_info($bf,$preferences);
-        }
+        $status = backup_gradebook_category_info($bf, $preferences);
 
-        $status = backup_gradebook_item_info($bf,$preferences, $backupall);
+        $status = backup_gradebook_item_info($bf, $preferences, $backupall);
 
         // backup gradebook histories (only if grade history is enabled and selected)
         if (empty($CFG->disablegradehistory) && $preferences->backup_gradebook_history) {
@@ -1644,12 +1642,6 @@
                         continue;
                     }
 
-                } else if ($grade_item->itemtype == 'category') {
-                    // if not all grade items are being backed up
-                    // we ignore this type of grade_item and grades associated
-                    if (!$backupall) {
-                        continue;
-                    }
                 }
 
                 //Begin grade_item
