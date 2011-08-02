@@ -28,6 +28,9 @@
     $syscontext = get_context_instance(CONTEXT_SYSTEM);
     $usercontext   = get_context_instance(CONTEXT_USER, $id);
 
+    if ($id != $USER->id && !has_capability('mod/forum:viewdiscussion', $usercontext)) {
+        error(get_string('nopermissions', 'error', get_string('forum:viewdiscussion', 'forum')));
+    }
     // do not force parents to enrol
     if (!get_record('role_assignments', 'userid', $USER->id, 'contextid', $usercontext->id)) {
         require_course_login($course);
