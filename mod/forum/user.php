@@ -13,9 +13,10 @@
     $perpage = optional_param('perpage', 5, PARAM_INT);
 
     if (empty($id)) {         // See your own profile by default
-        require_login();
         $id = $USER->id;
     }
+
+    require_login();
 
     if (! $user = get_record("user", "id", $id)) {
         error("User ID is incorrect");
