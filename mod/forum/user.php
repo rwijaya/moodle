@@ -48,9 +48,10 @@ $PAGE->set_url($url);
 $PAGE->set_pagelayout('standard');
 
 if (empty($id)) {         // See your own profile by default
-    require_login();
     $id = $USER->id;
 }
+
+require_login();
 
 $user = $DB->get_record("user", array("id" => $id), '*', MUST_EXIST);
 $course = $DB->get_record("course", array("id" => $course), '*', MUST_EXIST);
