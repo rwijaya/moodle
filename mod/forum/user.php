@@ -48,9 +48,10 @@ $PAGE->set_url($url);
 $PAGE->set_pagelayout('standard');
 
 if (empty($id)) {         // See your own profile by default
-    require_login();
     $id = $USER->id;
 }
+
+require_login();
 
 $user = $DB->get_record("user", array("id" => $id), '*', MUST_EXIST);
 $course = $DB->get_record("course", array("id" => $course), '*', MUST_EXIST);
@@ -85,13 +86,6 @@ if (has_capability('moodle/course:viewparticipants', get_context_instance(CONTEX
     $link = new moodle_url('/user/index.php',array('id'=>$course->id));
 }
 
-$PAGE->navigation->extend_for_user($user);
-$PAGE->navigation->set_userid_for_parent_checks($id); // see MDL-25805 for reasons and for full commit reference for reversal when fixed.
-$PAGE->set_title("$course->shortname: $fullname: $strmode");
-$PAGE->set_heading($course->fullname);
-echo $OUTPUT->header();
-echo $OUTPUT->heading($fullname);
-
 switch ($mode) {
     case 'posts' :
         $searchterms = array('userid:'.$user->id);
@@ -103,9 +97,6 @@ switch ($mode) {
         $extrasql = 'AND p.parent = 0';
         break;
 }
-
-echo '<div class="user-content">';
-
 if ($course->id == SITEID) {
     $searchcourse = SITEID;
     if (empty($CFG->forceloginforprofiles) or (isloggedin() and !isguestuser() and !is_web_crawler())) {
@@ -119,6 +110,23 @@ if ($course->id == SITEID) {
 
 // Get the posts.
 $posts = forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage, $totalcount, $extrasql);
+
+if (empty($posts) && ($user->id != $USER->id) && (!is_siteadmin($USER->id))) {
+    if (!enrol_sharing_course($USER->id, $user->id)){
+        print_error('cannotviewprofile');
+        die;
+    }
+}
+
+$PAGE->navigation->extend_for_user($user);
+$PAGE->navigation->set_userid_for_parent_checks($id); // see MDL-25805 for reasons and for full commit reference for reversal when fixed.
+$PAGE->set_title("$course->shortname: $fullname: $strmode");
+$PAGE->set_heading($course->fullname);
+echo $OUTPUT->header();
+echo $OUTPUT->heading($fullname);
+
+echo '<div class="user-content">';
+
 if ($posts) {
 
     require_once($CFG->dirroot.'/rating/lib.php');
