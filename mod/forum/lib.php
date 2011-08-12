@@ -1825,7 +1825,11 @@ function forum_get_readable_forums($userid, $courseid=0) {
     } else {
         // If no course is specified, then the user can see SITE + his courses.
         $courses1 = $DB->get_records('course', array('id' => SITEID));
-        $courses2 = enrol_get_users_courses($userid, true, array('modinfo'));
+        if (is_siteadmin($userid)) {
+            $courses2 = get_courses('all');
+        } else {
+            $courses2 = enrol_get_users_courses($userid, true, array('modinfo'));
+        }
         $courses = array_merge($courses1, $courses2);
     }
     if (!$courses) {
