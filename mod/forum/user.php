@@ -13,15 +13,16 @@
     $perpage = optional_param('perpage', 5, PARAM_INT);
 
     if (empty($id)) {         // See your own profile by default
-        require_login();
         $id = $USER->id;
     }
+
+    require_login();
 
     if (! $user = get_record("user", "id", $id)) {
         error("User ID is incorrect");
     }
 
-    if (! $course = get_record("course", "id", $course)) {
+    if (!$course = get_record("course", "id", $course)) {
         error("Course id is incorrect.");
     }
 
@@ -40,31 +41,12 @@
         die;
     }
 
-    add_to_log($course->id, "forum", "user report",
-            "user.php?course=$course->id&amp;id=$user->id&amp;mode=$mode", "$user->id"); 
-
     $strforumposts   = get_string('forumposts', 'forum');
     $strparticipants = get_string('participants');
     $strmode         = get_string($mode, 'forum');
     $fullname        = fullname($user, has_capability('moodle/site:viewfullnames', $syscontext));
-
-    $navlinks = array();
-    if (has_capability('moodle/course:viewparticipants', get_context_instance(CONTEXT_COURSE, $course->id)) || has_capability('moodle/site:viewparticipants', $syscontext)) {
-        $navlinks[] = array('name' => $strparticipants, 'link' => "$CFG->wwwroot/user/index.php?id=$course->id", 'type' => 'core');
-    }
-    $navlinks[] = array('name' => $fullname, 'link' => "$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id", 'type' => 'title');
-    $navlinks[] = array('name' => $strforumposts, 'link' => '', 'type' => 'title');
-    $navlinks[] = array('name' => $strmode, 'link' => '', 'type' => 'title');
-
-    $navigation = build_navigation($navlinks);
-
-    print_header("$course->shortname: $fullname: $strmode", $course->fullname,$navigation);
-
-
-    $currenttab = $mode;
-    $showroles = 1;
-    include($CFG->dirroot.'/user/tabs.php');   /// Prints out tabs as part of user page
-
+    $currenttab      = $mode;
+    $showroles       = 1;
 
     switch ($mode) {
         case 'posts' :
@@ -77,9 +59,6 @@
             $extrasql = 'AND p.parent = 0';
             break;
     }
-
-    echo '<div class="user-content">';
-
     if ($course->id == SITEID) {
         if (empty($CFG->forceloginforprofiles) || isloggedin()) {
             // Search throughout the whole site.
@@ -93,11 +72,51 @@
     }
 
     // Get the posts.
-    if ($posts = forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage,
-                                    $totalcount, $extrasql)) {
+    $posts= forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage, $totalcount, $extrasql);
 
-        print_paging_bar($totalcount, $page, $perpage,
-                         "user.php?id=$user->id&amp;course=$course->id&amp;mode=$mode&amp;perpage=$perpage&amp;");
+    if (empty($posts)) {
+        if ($id != $USER->id && is_siteadmin($USER->id)) {
+            $sql = "SELECT contextlevel
+                        FROM {context} e, {role_assignments} u
+                        WHERE u.contextid = e.id
+                        AND u.userid = " . $id . "
+                        AND e.contextlevel in (
+                        SELECT contextlevel
+                        FROM {context} e2, {role_assignments} u2
+                        WHERE u2.contextid = e2.id
+                        AND u2.userid = " . $USER->id . ")";
+
+            if (record_exists_sql($sql)) {
+                error('cannotviewdiscussionpost');
+            }
+        }
+    }
+
+    $param = "course=$course->id&amp;id=$user->id&amp;mode=$mode";
+    add_to_log($course->id, "forum", "user report", "user.php?" . $param, "$user->id");
+
+    $hasparticipantcapabilities  = 'has_capability(\'moodle/course:viewparticipants\', get_context_instance(CONTEXT_COURSE, $course->id)) || ';
+    $hasparticipantcapabilities .= 'has_capability(\'moodle/site:viewparticipants\', $syscontext)';
+
+    $navlinks = array();
+    if ($hasparticipantcapabilities) {
+        $navlinks[] = array('name' => $strparticipants, 'link' => "$CFG->wwwroot/user/index.php?id=$course->id", 'type' => 'core');
+    }
+    $navlinks[] = array('name' => $fullname, 'link' => "$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id", 'type' => 'title');
+    $navlinks[] = array('name' => $strforumposts, 'link' => '', 'type' => 'title');
+    $navlinks[] = array('name' => $strmode, 'link' => '', 'type' => 'title');
+
+    $navigation = build_navigation($navlinks);
+
+    print_header("$course->shortname: $fullname: $strmode", $course->fullname,$navigation);
+
+    include($CFG->dirroot.'/user/tabs.php');   /// Prints out tabs as part of user page
+
+    echo '<div class="user-content">';
+
+    if ($posts) {
+        $printpageparam = "id=$user->id&amp;course=$course->id&amp;mode=$mode&amp;perpage=$perpage&amp;";
+        print_paging_bar($totalcount, $page, $perpage, "user.php?" . $printpageparam);
 
         $discussions = array();
         $forums      = array();
