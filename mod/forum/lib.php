@@ -1036,7 +1036,7 @@ function forum_user_complete($course, $user, $mod, $forum) {
                 continue;
             }
             $discussion = $discussions[$post->discussion];
-            
+
             $ratings = null;
 
             if ($forum->assessed) {
@@ -1659,7 +1659,11 @@ function forum_get_readable_forums($userid, $courseid=0) {
         // If no course is specified, then the user can see SITE + his courses.
         // And admins can see all courses, so pass the $doanything flag enabled
         $courses1 = get_records('course', 'id', SITEID);
-        $courses2 = get_my_courses($userid, null, null, true);
+        if (is_siteadmin($userid)) {
+            $courses2 = get_courses('all');
+        } else {
+            $courses2 = get_my_courses($userid, null, null, true);
+        }
         $courses = array_merge($courses1, $courses2);
     }
     if (!$courses) {
@@ -1935,7 +1939,7 @@ function forum_get_all_user_ratings($userid, $discussions) {
     $sql .=" ORDER BY p.id ASC";
 
     return get_records_sql($sql);
-    
+
 
 }
 
@@ -2539,7 +2543,7 @@ function forum_get_user_discussions($courseid, $userid, $groupid=0) {
 }
 
 /**
- * Get the list of potential subscribers to a forum. 
+ * Get the list of potential subscribers to a forum.
  *
  * @param object $forumcontext the forum context.
  * @param integer $groupid the id of a group, or 0 for all groups.
@@ -4219,10 +4223,10 @@ function forum_unsubscribe($userid, $forumid) {
 function forum_post_subscription($post, $forum) {
 
     global $USER;
-    
+
     $action = '';
     $subscribed = forum_is_subscribed($USER->id, $forum);
-    
+
     if ($forum->forcesubscribe == FORUM_FORCESUBSCRIBE) { // database ignored
         return "";
 
@@ -4369,7 +4373,7 @@ function forum_get_tracking_link($forum, $messages=array(), $fakelink=true) {
     } else {
         $linktitle = $strtrackforum;
         $linktext = $strtrackforum;
-    } 
+    }
 
     $link = '';
     if ($fakelink) {

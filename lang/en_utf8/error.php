@@ -18,6 +18,7 @@ $string['cannotsavezipfile'] = 'Cannot save ZIP file';
 $string['cannotunzipfile'] = 'Cannot unzip file';
 $string['cannotupdaterecord'] = 'Could not update record ID $a';
 $string['cannotviewprofile'] = 'You cannot view the profile of this user';
+$string['cannotviewdiscussionpost'] = 'You cannot view this user\'s discussion or post';
 $string['cantunenrollfrommetacourse'] = 'You cannot unenrol from this meta course';
 $string['cantunenrollinthisrole'] = 'You cannot unenrol from this course while you are in your current role';
 $string['cmunknown'] = 'Couldn\'t find this course module';

@@ -25,60 +25,48 @@
         error("Course id is incorrect.");
     }
 
+    // Make sure the current user is allowed to see this user
+    if (empty($USER->id)) {
+        $currentuser = false;
+    } else {
+        $currentuser = ($user->id == $USER->id);
+    }
+
+    $issiteadmin = is_siteadmin($USER->id);
+
+    if ($course->id == SITEID) {
+        $coursecontext = get_context_instance(CONTEXT_SYSTEM);   // SYSTEM context
+    } else {
+        $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);   // Course context
+    }
+
     $syscontext = get_context_instance(CONTEXT_SYSTEM);
     $usercontext   = get_context_instance(CONTEXT_USER, $id);
 
-    // do not force parents to enrol
-    if (!get_record('role_assignments', 'userid', $USER->id, 'contextid', $usercontext->id)) {
-        require_course_login($course);
+    if (!empty($CFG->forcelogin) || $course->id != SITEID) {
+        // do not force parents to enrol
+        if (!get_record('role_assignments', 'userid', $USER->id, 'contextid', $usercontext->id)) {
+            require_course_login($course);
+        }
     }
 
-    if ($user->deleted) {
-        print_header();
-        print_heading(get_string('userdeleted'));
-        print_footer($course);
-        die;
+    if (!empty($CFG->forceloginforprofiles)) {
+        require_login();
+        if (isguest()) {
+            $loginurl ="$CFG->wwwroot/login/index.php";
+            if (!empty($CFG->loginhttps)) {
+                $loginurl = str_replace("http://", "https://", $loginurl);
+            }
+            redirect($loginurl);
+        }
     }
 
-    add_to_log($course->id, "forum", "user report",
-            "user.php?course=$course->id&amp;id=$user->id&amp;mode=$mode", "$user->id"); 
-
-    $strforumposts   = get_string('forumposts', 'forum');
+    $strviewerror    = get_string('cannotviewdiscussionpost', 'error');
     $strparticipants = get_string('participants');
+    $struser         = get_string('user');
+    $strforumposts   = get_string('forumposts', 'forum');
     $strmode         = get_string($mode, 'forum');
     $fullname        = fullname($user, has_capability('moodle/site:viewfullnames', $syscontext));
-
-    $navlinks = array();
-    if (has_capability('moodle/course:viewparticipants', get_context_instance(CONTEXT_COURSE, $course->id)) || has_capability('moodle/site:viewparticipants', $syscontext)) {
-        $navlinks[] = array('name' => $strparticipants, 'link' => "$CFG->wwwroot/user/index.php?id=$course->id", 'type' => 'core');
-    }
-    $navlinks[] = array('name' => $fullname, 'link' => "$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id", 'type' => 'title');
-    $navlinks[] = array('name' => $strforumposts, 'link' => '', 'type' => 'title');
-    $navlinks[] = array('name' => $strmode, 'link' => '', 'type' => 'title');
-
-    $navigation = build_navigation($navlinks);
-
-    print_header("$course->shortname: $fullname: $strmode", $course->fullname,$navigation);
-
-
-    $currenttab = $mode;
-    $showroles = 1;
-    include($CFG->dirroot.'/user/tabs.php');   /// Prints out tabs as part of user page
-
-
-    switch ($mode) {
-        case 'posts' :
-            $searchterms = array('userid:'.$user->id);
-            $extrasql = '';
-            break;
-
-        default:
-            $searchterms = array('userid:'.$user->id);
-            $extrasql = 'AND p.parent = 0';
-            break;
-    }
-
-    echo '<div class="user-content">';
 
     if ($course->id == SITEID) {
         if (empty($CFG->forceloginforprofiles) || isloggedin()) {
@@ -92,9 +80,133 @@
         $searchcourse = $course->id;
     }
 
+    switch ($mode) {
+        case 'posts' :
+            $searchterms = array('userid:'.$user->id);
+            $extrasql = '';
+            break;
+
+        default:
+            $searchterms = array('userid:'.$user->id);
+            $extrasql = 'AND p.parent = 0';
+            break;
+    }
+
+    $posts = forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage, $totalcount, $extrasql);
+    $commoncourses = array();
+    if (!$currentuser && !$issiteadmin) {
+        $allmycourses = get_my_courses($USER->id);
+        $allyourcourses = get_my_courses($user->id);
+        if (empty($posts)) {
+            $commoncourses = array_intersect_key($allmycourses, $allyourcourses);
+        } else {
+            $commoncourses = array_merge($allmycourses, $allyourcourses);
+        }
+    }
+
+    /// If the user being shown is not ourselves, then make sure we are allowed to see them!
+    if (!$currentuser && empty($commoncourses)) {
+        if ($course->id == SITEID) {  // Reduce possibility of "browsing" userbase at site level
+            if ($CFG->forceloginforprofiles && !$issiteadmin
+                    && !has_capability('mod/forum:viewdiscussion', $usercontext)
+                    && !has_capability('moodle/user:viewdetails', $usercontext)) {
+                $navlinks[] = array('name' => $struser, 'link' => null, 'type' => 'misc');
+                $navlinks[] = array('name' => $strforumposts, 'link' => '', 'type' => 'title');
+                $navlinks[] = array('name' => $strmode, 'link' => '', 'type' => 'title');
+                $navigation = build_navigation($navlinks);
+
+                print_header($strviewerror, "", $navigation, "", "", true, "&nbsp;", navmenu($course));
+                print_error('cannotviewdiscussionpost');
+                print_footer($course);
+            }
+        } else {   // Normal course
+            // check capabilities
+            if (!has_capability('moodle/user:viewdetails', $coursecontext) &&
+                !has_capability('moodle/user:viewdetails', $usercontext)) {
+                print_error('cannotviewdiscussionpost');
+            }
+
+            if (!has_capability('moodle/course:view', $coursecontext, $user->id, false)) {
+                if (has_capability('moodle/role:assign', $coursecontext)) {
+                    $navlinks[] = array('name' => $fullname, 'link' => null, 'type' => 'misc');
+                    $navigation = build_navigation($navlinks);
+                    print_header($strviewerror, "", $navigation, "", "", true, "&nbsp;", navmenu($course));
+                    print_heading(get_string('notenrolled', '', $fullname));
+
+                } else {
+                    $navlinks[] = array('name' => $struser, 'link' => null, 'type' => 'misc');
+                    $navlinks[] = array('name' => $strforumposts, 'link' => '', 'type' => 'title');
+                    $navlinks[] = array('name' => $strmode, 'link' => '', 'type' => 'title');
+                    $navigation = build_navigation($navlinks);
+                    print_header($strviewerror, "", $navigation, "", "", true, "&nbsp;", navmenu($course));
+                    print_heading($strviewerror);
+                }
+                //print_continue($_SERVER['HTTP_REFERER']);
+                print_footer($course);
+                exit;
+            }
+        }
+
+        // If groups are in use, make sure we can see that group
+        if (groups_get_course_groupmode($course) == SEPARATEGROUPS &&
+                !has_capability('moodle/site:accessallgroups', $coursecontext)) {
+            require_login();
+
+            ///this is changed because of mygroupid
+            $hasgroup = (bool)groups_get_all_groups($course->id, $user->id);
+            if (!$hasgroup) {
+                $navigation = build_navigation($navlinks);
+                print_header($strviewerror, ": ", $navigation, "", "", true, "&nbsp;", navmenu($course));
+                print_error("groupnotamember", '', "../course/view.php?id=$course->id");
+            }
+        }
+    }
+
+    if ($user->deleted) {
+        print_header();
+        print_heading(get_string('userdeleted'));
+        print_footer($course);
+        die;
+    }
+
+    add_to_log($course->id, "forum", "user report",
+            "user.php?course=$course->id&amp;id=$user->id&amp;mode=$mode", "$user->id");
+
+    if (empty($posts) && !$currentuser && !$issiteadmin) {
+        $allmycourses = get_my_courses($USER->id);
+        $allyourcourses = get_my_courses($user->id);
+
+        $hascommoncourse = array_intersect_key($allmycourses, $allyourcourses);
+        if (empty($hascommoncourse)) {
+            $navlinks[] = array('name' => $struser, 'link' => null, 'type' => 'misc');
+            $navigation = build_navigation($navlinks);
+            print_header($strviewerror, "", $navigation, "", "", true, "&nbsp;", navmenu($course));
+            print_heading($strviewerror . "boo ");
+            print_footer($course);
+            die;
+        }
+    }
+
+    $navlinks = array();
+    if (has_capability('moodle/course:viewparticipants', get_context_instance(CONTEXT_COURSE, $course->id)) || 
+            has_capability('moodle/site:viewparticipants', $syscontext)) {
+        $navlinks[] = array('name' => $strparticipants, 'link' => "$CFG->wwwroot/user/index.php?id=$course->id", 'type' => 'core');
+    }
+    $navlinks[] = array('name' => $fullname, 'link' => "$CFG->wwwroot/user/view.php?id=$user->id&amp;course=$course->id", 'type' => 'title');
+    $navlinks[] = array('name' => $strforumposts, 'link' => '', 'type' => 'title');
+    $navlinks[] = array('name' => $strmode, 'link' => '', 'type' => 'title');
+
+    $navigation = build_navigation($navlinks);
+
+    print_header("$course->shortname: $fullname: $strmode", $course->fullname, $navigation);
+
+    $currenttab = $mode;
+    $showroles = 1;
+    include($CFG->dirroot . '/user/tabs.php');   /// Prints out tabs as part of user page
+
+    echo '<div class="user-content">';
     // Get the posts.
-    if ($posts = forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage,
-                                    $totalcount, $extrasql)) {
+    if (!empty($posts)) {
 
         print_paging_bar($totalcount, $page, $perpage,
                          "user.php?id=$user->id&amp;course=$course->id&amp;mode=$mode&amp;perpage=$perpage&amp;");
