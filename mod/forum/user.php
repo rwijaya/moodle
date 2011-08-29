@@ -47,50 +47,50 @@ if ($mode !== 'posts') {
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('standard');
 
-if (empty($id)) {         // See your own profile by default
+if (!empty($CFG->forceloginforprofiles)) {
     require_login();
+    if (isguestuser()) {
+        $SESSION->wantsurl = $PAGE->url->out(false);
+        redirect(get_login_url());
+    }
+} else if (!empty($CFG->forcelogin)) {
+    require_login();
+}
+
+if (empty($id)) {         // See your own profile by default
     $id = $USER->id;
 }
+
+require_login();
 
 $user = $DB->get_record("user", array("id" => $id), '*', MUST_EXIST);
 $course = $DB->get_record("course", array("id" => $course), '*', MUST_EXIST);
 
-$syscontext = get_context_instance(CONTEXT_SYSTEM);
-$usercontext   = get_context_instance(CONTEXT_USER, $id);
-
-// do not force parents to enrol
-if (!$DB->get_record('role_assignments', array('userid' => $USER->id, 'contextid' => $usercontext->id))) {
-    require_course_login($course);
+if ($course->id == SITEID) {
+    $coursecontext = get_context_instance(CONTEXT_SYSTEM);   // SYSTEM context
 } else {
-    $PAGE->set_course($course);
+    $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);   // Course context
 }
 
-if ($user->deleted) {
-    echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('userdeleted'));
-    echo $OUTPUT->footer();
-    die;
-}
+$syscontext = get_context_instance(CONTEXT_SYSTEM);
+$usercontext = get_context_instance(CONTEXT_USER, $USER->id);
 
-add_to_log($course->id, "forum", "user report",
-        "user.php?course=$course->id&amp;id=$user->id&amp;mode=$mode", "$user->id");
-
+$issiteadmin     = is_siteadmin($USER->id);
+$struser         = get_string('user');
 $strforumposts   = get_string('forumposts', 'forum');
 $strparticipants = get_string('participants');
 $strmode         = get_string($mode, 'forum');
 $fullname        = fullname($user, has_capability('moodle/site:viewfullnames', $syscontext));
+$currentuser     = false;
+$commoncourses   = false;
 
-$link = null;
-if (has_capability('moodle/course:viewparticipants', get_context_instance(CONTEXT_COURSE, $course->id)) || has_capability('moodle/site:viewparticipants', $syscontext)) {
-    $link = new moodle_url('/user/index.php',array('id'=>$course->id));
+if ($user->id === $USER->id) {
+    $currentuser =  true;
 }
 
-$PAGE->navigation->extend_for_user($user);
-$PAGE->navigation->set_userid_for_parent_checks($id); // see MDL-25805 for reasons and for full commit reference for reversal when fixed.
-$PAGE->set_title("$course->shortname: $fullname: $strmode");
-$PAGE->set_heading($course->fullname);
-echo $OUTPUT->header();
-echo $OUTPUT->heading($fullname);
+if (!$currentuser && !$issiteadmin) {
+    $commoncourses = enrol_sharing_course($USER->id, $user->id);
+}
 
 switch ($mode) {
     case 'posts' :
@@ -104,8 +104,6 @@ switch ($mode) {
         break;
 }
 
-echo '<div class="user-content">';
-
 if ($course->id == SITEID) {
     $searchcourse = SITEID;
     if (empty($CFG->forceloginforprofiles) or (isloggedin() and !isguestuser() and !is_web_crawler())) {
@@ -117,9 +115,77 @@ if ($course->id == SITEID) {
     $searchcourse = $course->id;
 }
 
-// Get the posts.
-if ($posts = forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage, $totalcount, $extrasql)) {
+$posts = forum_search_posts($searchterms, $searchcourse, $page*$perpage, $perpage, $totalcount, $extrasql);
 
+$usercapabilities = !has_capability('moodle/user:viewdetails', $usercontext);
+$usercapabilities = $usercapabilities && !has_capability('mod/forum:viewdiscussion', $usercontext);
+$usercapabilities = $usercapabilities && !$issiteadmin && !$currentuser;
+
+if (!empty($CFG->forceloginforprofiles) && empty($posts) && empty($commoncourses) && $usercapabilities) {
+    $PAGE->set_context($coursecontext);
+    $PAGE->set_title("$SITE->shortname");  // Do not leak the name
+    $PAGE->set_heading("$SITE->shortname");
+    $PAGE->set_url('/mod/forum/user.php', array('id' => $user->id, 'course' => $course->id));
+
+    $PAGE->navigation->set_userid_for_parent_checks($id);
+    echo $OUTPUT->header();
+    //echo $OUTPUT->heading(get_string('cannotviewdiscussionpost', 'error'));
+    print_error('cannotviewdiscussionpost');
+    echo $OUTPUT->footer();
+    exit;
+}
+
+// do not force parents to enrol
+if (!$DB->get_record('role_assignments', array('userid' => $USER->id, 'contextid' => $usercontext->id))) {
+    require_course_login($course);
+} else {
+    $PAGE->set_course($course);
+}
+
+$groupcapabilities = !has_capability('moodle/site:accessallgroups', $coursecontext);
+$groupcapabilities = $groupcapabilities && !has_capability('moodle/site:accessallgroups', $coursecontext, $user->id);
+
+// If groups are in use and enforced throughout the course, then make sure we can meet in at least one course level group
+if (groups_get_course_groupmode($course) == SEPARATEGROUPS && $course->groupmodeforce && $groupcapabilities) {
+    if (!isloggedin() or isguestuser()) {
+        // do not use require_login() here because we might have already used require_login($course)
+        redirect(get_login_url());
+    }
+    $mygroups = array_keys(groups_get_all_groups($course->id, $USER->id, $course->defaultgroupingid, 'g.id, g.name'));
+    $usergroups = array_keys(groups_get_all_groups($course->id, $user->id, $course->defaultgroupingid, 'g.id, g.name'));
+    if (!array_intersect($mygroups, $usergroups)) {
+        print_error("groupnotamember", '', "../course/view.php?id=$course->id");
+    }
+}
+
+if ($user->deleted) {
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('userdeleted'));
+    echo $OUTPUT->footer();
+    die;
+}
+
+$param = "course=$course->id&amp;id=$user->id&amp;mode=$mode";
+add_to_log($course->id, "forum", "user report", "user.php?" . $param, "$user->id");
+
+$hasparticipantcapabilities = has_capability('moodle/course:viewparticipants', get_context_instance(CONTEXT_COURSE, $course->id));
+$hasparticipantcapabilities = $hasparticipantcapabilities || has_capability('moodle/site:viewparticipants', $syscontext);
+$link = null;
+
+if ($hasparticipantcapabilities) {
+    $link = new moodle_url('/user/index.php',array('id'=>$course->id));
+}
+
+$PAGE->navigation->set_userid_for_parent_checks($id); // see MDL-25805 for reasons and for full commit reference for reversal when fixed.
+$PAGE->set_title("$course->shortname: $fullname: $strmode");
+$PAGE->set_heading($course->fullname);
+echo $OUTPUT->header();
+echo $OUTPUT->heading($fullname);
+
+echo '<div class="user-content">';
+
+// Get the posts.
+if ($posts) {
     require_once($CFG->dirroot.'/rating/lib.php');
 
     $baseurl = new moodle_url('user.php', array('id' => $user->id, 'course' => $course->id, 'mode' => $mode, 'perpage' => $perpage));

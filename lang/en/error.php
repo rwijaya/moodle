@@ -154,6 +154,7 @@ $string['cannotuseadmin'] = 'You need to be an admin user to use this page';
 $string['cannotuseadminadminorteacher'] = 'You need to be a teacher or admin user to use this page';
 $string['cannotusepage'] = 'Only teachers and administrators can use this page';
 $string['cannotusepage2'] = 'Sorry, you may not use this page';
+$string['cannotviewdiscussionpost'] = 'You cannot view this user\'s discussion or post';
 $string['cannotviewprofile'] = 'You cannot view the profile of this user';
 $string['cannotviewreport'] = 'You cannot view this report';
 $string['cannotwritefile'] = 'Cannot write to file ({$a})';
