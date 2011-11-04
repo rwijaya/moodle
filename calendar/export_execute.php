@@ -5,21 +5,22 @@ require_once('../config.php');
 require_once($CFG->dirroot.'/calendar/lib.php');
 require_once($CFG->libdir.'/bennu/bennu.inc.php');
 
-$username = required_param('username', PARAM_TEXT);
+$userid = required_param('userid', PARAM_INT);
 $authtoken = required_param('authtoken', PARAM_ALPHANUM);
+$generateurl = optional_param('generateurl', '', PARAM_TEXT);
 
 if (empty($CFG->enablecalendarexport)) {
     die('no export');
 }
 
 //Fetch user information
-if (!$user = $DB->get_record('user', array('username' => $username), 'id,password')) {
+if (!$user = $DB->get_record('user', array('id' => $userid), 'id,password')) {
    //No such user
     die('Invalid authentication');
 }
 
 //Check authentication token
-if ($authtoken != sha1($username . $user->password . $CFG->calendar_exportsalt)) {
+if ($authtoken != sha1($userid . $user->password . $CFG->calendar_exportsalt)) {
     die('Invalid authentication');
 }
 
@@ -30,6 +31,20 @@ $now = usergetdate(time());
 // Let's see if we have sufficient and correct data
 $allowed_what = array('all', 'courses');
 $allowed_time = array('weeknow', 'weeknext', 'monthnow', 'monthnext', 'recentupcoming');
+
+if (!empty($generateurl)) {
+    $authtoken = sha1($userid . $user->password . $CFG->calendar_exportsalt);
+    $params = array();
+    $params['preset_what'] = $what;
+    $params['preset_time'] = $time;
+    $params['userid'] = $userid;
+    $params['authtoken'] = $authtoken;
+    $params['generateurl'] = true;
+
+    $link = new moodle_url('/calendar/export.php', $params);
+    redirect($link->out());
+    die;
+}
 
 if(!empty($what) && !empty($time)) {
     if(in_array($what, $allowed_what) && in_array($time, $allowed_time)) {
