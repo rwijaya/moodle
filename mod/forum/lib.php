@@ -4821,6 +4821,8 @@ function forum_user_can_post_discussion($forum, $currentgroup=null, $unused=-1, 
 
     if ($forum->type == 'news') {
         $capname = 'mod/forum:addnews';
+    } else if ($forum->type == 'qanda') {
+        $capname = 'mod/forum:addquestion';
     } else {
         $capname = 'mod/forum:startdiscussion';
     }
@@ -5194,7 +5196,7 @@ function forum_print_latest_discussions($course, $forum, $maxdiscussions=-1, $di
                 $buttonadd = get_string('addanewtopic', 'forum');
                 break;
             case 'qanda':
-                $buttonadd = get_string('addanewquestion', 'forum');
+                $buttonadd = get_string('addquestion', 'forum');
                 break;
             default:
                 $buttonadd = get_string('addanewdiscussion', 'forum');
