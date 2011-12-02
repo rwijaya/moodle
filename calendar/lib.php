@@ -1574,7 +1574,7 @@ function calendar_set_filters_status($packed_bitfield) {
 function calendar_get_allowed_types(&$allowed) {
     global $USER, $CFG, $SESSION;
     $sitecontext = get_context_instance(CONTEXT_SYSTEM);
-    $allowed->user = has_capability('moodle/calendar:manageownentries', $sitecontext);
+    $allowed->user = false;
     $allowed->groups = false; // This may change just below
     $allowed->courses = false; // This may change just below
     $allowed->site = has_capability('moodle/calendar:manageentries', get_context_instance(CONTEXT_COURSE, SITEID));
@@ -1588,6 +1588,11 @@ function calendar_get_allowed_types(&$allowed) {
     
             if($course->groupmode != NOGROUPS || !$course->groupmodeforce) {
                 $allowed->groups = groups_get_all_groups($SESSION->cal_course_referer);
+            }
+        } else if(has_capability('moodle/calendar:manageownentries', $coursecontext)) {
+            $allowed->user = true;
+            if($course->groupmode != NOGROUPS || !$course->groupmodeforce) {
+                $allowed->groups = groups_get_all_groups($SESSION->cal_course_referer, $USER->id);
             }
         } else if(has_capability('moodle/calendar:managegroupentries', $coursecontext)) {
             if($course->groupmode != NOGROUPS || !$course->groupmodeforce) {
