@@ -849,7 +849,25 @@ class theme_mymobile_mod_choice_renderer extends plugin_renderer_base {
 
         return $html;
     }
+	
+	
+public function display_result($choices, $forcepublish = false) {
+        if (empty($forcepublish)) { //allow the publish setting to be overridden
+            $forcepublish = $choices->publish;
+        }
 
+        $displaylayout = $choices->display;
+
+        if ($forcepublish) {  //CHOICE_PUBLISH_NAMES
+            return $this->display_publish_name_vertical($choices);
+        } else { //CHOICE_PUBLISH_ANONYMOUS';
+            if ($displaylayout == DISPLAY_HORIZONTAL_LAYOUT) {
+                return $this->display_publish_anonymous_horizontal($choices);
+            }
+            return $this->display_publish_anonymous_vertical($choices);
+        }
+    }
+	
     /**
      * Returns HTML to display choices result
      *
@@ -970,4 +988,164 @@ class theme_mymobile_mod_choice_renderer extends plugin_renderer_base {
 
         return $html;
     }
+    
+     /**
+     * Returns HTML to display choices result
+     * @param object $choices
+     * @return string
+     */
+    public function display_publish_anonymous_vertical($choices) {
+        global $CHOICE_COLUMN_HEIGHT;
+
+        $html = '';
+        $table = new html_table();
+        $table->cellpadding = 5;
+        $table->cellspacing = 0;
+        $table->attributes['class'] = 'results anonymous ';
+        $table->data = array();
+        $count = 0;
+        ksort($choices->options);
+        $columns = array();
+        $rows = array();
+
+        foreach ($choices->options as $optionid => $options) {
+            $numberofuser = 0;
+            if (!empty($options->user)) {
+               $numberofuser = count($options->user);
+            }
+            $height = 0;
+            $percentageamount = 0;
+            if($choices->numberofuser > 0) {
+               $height = ($CHOICE_COLUMN_HEIGHT * ((float)$numberofuser / (float)$choices->numberofuser));
+               $percentageamount = ((float)$numberofuser/(float)$choices->numberofuser)*100.0;
+            }
+
+            $displaydiagram = html_writer::tag('img','', array('style'=>'height:'.$height.'px;width:49px;', 'alt'=>'', 'src'=>$this->output->pix_url('column', 'choice')));
+
+            $cell = new html_table_cell();
+            $cell->text = $displaydiagram;
+            $cell->attributes = array('class'=>'graph vertical data');
+            $columns[] = $cell;
+        }
+        $rowgraph = new html_table_row();
+        $rowgraph->cells = $columns;
+        $rows[] = $rowgraph;
+
+        $columns = array();
+        $printskiplink = true;
+        foreach ($choices->options as $optionid => $options) {
+            $columndata = '';
+            $numberofuser = 0;
+            if (!empty($options->user)) {
+               $numberofuser = count($options->user);
+            }
+
+            if ($printskiplink) {
+                $columndata .= html_writer::tag('div', '', array('class'=>'skip-block-to', 'id'=>'skipresultgraph'));
+                $printskiplink = false;
+            }
+
+            if ($choices->showunanswered && $optionid == 0) {
+                $columndata .= html_writer::tag('div', format_string(get_string('notanswered', 'choice')), array('class'=>'option'));
+            } else if ($optionid > 0) {
+                $columndata .= html_writer::tag('div', format_string($choices->options[$optionid]->text), array('class'=>'option'));
+            }
+            $columndata .= html_writer::tag('div', ' ('.$numberofuser.')', array('class'=>'numberofuser', 'title'=> get_string('numberofuser', 'choice')));
+
+            if($choices->numberofuser > 0) {
+               $percentageamount = ((float)$numberofuser/(float)$choices->numberofuser)*100.0;
+            }
+            $columndata .= html_writer::tag('div', format_float($percentageamount,1). '%', array('class'=>'percentage'));
+
+            $cell = new html_table_cell();
+            $cell->text = $columndata;
+            $cell->attributes = array('class'=>'data header');
+            $columns[] = $cell;
+        }
+        $rowdata = new html_table_row();
+        $rowdata->cells = $columns;
+        $rows[] = $rowdata;
+
+        $table->data = $rows;
+
+        $header = html_writer::tag('h2',format_string(get_string("responses", "choice")));
+        $html .= html_writer::tag('div', $header, array('class'=>'responseheader'));
+        $html .= html_writer::tag('a', get_string('skipresultgraph', 'choice'), array('href'=>'#skipresultgraph', 'class'=>'skip-block'));
+        $html .= html_writer::tag('div', html_writer::table($table), array('class'=>'response'));
+
+        return $html;
+    }
+
+    /**
+     * Returns HTML to display choices result
+     * @param object $choices
+     * @return string
+     */
+    public function display_publish_anonymous_horizontal($choices) {
+        global $CHOICE_COLUMN_WIDTH;
+
+        $table = new html_table();
+        $table->cellpadding = 5;
+        $table->cellspacing = 0;
+        $table->attributes['class'] = 'results anonymous ';
+        $table->data = array();
+
+        $count = 0;
+        ksort($choices->options);
+
+        $rows = array();
+        foreach ($choices->options as $optionid => $options) {
+            $numberofuser = 0;
+            $graphcell = new html_table_cell();
+            if (!empty($options->user)) {
+               $numberofuser = count($options->user);
+            }
+
+            $width = 0;
+            $percentageamount = 0;
+            $columndata = '';
+            if($choices->numberofuser > 0) {
+               $width = ($CHOICE_COLUMN_WIDTH * ((float)$numberofuser / (float)$choices->numberofuser));
+               $percentageamount = ((float)$numberofuser/(float)$choices->numberofuser)*100.0;
+            }
+            $displaydiagram = html_writer::tag('img','', array('style'=>'height:50px; width:'.$width.'px', 'alt'=>'', 'src'=>$this->output->pix_url('row', 'choice')));
+
+            $skiplink = html_writer::tag('a', get_string('skipresultgraph', 'choice'), array('href'=>'#skipresultgraph'. $optionid, 'class'=>'skip-block'));
+            $skiphandler = html_writer::tag('span', '', array('class'=>'skip-block-to', 'id'=>'skipresultgraph'.$optionid));
+
+            $graphcell->text = $skiplink . $displaydiagram . $skiphandler;
+            $graphcell->attributes = array('class'=>'graph horizontal');
+
+            $datacell = new html_table_cell();
+            if ($choices->showunanswered && $optionid == 0) {
+                $columndata .= html_writer::tag('div', format_string(get_string('notanswered', 'choice')), array('class'=>'option'));
+            } else if ($optionid > 0) {
+                $columndata .= html_writer::tag('div', format_string($choices->options[$optionid]->text), array('class'=>'option'));
+            }
+            $columndata .= html_writer::tag('div', ' ('.$numberofuser.')', array('title'=> get_string('numberofuser', 'choice'), 'class'=>'numberofuser'));
+
+            if($choices->numberofuser > 0) {
+               $percentageamount = ((float)$numberofuser/(float)$choices->numberofuser)*100.0;
+            }
+            $columndata .= html_writer::tag('div', format_float($percentageamount,1). '%', array('class'=>'percentage'));
+
+            $datacell->text = $columndata;
+            $datacell->attributes = array('class'=>'header');
+
+            $row = new html_table_row();
+            $row->cells = array($datacell, $graphcell);
+            $rows[] = $row;
+        }
+
+        $table->data = $rows;
+
+        $html = '';
+        $header = html_writer::tag('h2',format_string(get_string("responses", "choice")));
+        $html .= html_writer::tag('div', $header, array('class'=>'responseheader'));
+        $html .= html_writer::table($table);
+
+        return $html;
+    }
+
+    
 }
