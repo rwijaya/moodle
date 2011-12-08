@@ -69,6 +69,13 @@
     $wiki->groupmembersonly = $cm->groupmembersonly;
     $wiki->cmid = $cm->id;
     
+    //grouping
+    if ($CFG->enablegroupings) {
+        $wiki->grouping_groups = get_records("groupings_groups", "groupingid", $wiki->groupingid);
+    } else {
+        $wiki->grouping_groups = array();
+    }
+
     /// Default format:
     $moodle_format=FORMAT_MOODLE;
 
