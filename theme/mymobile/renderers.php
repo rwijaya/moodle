@@ -849,8 +849,8 @@ class theme_mymobile_mod_choice_renderer extends plugin_renderer_base {
 
         return $html;
     }
-	
-	
+
+
 public function display_result($choices, $forcepublish = false) {
         if (empty($forcepublish)) { //allow the publish setting to be overridden
             $forcepublish = $choices->publish;
@@ -867,7 +867,7 @@ public function display_result($choices, $forcepublish = false) {
             return $this->display_publish_anonymous_vertical($choices);
         }
     }
-	
+
     /**
      * Returns HTML to display choices result
      *
@@ -988,7 +988,7 @@ public function display_result($choices, $forcepublish = false) {
 
         return $html;
     }
-    
+
      /**
      * Returns HTML to display choices result
      * @param object $choices
@@ -1147,5 +1147,5 @@ public function display_result($choices, $forcepublish = false) {
         return $html;
     }
 
-    
+
 }
