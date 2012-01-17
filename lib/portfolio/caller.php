@@ -1,31 +1,28 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Moodle - Modular Object-Oriented Dynamic Learning Environment
- *          http://moodle.org
- * Copyright (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
+ * This file contains the base classes
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * for places in moodle that want to
+ * add export functionality to subclass from {@link http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page}
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @package    core
- * @subpackage portfolio
- * @author     Penny Leach <penny@catalyst.net.nz>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
- * @copyright  (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
- *
- * This file contains the base classes for places in moodle that want to
- * add export functionality to subclass from.
- * See http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page
+ * @package core_portfolio
+ * @copyright 2008 Penny Leach <penny@catalyst.net.nz>, Martin Dougiamas
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -33,54 +30,45 @@ defined('MOODLE_INTERNAL') || die();
 /**
 * base class for callers
 *
-* See http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page
+* {@link See http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page}
 * {@see also portfolio_module_caller_base}
+*
+* @package core_portfolio
+* @category portfolio
+* @copyright 2008 Penny Leach <penny@catalyst.net.nz>
+* @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 abstract class portfolio_caller_base {
 
-    /**
-    * stdclass object
-    * course that was active during the caller
-    */
+    /** @var stdclass object course that was active during the caller */
     protected $course;
 
-    /**
-    * named array of export config
-    * use{@link  set_export_config} and {@link get_export_config} to access
-    */
+    /** @var array named array of export config. Use{@link  set_export_config} and {@link get_export_config} to access */
     protected $exportconfig = array();
 
-    /**
-    * stdclass object
-    * user currently exporting content
-    */
+    /** @var stdclass user currently exporting content */
     protected $user;
 
-    /**
-    * a reference to the exporter object
-    */
+    /** @var object a reference to the exporter object */
     protected $exporter;
 
-    /**
-    * this can be overridden in subclasses constructors if they want
-    */
+    /** @var array this can be overridden in subclasses constructors if they want */
     protected $supportedformats;
 
-    /**
-    * set this for single file exports
-    */
+    /** @var stored_file|object set this for single file exports */
     protected $singlefile;
 
-    /**
-    * set this for multi file exports
-    */
+    /** @var stored_file|object set this for multi file exports */
     protected $multifiles;
 
-    /**
-     * set this for generated-file exports
-     */
+    /** @var mixed set this for generated-file exports */
     protected $intendedmimetype;
 
+    /**
+     * Create portfolio_caller object
+     *
+     * @param object $callbackargs argument properties
+     */
     public function __construct($callbackargs) {
         $expected = call_user_func(array(get_class($this), 'expected_callbackargs'));
         foreach ($expected as $key => $required) {
@@ -101,7 +89,6 @@ abstract class portfolio_caller_base {
     *
     * @param array $mform moodleform object (passed by reference) to add elements to
     * @param object $instance subclass of portfolio_plugin_base
-    * @param integer $userid id of user exporting content
     */
     public function export_config_form(&$mform, $instance) {}
 
@@ -110,7 +97,7 @@ abstract class portfolio_caller_base {
     * whether this caller wants any additional
     * config during export (eg options or metadata)
     *
-    * @return boolean
+    * @return bool of export configuration
     */
     public function has_export_config() {
         return false;
@@ -140,6 +127,8 @@ abstract class portfolio_caller_base {
 
     /**
     * helper method to calculate expected time for multi or single file exports
+    *
+    * @return string file time expectation
     */
     public function expected_time_file() {
         if ($this->multifiles) {
@@ -164,12 +153,14 @@ abstract class portfolio_caller_base {
     public abstract function get_navigation();
 
     /**
-    *
+    * helper function to get sha1
     */
     public abstract function get_sha1();
 
     /**
     * helper function to calculate the sha1 for multi or single file exports
+    *
+    * @return string sha1 file exports
     */
     public function get_sha1_file() {
         if (empty($this->singlefile) && empty($this->multifiles)) {
@@ -186,10 +177,13 @@ abstract class portfolio_caller_base {
         return sha1(implode('', $sha1s));
     }
 
-    /*
+    /**
     * generic getter for properties belonging to this instance
     * <b>outside</b> the subclasses
     * like name, visible etc.
+    *
+    * @param string $field property's name
+    * @throws portfolio_export_exception
     */
     public function get($field) {
         if (property_exists($this, $field)) {
@@ -204,6 +198,9 @@ abstract class portfolio_caller_base {
     * <b>outside</b> the subclass
     * like name, visible, etc.
     *
+    * @param string $field property's name
+    * @param mixed $value property's value
+    * @throws moodle_exception
     */
     public final function set($field, &$value) {
         if (property_exists($this, $field)) {
@@ -240,7 +237,8 @@ abstract class portfolio_caller_base {
     * returns a particular export config value.
     * subclasses shouldn't need to override this
     *
-    * @param string key the config item to fetch
+    * @param string $key the config item to fetch
+    * @return array of export configuration
     */
     public final function get_export_config($key) {
         $allowed = array_merge(
@@ -334,6 +332,11 @@ abstract class portfolio_caller_base {
         return portfolio_most_specific_formats($specific, $basic);
     }
 
+    /**
+     * Base supported formats
+     *
+     * @throws coding_exception
+     */
     public static function base_supported_formats() {
         throw new coding_exception('base_supported_formats() method needs to be overridden in each subclass of portfolio_caller_base');
     }
@@ -352,7 +355,10 @@ abstract class portfolio_caller_base {
     public abstract function check_permissions();
 
     /**
-    * nice name to display to the user about this caller location
+    *
+ice name to display to the user about this caller location
+    *
+    * @throws coding_exception
     */
     public static function display_name() {
         throw new coding_exception('display_name() method needs to be overridden in each subclass of portfolio_caller_base');
@@ -368,6 +374,9 @@ abstract class portfolio_caller_base {
         return get_string('exportingcontentfrom', 'portfolio', $this->display_name());
     }
 
+    /**
+     * load data
+     */
     public abstract function load_data();
 
     /**
@@ -381,12 +390,7 @@ abstract class portfolio_caller_base {
      *                   - single stored_file object
      *                   - array of file ids or stored_file objects
      *                   - null
-     * @param int    $contextid   (optional), passed to {@link see file_storage::get_area_files}
-     * @param string $component   (optional), passed to {@link see file_storage::get_area_files}
-     * @param string $filearea    (optional), passed to {@link see file_storage::get_area_files}
-     * @param int    $itemid      (optional), passed to {@link see file_storage::get_area_files}
-     * @param string $sort        (optional), passed to {@link see file_storage::get_area_files}
-     * @param bool   $includedirs (optional), passed to {@link see file_storage::get_area_files}
+     * @return void
      */
     public function set_file_and_format_data($ids=null /* ..pass arguments to area files here. */) {
         $args = func_get_args();
@@ -460,6 +464,11 @@ abstract class portfolio_caller_base {
         $this->supportedformats = portfolio_most_specific_formats(array($format), $this->supportedformats);
     }
 
+    /**
+     * Gets mimetype
+     *
+     * @return mixed generated-file exports
+     */
     public function get_mimetype() {
         if ($this->singlefile instanceof stored_file) {
             return $this->singlefile->get_mimetype();
@@ -487,43 +496,43 @@ abstract class portfolio_caller_base {
     /**
      * return the context for this export. used for $PAGE->set_context
      *
-     * @return stdclass
+     * @param stdclass $PAGE global page object
      */
     public abstract function set_context($PAGE);
 }
 
 /**
 * base class for module callers
+*
 * this just implements a few of the abstract functions
 * from portfolio_caller_base so that caller authors
 * don't need to.
 *
 * See http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page
 * {@see also portfolio_caller_base}
+*
+* @package core_portfolio
+* @category portfolio
+* @copyright 2008 Penny Leach <penny@catalyst.net.nz>
+* @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 abstract class portfolio_module_caller_base extends portfolio_caller_base {
 
-    /**
-    * coursemodule object
-    * set this in the constructor like
-    * $this->cm = get_coursemodule_from_instance('forum', $this->forum->id);
-    */
+    /** @var object coursemodule object. set this in the constructor like $this->cm = get_coursemodule_from_instance('forum', $this->forum->id); */
     protected $cm;
 
-    /**
-    *
-    * int cmid
-    */
+    /** @var int cmid */
     protected $id;
 
-    /**
-    * stdclass course object
-    */
+    /** @var stdclass course object */
     protected $course;
 
     /**
-    * navigation passed to print_header
+    *
+avigation passed to print_header
     * override this to do something more specific than the module view page
+    *
+    * @return array portfolio navigation content
     */
     public function get_navigation() {
         $extranav = array('name' => $this->cm->name, 'link' => $this->get_return_url());
@@ -534,6 +543,8 @@ abstract class portfolio_module_caller_base extends portfolio_caller_base {
     * the url to return to after export or on cancel
     * defaults to the module 'view' page
     * override this if it's deeper inside the module
+    *
+    * @return string return url
     */
     public function get_return_url() {
         global $CFG;
@@ -542,8 +553,12 @@ abstract class portfolio_module_caller_base extends portfolio_caller_base {
 
     /**
     * override the parent get function
+    *
     * to make sure when we're asked for a course
     * we retrieve the object from the database as needed
+    *
+    * @param string $key the name of get function
+    * @return stdClass|string returning object of course or the value of the requested key
     */
     public function get($key) {
         if ($key != 'course') {
@@ -560,6 +575,8 @@ abstract class portfolio_module_caller_base extends portfolio_caller_base {
     * return a string to put at the header summarising this export
     * by default, just the display name and the module instance name
     * override this to do something more specific
+    *
+    * @return string
     */
     public function heading_summary() {
         return get_string('exportingcontentfrom', 'portfolio', $this->display_name() . ': ' . $this->cm->name);
@@ -567,6 +584,8 @@ abstract class portfolio_module_caller_base extends portfolio_caller_base {
 
     /**
      * overridden to return the course module context
+     *
+     * @param stdClass $PAGE global PAGE
      */
     public function set_context($PAGE) {
         $PAGE->set_cm($this->cm);

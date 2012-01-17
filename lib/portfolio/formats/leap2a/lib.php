@@ -1,35 +1,33 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Moodle - Modular Object-Oriented Dynamic Learning Environment
- *          http://moodle.org
- * Copyright (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @package    core
- * @subpackage portfolio
- * @author     Penny Leach <penny@liip.ch>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
- * @copyright  (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
- *
  * This file contains the LEAP2a writer used by portfolio_format_leap2a
+ *
+ * @package core_portfolio
+ * @copyright 2009 Penny Leach (penny@liip.ch), Martin Dougiamas
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * object to encapsulate the writing of leap2a.
+ *
  * should be used like:
  *
  * $writer = portfolio_format_leap2a::leap2a_writer($USER);
@@ -40,18 +38,27 @@ defined('MOODLE_INTERNAL') || die();
  * $xmlstr = $writer->to_xml();
  *
  * @TODO find a way to ensure that all referenced files are included
+ *
+ * @package core_portfolio
+ * @category portfolio
+ * @copyright 2009 Penny Leach
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class portfolio_format_leap2a_writer {
 
-    /** the domdocument object used to create elements */
+    /** @var DomDocument the domdocument object used to create elements */
     private $dom;
-    /** the top level feed element */
+
+    /** @var DOMElement the top level feed element */
     private $feed;
-    /** the user exporting data */
+
+    /** @var stdClass the user exporting data */
     private $user;
-    /** the id of the feed - this is unique to the user and date and used for portfolio ns as well as feed id */
+
+    /** @var string the id of the feed - this is unique to the user and date and used for portfolio ns as well as feed id */
     private $id;
-    /** the entries for the feed - keyed on id */
+
+    /** @var array the entries for the feed - keyed on id */
     private $entries = array();
 
     /**
@@ -101,6 +108,7 @@ class portfolio_format_leap2a_writer {
      * adds a entry to the feed ready to be exported
      *
      * @param portfolio_format_leap2a_entry $entry the entry to add
+     * @return instance $entry instance of portfolio_format_leap2a_file
      */
     public function add_entry(portfolio_format_leap2a_entry $entry) {
         if (array_key_exists($entry->id, $this->entries)) {
@@ -186,7 +194,7 @@ class portfolio_format_leap2a_writer {
      * return the entire feed as a string
      * calls validate() first on everything
      *
-     * @return string
+     * @return string feeds' content
      */
     public function to_xml() {
         $this->validate();
@@ -200,40 +208,53 @@ class portfolio_format_leap2a_writer {
 
 /**
  * this class represents a single leap2a entry.
+ *
  * you can create these directly and then add them to the main leap feed object
+ *
+ * @package core_portfolio
+ * @category portfolio
+ * @copyright 2009 Penny Leach
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class portfolio_format_leap2a_entry {
 
-    /** entry id  - something like forumpost6, must be unique to the feed **/
+    /** @var string entry id  - something like forumpost6, must be unique to the feed */
     public $id;
-    /** title of the entry **/
+
+    /** @var string title of the entry */
     public $title;
-    /** leap2a entry type **/
+
+    /** @var string leap2a entry type */
     public $type;
-    /** optional author (only if different to feed author) **/
+
+    /** @var string optional author (only if different to feed author) */
     public $author;
-    /** summary - for split long content **/
+
+    /** @var string summary - for split long content */
     public $summary;
-    /** main content of the entry. can be html,text,or xhtml. for a stored_file, use portfolio_format_leap2a_file **/
+
+    /** @var mixed main content of the entry. can be html,text,or xhtml. for a stored_file, use portfolio_format_leap2a_file **/
     public $content;
-    /** updated date - unix timestamp */
+
+    /** @var int pdated date - unix timestamp */
     public $updated;
-    /** published date (ctime) - unix timestamp */
+
+    /** @var int published date (ctime) - unix timestamp */
     public $published;
 
-    /** the required fields for a leap2a entry */
+    /** @var array the required fields for a leap2a entry */
     private $requiredfields = array( 'id', 'title', 'type');
 
-    /** extra fields which usually should be set (except author) but are not required */
+    /** @var array extra fields which usually should be set (except author) but are not required */
     private $optionalfields = array('author', 'updated', 'published', 'content', 'summary');
 
-    /** links from this entry to other entries */
+    /** @var array links from this entry to other entries */
     public $links       = array();
 
-    /** attachments to this entry */
+    /** @var array attachments to this entry */
     public $attachments = array();
 
-    /** categories for this entry */
+    /** @var array categories for this entry */
     private $categories = array();
 
     /**
@@ -258,6 +279,10 @@ class portfolio_format_leap2a_entry {
     /**
      * override __set to do proper dispatching for different things
      * only allows the optional and required leap2a entry fields to be set
+     *
+     * @param string $field property's name
+     * @param stored_file|string $value property's value
+     * @return exception|string $value
      */
     public function __set($field, $value) {
         // detect the case where content is being set to be a file directly
@@ -298,9 +323,10 @@ class portfolio_format_leap2a_entry {
      *
      * @param mixed $otherentry portfolio_format_leap2a_entry or its id
      * @param string $reltype (no leap2: ns required)
-     *
-     * @return the current entry object. This is so that these calls can be chained
-     * eg $entry->add_link('something6', 'has_part')->add_link('something7', 'has_part');
+     * @param string $displayorder (optional)
+     * @return portfolio_format_leap2a_entry the current entry object. This is so that these calls can be chained
+     *                                       eg $entry->add_link('something6', 'has_part')->add_link('something7',
+     *                                       'has_part');
      *
      */
     public function add_link($otherentry, $reltype, $displayorder=null) {
@@ -324,12 +350,12 @@ class portfolio_format_leap2a_entry {
      * add a category to this entry
      * http://wiki.cetis.ac.uk/2009-03/LEAP2A_categories
      *
+     * "tags" should just pass a term here and no scheme or label.
+     * they will be automatically normalised if they have spaces.
+     *
      * @param string $term eg 'Offline'
      * @param string $scheme (optional) eg resource_type
      * @param string $label (optional) eg File
-     *
-     * "tags" should just pass a term here and no scheme or label.
-     * they will be automatically normalised if they have spaces.
      */
     public function add_category($term, $scheme=null, $label=null) {
         // "normalise" terms and set their label if they have spaces
@@ -351,8 +377,8 @@ class portfolio_format_leap2a_entry {
      * This is handled by the main writer object.
      *
      * @param DomDocument $dom use this to create elements
-     *
-     * @return DomElement
+     * @param stdClass $feedauthor object of author info
+     * @return DomElement new instance of class DOMElement or false if an error occured.
      */
     public function to_dom(DomDocument $dom, $feedauthor) {
         $entry = $dom->createElement('entry');
@@ -421,8 +447,7 @@ class portfolio_format_leap2a_entry {
      * @param DomDocument $dom the dom doc to use
      * @param string $tagname usually 'content' or 'summary'
      * @param string $content the content to use, either xhtml or html.
-     *
-     * @return DomElement
+     * @return DomElement new instance of class DOMElement or false if an error occured.
      */
     private function create_xhtmlish_element(DomDocument $dom, $tagname, $content) {
         $topel = $dom->createElement($tagname);
@@ -460,17 +485,24 @@ class portfolio_format_leap2a_entry {
     protected function add_extra_links() {}
 }
 
-
 /**
  * subclass of entry, purely for dealing with files
+ *
+ * @package core_portfolio
+ * @category portfolio
+ * @copyright 2009 Penny Leach
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class portfolio_format_leap2a_file extends portfolio_format_leap2a_entry {
 
+    /** @var stored_file */
     protected $referencedfile;
 
     /**
      * overridden constructor to set up the file.
      *
+     * @param string $title title of the entry
+     * @param stored_file $file file storage instance
      */
     public function __construct($title, stored_file $file) {
         $id = portfolio_format_leap2a::file_id_prefix() . $file->get_id();
@@ -483,6 +515,9 @@ class portfolio_format_leap2a_file extends portfolio_format_leap2a_entry {
 
     /**
      * implement the hook to add extra links to attach the file in an enclosure
+     *
+     * @param DomDocument $dom the domdocument object
+     * @param DomDocument $entry the domdocument entry object
      */
     protected function add_extra_links($dom, $entry) {
         $link = $dom->createElement('link');

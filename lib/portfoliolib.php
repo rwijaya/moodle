@@ -16,17 +16,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains all global functions to do with manipulating portfolios
- * everything else that is logically namespaced by class is in its own file
+ * This file contains all global functions to do with manipulating portfolios.
+ *
+ * Everything else that is logically namespaced by class is in its own file
  * in lib/portfolio/ directory.
  *
  * Major Contributors
  *     - Penny Leach <penny@catalyst.net.nz>
  *
- * @package    core
- * @subpackage portfolio
+ * @package core_portfolio
+ * @category portfolio
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -73,20 +74,33 @@ require_once($CFG->libdir . '/portfolio/caller.php');
  *
  * See {@link http://docs.moodle.org/dev/Adding_a_Portfolio_Button_to_a_page} for more information
  *
- * @package    moodlecore
- * @subpackage portfolio
+ * @package core_portfolio
+ * @category portfolio
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 class portfolio_add_button {
 
+    /** @var string the name of the callback functions */
     private $callbackclass;
+
+    /** @var array can be an array of arguments to pass back to the callback functions (passed by reference)*/
     private $callbackargs;
+
+    /** @var string caller file */
     private $callbackfile;
+
+    /** @var array array of more specific formats (eg based on mime detection) */
     private $formats;
+
+    /** @var array array of portfolio instances */
     private $instances;
-    private $file; // for single-file exports
-    private $intendedmimetype; // for writing specific types of files
+
+    /** @var stored_file for single-file exports */
+    private $file;
+
+    /** @var string for writing specific types of files*/
+    private $intendedmimetype;
 
     /**
     * constructor. either pass the options here or set them using the helper methods.
@@ -120,19 +134,21 @@ class portfolio_add_button {
         }
     }
 
-    /*
-    * @param string $class   name of the class containing the callback functions
-    *                        activity modules should ALWAYS use their name_portfolio_caller
-    *                        other locations must use something unique
-    * @param mixed $argarray this can be an array or hash of arguments to pass
-    *                        back to the callback functions (passed by reference)
-    *                        these MUST be primatives to be added as hidden form fields.
-    *                        and the values get cleaned to PARAM_ALPHAEXT or PARAM_NUMBER or PARAM_PATH
-    * @param string $file    this can be autodetected if it's in the same file as your caller,
-    *                        but often, the caller is a script.php and the class in a lib.php
-    *                        so you can pass it here if necessary.
-    *                        this path should be relative (ie, not include) dirroot, eg '/mod/forum/lib.php'
-    */
+    /**
+     * Function to set the callback options
+     *
+     * @param string $class   name of the class containing the callback functions
+     *                        activity modules should ALWAYS use their name_portfolio_caller
+     *                        other locations must use something unique
+     * @param array $argarray this can be an array or hash of arguments to pass
+     *                        back to the callback functions (passed by reference)
+     *                        these MUST be primatives to be added as hidden form fields.
+     *                        and the values get cleaned to PARAM_ALPHAEXT or PARAM_NUMBER or PARAM_PATH
+     * @param string $file    this can be autodetected if it's in the same file as your caller,
+     *                        but often, the caller is a script.php and the class in a lib.php
+     *                        so you can pass it here if necessary.
+     *                        this path should be relative (ie, not include) dirroot, eg '/mod/forum/lib.php'
+     */
     public function set_callback_options($class, array $argarray, $file=null) {
         global $CFG;
         if (empty($file)) {
@@ -161,7 +177,7 @@ class portfolio_add_button {
         $this->callbackargs = $argarray;
     }
 
-    /*
+    /**
     * sets the available export formats for this content
     * this function will also poll the static function in the caller class
     * and make sure we're not overriding a format that has nothing to do with mimetypes
@@ -237,28 +253,29 @@ class portfolio_add_button {
         $this->set_formats(array_merge(array($fileformat), $extraformats));
     }
 
-    /*
-    * echo the form/button/icon/text link to the page
-    *
-    * @param int $format format to display the button or form or icon or link.
-    *                    See constants PORTFOLIO_ADD_XXX for more info.
-    *                    optional, defaults to PORTFOLIO_ADD_FULL_FORM
-    * @param str $addstr string to use for the button or icon alt text or link text.
-    *                    this is whole string, not key. optional, defaults to 'Export to portfolio';
-    */
+    /**
+     * echo the form/button/icon/text link to the page
+     *
+     * @param int $format format to display the button or form or icon or link.
+     *                    See constants PORTFOLIO_ADD_XXX for more info.
+     *                    optional, defaults to PORTFOLIO_ADD_FULL_FORM
+     * @param string $addstr string to use for the button or icon alt text or link text.
+     *                    this is whole string, not key. optional, defaults to 'Export to portfolio';
+     */
     public function render($format=null, $addstr=null) {
         echo $this->to_html($format, $addstr);
     }
 
-    /*
-    * returns the form/button/icon/text link as html
-    *
-    * @param int $format format to display the button or form or icon or link.
-    *                    See constants PORTFOLIO_ADD_XXX for more info.
-    *                    optional, defaults to PORTFOLIO_ADD_FULL_FORM
-    * @param str $addstr string to use for the button or icon alt text or link text.
-    *                    this is whole string, not key.  optional, defaults to 'Add to portfolio';
-    */
+    /**
+     * returns the form/button/icon/text link as html
+     *
+     * @param int $format format to display the button or form or icon or link.
+     *                    See constants PORTFOLIO_ADD_XXX for more info.
+     *                    optional, defaults to PORTFOLIO_ADD_FULL_FORM
+     * @param string $addstr string to use for the button or icon alt text or link text.
+     *                    this is whole string, not key.  optional, defaults to 'Add to portfolio';
+     * @return string|null
+     */
     public function to_html($format=null, $addstr=null) {
         global $CFG, $COURSE, $OUTPUT, $USER;
         if (!$this->is_renderable()) {
@@ -366,10 +383,12 @@ class portfolio_add_button {
     }
 
     /**
-    * does some internal checks
-    * these are not errors, just situations
-    * where it's not appropriate to add the button
-    */
+     * does some internal checks
+     * these are not errors, just situations
+     * where it's not appropriate to add the button
+     *
+     * @return bool
+     */
     private function is_renderable() {
         global $CFG;
         if (empty($CFG->enableportfolios)) {
@@ -427,8 +446,8 @@ class portfolio_add_button {
 * @param array          $callbackclass  the callback class name - used for debugging only for when there are no common formats
 * @param mimetype       $mimetype       if we already know we have exactly one file, or are going to write one, pass it here to do mime filtering.
 * @param string         $selectname     the name of the select element. Optional, defaults to instance.
-* @param boolean        $return         whether to print or return the output. Optional, defaults to print.
-* @param booealn        $returnarray    if returning, whether to return the HTML or the array of options. Optional, defaults to HTML.
+* @param bool           $return         whether to print or return the output. Optional, defaults to print.
+* @param bool           $returnarray    if returning, whether to return the HTML or the array of options. Optional, defaults to HTML.
 *
 * @return string the html, from <select> to </select> inclusive.
 */
@@ -493,8 +512,8 @@ function portfolio_instance_select($instances, $callerformats, $callbackclass, $
 *
 * @todo check capabilities here - see MDL-15768
 *
-* @param boolean visibleonly Don't include hidden instances. Defaults to true and will be overridden to true if the next parameter is true
-* @param boolean useronly    Check the visibility preferences and permissions of the logged in user. Defaults to true.
+* @param bool $visibleonly Don't include hidden instances. Defaults to true and will be overridden to true if the next parameter is true
+* @param bool $useronly    Check the visibility preferences and permissions of the logged in user. Defaults to true.
 *
 * @return array of portfolio instances (full objects, not just database records)
 */
@@ -532,7 +551,7 @@ function portfolio_instances($visibleonly=true, $useronly=true) {
 * that portfolio plugins and callers
 * can use for exporting content
 *
-* @return keyed array of all the available export formats (constant => classname)
+* @return array keyed array of all the available export formats (constant => classname)
 */
 function portfolio_supported_formats() {
     return array(
@@ -563,7 +582,6 @@ function portfolio_supported_formats() {
 * (like a pdf or csv export)
 *
 * @param string $mimetype (usually $file->get_mimetype())
-*
 * @return string the format constant (see PORTFOLIO_FORMAT_XXX constants)
 */
 function portfolio_format_from_mimetype($mimetype) {
@@ -635,7 +653,6 @@ function portfolio_supported_formats_intersect($callerformats, $pluginformats) {
  * tiny helper to figure out whether a portfolio format is abstract
  *
  * @param string $format the format to test
- *
  * @retun bool
  */
 function portfolio_format_is_abstract($format) {
@@ -657,17 +674,16 @@ function portfolio_format_is_abstract($format) {
 }
 
 /**
-* return the combination of the two arrays of formats with duplicates in terms of specificity removed
-* and also removes conflicting formats
-* use case: a module is exporting a single file, so the general formats would be FILE and MBKP
-*           while the specific formats would be the specific subclass of FILE based on mime (say IMAGE)
-*           and this function would return IMAGE and MBKP
-*
-* @param array $specificformats array of more specific formats (eg based on mime detection)
-* @param array $generalformats  array of more general formats (usually more supported)
-*
-* @return array merged formats with dups removed
-*/
+ * return the combination of the two arrays of formats with duplicates in terms of specificity removed
+ * and also removes conflicting formats
+ * use case: a module is exporting a single file, so the general formats would be FILE and MBKP
+ *           while the specific formats would be the specific subclass of FILE based on mime (say IMAGE)
+ *           and this function would return IMAGE and MBKP
+ *
+ * @param array $specificformats array of more specific formats (eg based on mime detection)
+ * @param array $generalformats  array of more general formats (usually more supported)
+ * @return array merged formats with dups removed
+ */
 function portfolio_most_specific_formats($specificformats, $generalformats) {
     global $CFG;
     $allformats = portfolio_supported_formats();
@@ -729,12 +745,11 @@ function portfolio_most_specific_formats($specificformats, $generalformats) {
 }
 
 /**
-* helper function to return a format object from the constant
-*
-* @param string $name the constant PORTFOLIO_FORMAT_XXX
-*
-* @return portfolio_format object
-*/
+ * helper function to return a format object from the constant
+ *
+ * @param string $name the constant PORTFOLIO_FORMAT_XXX
+ * @return portfolio_format object
+ */
 function portfolio_format_object($name) {
     global $CFG;
     require_once($CFG->libdir . '/portfolio/formats.php');
@@ -743,15 +758,14 @@ function portfolio_format_object($name) {
 }
 
 /**
-* helper function to return an instance of a plugin (with config loaded)
-*
-* @param int   $instance id of instance
-* @param array $record   database row that corresponds to this instance
-*                        this is passed to avoid unnecessary lookups
-*                        Optional, and the record will be retrieved if null.
-*
-* @return subclass of portfolio_plugin_base
-*/
+ * helper function to return an instance of a plugin (with config loaded)
+ *
+ * @param int   $instanceid id of instance
+ * @param array $record   database row that corresponds to this instance
+ *                        this is passed to avoid unnecessary lookups
+ *                        Optional, and the record will be retrieved if null.
+ * @return subclass of portfolio_plugin_base
+ */
 function portfolio_instance($instanceid, $record=null) {
     global $DB, $CFG;
 
@@ -769,15 +783,15 @@ function portfolio_instance($instanceid, $record=null) {
 }
 
 /**
-* Helper function to call a static function on a portfolio plugin class
-*
-* This will figure out the classname and require the right file and call the function.
-* you can send a variable number of arguments to this function after the first two
-* and they will be passed on to the function you wish to call.
-*
-* @param string $plugin   name of plugin
-* @param string $function function to call
-*/
+ * Helper function to call a static function on a portfolio plugin class
+ *
+ * This will figure out the classname and require the right file and call the function.
+ *  you can send a variable number of arguments to this function after the first two
+ * and they will be passed on to the function you wish to call.
+ *
+ * @param string $plugin   name of plugin
+ * @param string $function function to call
+ */
 function portfolio_static_function($plugin, $function) {
     global $CFG;
 
@@ -804,13 +818,12 @@ function portfolio_static_function($plugin, $function) {
 }
 
 /**
-* helper function to check all the plugins for sanity and set any insane ones to invisible.
-*
-* @param array $plugins to check (if null, defaults to all)
-*               one string will work too for a single plugin.
-*
-* @return array array of insane instances (keys= id, values = reasons (keys for plugin lang)
-*/
+ * helper function to check all the plugins for sanity and set any insane ones to invisible.
+ *
+ * @param array $plugins to check (if null, defaults to all)
+ *               one string will work too for a single plugin.
+ * @return array array of insane instances (keys= id, values = reasons (keys for plugin lang)
+ */
 function portfolio_plugin_sanity_check($plugins=null) {
     global $DB;
     if (is_string($plugins)) {
@@ -836,13 +849,12 @@ function portfolio_plugin_sanity_check($plugins=null) {
 }
 
 /**
-* helper function to check all the instances for sanity and set any insane ones to invisible.
-*
-* @param array $instances to check (if null, defaults to all)
-*              one instance or id will work too
-*
-* @return array array of insane instances (keys= id, values = reasons (keys for plugin lang)
-*/
+ * helper function to check all the instances for sanity and set any insane ones to invisible.
+ *
+ * @param array $instances to check (if null, defaults to all)
+ *              one instance or id will work too
+ * @return array array of insane instances (keys= id, values = reasons (keys for plugin lang)
+ */
 function portfolio_instance_sanity_check($instances=null) {
     global $DB;
     if (empty($instances)) {
@@ -877,12 +889,13 @@ function portfolio_instance_sanity_check($instances=null) {
 }
 
 /**
-* helper function to display a table of plugins (or instances) and reasons for disabling
-*
-* @param array $insane array of insane plugins (key = plugin (or instance id), value = reason)
-* @param array $instances if reporting instances rather than whole plugins, pass the array (key = id, value = object) here
-*
-*/
+ * helper function to display a table of plugins (or instances) and reasons for disabling
+ *
+ * @param array $insane array of insane plugins (key = plugin (or instance id), value = reason)
+ * @param array $instances if reporting instances rather than whole plugins, pass the array (key = id, value = object) here
+ * @param bool $return
+ * @return void
+ */
 function portfolio_report_insane($insane, $instances=false, $return=false) {
     global $OUTPUT;
     if (empty($insane)) {
@@ -924,8 +937,11 @@ function portfolio_report_insane($insane, $instances=false, $return=false) {
 
 
 /**
-* event handler for the portfolio_send event
-*/
+ * event handler for the portfolio_send event
+ *
+ * @param int $eventdata event id
+ * @return bool
+ */
 function portfolio_handle_event($eventdata) {
     global $CFG;
 
@@ -939,11 +955,11 @@ function portfolio_handle_event($eventdata) {
 }
 
 /**
-* main portfolio cronjob
-* currently just cleans up expired transfer records.
-*
-* @todo add hooks in the plugins - either per instance or per plugin
-*/
+ * main portfolio cronjob
+ * currently just cleans up expired transfer records.
+ *
+ * @todo add hooks in the plugins - either per instance or per plugin
+ */
 function portfolio_cron() {
     global $DB, $CFG;
 
@@ -977,13 +993,12 @@ function portfolio_export_rethrow_exception($exporter, $exception) {
 }
 
 /**
-* try and determine expected_time for purely file based exports
-* or exports that might include large file attachments.
-*
- * @global object
-* @param mixed $totest - either an array of stored_file objects or a single stored_file object
-* @return constant PORTFOLIO_TIME_XXX
-*/
+ * try and determine expected_time for purely file based exports
+ * or exports that might include large file attachments.
+ *
+ * @param mixed $totest - either an array of stored_file objects or a single stored_file object
+ * @return string PORTFOLIO_TIME_XXX
+ */
 function portfolio_expected_time_file($totest) {
     global $CFG;
     if ($totest instanceof stored_file) {
@@ -1023,9 +1038,9 @@ function portfolio_expected_time_file($totest) {
 
 
 /**
-* the default filesizes and threshold information for file based transfers
-* this shouldn't need to be used outside the admin pages and the portfolio code
-*/
+ * the default filesizes and threshold information for file based transfers
+ * this shouldn't need to be used outside the admin pages and the portfolio code
+ */
 function portfolio_filesize_info() {
     $filesizes = array();
     $sizelist = array(10240, 51200, 102400, 512000, 1048576, 2097152, 5242880, 10485760, 20971520, 52428800);
@@ -1040,13 +1055,12 @@ function portfolio_filesize_info() {
 }
 
 /**
-* try and determine expected_time for purely database based exports
-* or exports that might include large parts of a database
-*
- * @global object
-* @param integer $recordcount - number of records trying to export
-* @return constant PORTFOLIO_TIME_XXX
-*/
+ * try and determine expected_time for purely database based exports
+ * or exports that might include large parts of a database
+ *
+ * @param integer $recordcount - number of records trying to export
+ * @return string PORTFOLIO_TIME_XXX
+ */
 function portfolio_expected_time_db($recordcount) {
     global $CFG;
 
@@ -1065,7 +1079,10 @@ function portfolio_expected_time_db($recordcount) {
 }
 
 /**
- * @global object
+ * function to send portfolio report to admins
+ *
+ * @param array $insane array of insane plugins
+ * @param array $instances (optional) if reporting instances rather than whole plugins
  */
 function portfolio_insane_notify_admins($insane, $instances=false) {
 
@@ -1121,6 +1138,12 @@ function portfolio_insane_notify_admins($insane, $instances=false) {
     }
 }
 
+/**
+ * Setup page export
+ *
+ * @param object $PAGE
+ * @param object $caller
+ */
 function portfolio_export_pagesetup($PAGE, $caller) {
     // set up the context so that build_navigation works nice
     $caller->set_context($PAGE);
@@ -1136,6 +1159,13 @@ function portfolio_export_pagesetup($PAGE, $caller) {
     $PAGE->navbar->add(get_string('exporting', 'portfolio'));
 }
 
+/**
+ * Get export type id
+ *
+ * @param string $type
+ * @param int $userid
+ * @return mixed
+ */
 function portfolio_export_type_to_id($type, $userid) {
     global $DB;
     $sql = 'SELECT t.id FROM {portfolio_tempdata} t JOIN {portfolio_instance} i ON t.instance = i.id WHERE t.userid = ? AND i.plugin = ?';
@@ -1168,6 +1198,9 @@ function portfolio_existing_exports($userid, $type=null) {
  * Return an array of existing exports by type for a given user.
  * This is much more lightweight than {@see existing_exports} because it only returns the types, rather than the whole serialised data
  * so can be used for checking availability of multiple plugins at the same time.
+ *
+ * @param int $userid
+ * @return array
  */
 function portfolio_existing_exports_by_plugin($userid) {
     global $DB;
@@ -1198,6 +1231,15 @@ function portfolio_format_text_options() {
 /**
  * callback function from {@link portfolio_rewrite_pluginfile_urls}
  * looks through preg_replace matches and replaces content with whatever the active portfolio export format says
+ *
+ * @param int $contextid
+ * @param string $component
+ * @param string $filearea
+ * @param int $itemid
+ * @param portfolio_format $format
+ * @param array $options
+ * @param string $matches
+ * @return string
  */
 function portfolio_rewrite_pluginfile_url_callback($contextid, $component, $filearea, $itemid, $format, $options, $matches) {
     $matches = $matches[0]; // no internal matching
@@ -1243,14 +1285,13 @@ function portfolio_rewrite_pluginfile_url_callback($contextid, $component, $file
  * extract the file information and pass it back to the portfolio export format
  * to regenerate the html to output
  *
- * @param string           $text the text to search through
- * @param int              $contextid normal file_area arguments
- * @param string           $component
- * @param string           $filearea  normal file_area arguments
- * @param int              $itemid    normal file_area arguments
+ * @param string $text the text to search through
+ * @param int $contextid normal file_area arguments
+ * @param string $component
+ * @param string $filearea  normal file_area arguments
+ * @param int $itemid    normal file_area arguments
  * @param portfolio_format $format    the portfolio export format
- * @param array            $options   extra options to pass through to the file_output function in the format (optional)
- *
+ * @param array $options   extra options to pass through to the file_output function in the format (optional)
  * @return string
  */
 function portfolio_rewrite_pluginfile_urls($text, $contextid, $component, $filearea, $itemid, $format, $options=null) {

@@ -1,105 +1,75 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Moodle - Modular Object-Oriented Dynamic Learning Environment
- *          http://moodle.org
- * Copyright (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @package    core
- * @subpackage portfolio
- * @author     Penny Leach <penny@catalyst.net.nz>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
- * @copyright  (C) 1999 onwards Martin Dougiamas  http://dougiamas.com
- *
  * This file contains the base classes for portfolio plugins to inherit from:
+ *
  * portfolio_plugin_pull_base and portfolio_plugin_push_base
  * which both in turn inherit from portfolio_plugin_base.
  * See http://docs.moodle.org/dev/Writing_a_Portfolio_Plugin
+ *
+ * @package    core_portfolio
+ * @copyright  2008 Penny Leach <penny@catalyst.net.nz>,
+ *             Martin Dougiamas <http://dougiamas.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
 * the base class for portfolio plugins
+*
 * all plugins must subclass this
 * either via {@see portfolio_plugin_pull_base} or {@see portfolio_plugin_push_base}
+*
+* @package core_portfolio
+* @category portfolio
+* @copyright 2008 Penny Leach <penny@catalyst.net.nz>
+* @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 abstract class portfolio_plugin_base {
 
-    /**
-    * whether this object needs writing out to the database
-    * @var boolean $dirty
-    */
+    /** @var boolean whether this object needs writing out to the database */
     protected $dirty;
 
-    /**
-    * id of instance
-    * @var integer $id
-    */
+    /** @var integer id of instance */
     protected $id;
 
-    /**
-    * name of instance
-    * @var string $name
-    */
+    /** @var string name of instance */
     protected $name;
 
-    /**
-    * plugin this instance belongs to
-    * @var string $plugin
-    */
+    /** @var string plugin this instance belongs to */
     protected $plugin;
 
-    /**
-    * whether this instance is visible or not
-    * @var boolean $visible
-    */
+    /** @var boolean whether this instance is visible or not */
     protected $visible;
 
-    /**
-    * named array
-    * admin configured config
-    * use {@link set_config} and {@get_config} to access
-    */
+    /** @var array admin configured config use {@link set_config} and {@get_config} to access */
     protected $config;
 
-    /**
-    *
-    * user config cache
-    * named array of named arrays
-    * keyed on userid and then on config field => value
-    * use {@link get_user_config} and {@link set_user_config} to access.
-    */
+    /** @var array user config cache. keyed on userid and then on config field => value use {@link get_user_config} and {@link set_user_config} to access. */
     protected $userconfig;
 
-    /**
-    * named array
-    * export config during export
-    * use {@link get_export_config} and {@link set export_config} to access.
-    */
+    /** @var array export config during export use {@link get_export_config} and {@link set export_config} to access. */
     protected $exportconfig;
 
-    /**
-    * stdclass object
-    * user currently exporting data
-    */
+    /** @var stdClass user currently exporting data */
     protected $user;
 
-    /**
-    * a reference to the exporter object
-    */
+    /** @var object a reference to the exporter object */
     protected $exporter;
 
     /**
@@ -118,7 +88,8 @@ abstract class portfolio_plugin_base {
     * override this if you are supporting the 'file' type (or a subformat)
     * but have restrictions on mimetypes
     *
-    * @return boolean
+    * @param string $mimetype file type or subformat
+    * @return bool
     */
     public static function file_mime_check($mimetype) {
         return true;
@@ -143,7 +114,7 @@ abstract class portfolio_plugin_base {
     * if push, cleanup will be called directly after send_package
     * if not, cleanup will be called after portfolio/file.php is requested
     *
-    * @return boolean
+    * @return bool
     */
     public abstract function is_push();
 
@@ -184,6 +155,8 @@ abstract class portfolio_plugin_base {
     *
     * if you override this to return true,
     * you <b>must</b> implement {@see admin_config_form}
+    *
+    * @return bool
     */
     public static function has_admin_config() {
         return false;
@@ -194,6 +167,8 @@ abstract class portfolio_plugin_base {
     *
     * if you override this to return true,
     * you <b>must</b> implement {@see user_config_form}
+    *
+    * @return bool
     */
     public function has_user_config() {
         return false;
@@ -204,6 +179,8 @@ abstract class portfolio_plugin_base {
     *
     * if you override this to return true,
     * you <b>must</b> implement {@see export_config_form}
+    *
+    * @return bool
     */
     public function has_export_config() {
         return false;
@@ -259,7 +236,7 @@ abstract class portfolio_plugin_base {
     * gets an export time config value.
     * subclasses should not override this.
     *
-    * @param string key field to fetch
+    * @param string $key field to fetch
     *
     * @return string config value
     *
@@ -309,7 +286,7 @@ abstract class portfolio_plugin_base {
     * the package to the remote system,
     * or whatever request is necessary to initiate the transfer.
     *
-    * @return boolean success
+    * @return bool success
     */
     public abstract function send_package();
 
@@ -339,6 +316,8 @@ abstract class portfolio_plugin_base {
      * the url to save in the log as the continue url
      * this is passed through resolve_static_continue_url()
      * at display time to the user.
+     *
+     * @return string|false url or false
      */
     public function get_static_continue_url() {
         return $this->get_interactive_continue_url();
@@ -348,6 +327,9 @@ abstract class portfolio_plugin_base {
      * override this function if you need to add something on to the url
      * for post-export continues (eg from the log page)
      * mahara does this, for example, to start a jump session
+     *
+     * @param string $url
+     * @return string $url
      */
     public function resolve_static_continue_url($url) {
         return $url;
@@ -399,7 +381,7 @@ abstract class portfolio_plugin_base {
     /**
     * override this if your plugin doesn't allow multiple instances
     *
-    * @return boolean
+    * @return bool
     */
     public static function allows_multiple_instances() {
         return true;
@@ -416,9 +398,8 @@ abstract class portfolio_plugin_base {
     * and {@link post_control} is called before the rest of the processing
     * for the stage is done
     *
-    * @param int stage to steal control *before* (see constants PARAM_STAGE_*}
-    *
-    * @return boolean or string url
+    * @param int $stage to steal control *before* (see constants PARAM_STAGE_*}
+    * @return bool|string url
     */
     public function steal_control($stage) {
         return false;
@@ -437,7 +418,6 @@ abstract class portfolio_plugin_base {
     * @param array $params a merge of $_GET and $_POST
     *
     */
-
     public function post_control($stage, $params) { }
 
     /**
@@ -669,6 +649,8 @@ abstract class portfolio_plugin_base {
     * <b>outside</b> the subclasses
     * like name, visible etc.
     *
+    * @param string $field
+    * @return array|string|int|boolean value of the field
     */
     public final function get($field) {
         if (property_exists($this, $field)) {
@@ -683,6 +665,9 @@ abstract class portfolio_plugin_base {
     * <b>outside</b> the subclass
     * like name, visible, etc.
     *
+    * @param string $field name of the field
+    * @param string $value value of the field
+    * @return bool
     */
     public final function set($field, $value) {
         if (property_exists($this, $field)) {
@@ -703,6 +688,8 @@ abstract class portfolio_plugin_base {
     * you shouldn't need to override this
     * unless you're doing something really funky.
     * and if so, call parent::save when you're done.
+    *
+    * @return bool
     */
     public function save() {
         global $DB;
@@ -722,6 +709,7 @@ abstract class portfolio_plugin_base {
     * deletes everything from the database about this plugin instance.
     * you shouldn't need to override this unless you're storing stuff
     * in your own tables.  and if so, call parent::delete when you're done.
+    * @return bool
     */
     public function delete() {
         global $DB;
@@ -735,6 +723,7 @@ abstract class portfolio_plugin_base {
 
     /**
     * perform any required cleanup functions
+    * @return bool
     */
     public function cleanup() {
         return true;
@@ -748,7 +737,7 @@ abstract class portfolio_plugin_base {
      * this means that moodle will prevent multiple exports of this *type* of plugin
      * occurring in the same session.
      *
-     * @return boolean
+     * @return bool
      */
     public static function allows_multiple_exports() {
         return true;
@@ -767,10 +756,21 @@ abstract class portfolio_plugin_base {
 
 /**
 * class to inherit from for 'push' type plugins
+*
 * eg those that send the file via a HTTP post or whatever
+*
+* @package core_portfolio
+* @category portfolio
+* @copyright 2008 Penny Leach <penny@catalyst.net.nz>
+* @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 abstract class portfolio_plugin_push_base extends portfolio_plugin_base {
 
+    /**
+     * Get the capability to push
+     *
+     * @return bool
+     */
     public function is_push() {
         return true;
     }
@@ -778,14 +778,26 @@ abstract class portfolio_plugin_push_base extends portfolio_plugin_base {
 
 /**
 * class to inherit from for 'pull' type plugins
+*
 * eg those that write a file and wait for the remote system to request it
 * from portfolio/file.php
 * if you're using this you must do $this->set('file', $file) so that it can be served.
+*
+* @package core_portfolio
+* @category portfolio
+* @copyright 2008 Penny Leach <penny@catalyst.net.nz>
+* @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 abstract class portfolio_plugin_pull_base extends portfolio_plugin_base {
 
+    /** @var stdclass single file */
     protected $file;
 
+    /**
+     * return the enablelity to push
+     *
+     * @return bool
+     */
     public function is_push() {
         return false;
     }
@@ -806,7 +818,7 @@ abstract class portfolio_plugin_pull_base extends portfolio_plugin_base {
     * before sending the file when the pull is requested, verify the request parameters
     * these might include a token of some sort of whatever
     *
-    * @param array request parameters (POST wins over GET)
+    * @param array $params request parameters (POST wins over GET)
     */
     public abstract function verify_file_request_params($params);
 
