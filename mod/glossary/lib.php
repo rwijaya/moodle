@@ -1048,7 +1048,7 @@ function  glossary_print_entry_aliases($course, $cm, $glossary, $entry,$mode='',
         foreach ($aliases as $alias) {
             if (trim($alias->alias)) {
                 if ($return == '') {
-                    $return = '<select style="font-size:8pt">';
+                    $return = '<select id="keyword" style="font-size:8pt">';
                 }
                 $return .= "<option>$alias->alias</option>";
             }
@@ -1204,7 +1204,8 @@ function  glossary_print_entry_lower_section($course, $cm, $glossary, $entry, $m
         echo '<table>';
         if ( $aliases ) {
             echo '<tr valign="top"><td class="aliases">' .
-                  get_string('aliases','glossary').': '.$aliases . '</td></tr>';
+                 '<label for="keyword">' . get_string('aliases','glossary').': </label>' .
+                 $aliases . '</td></tr>';
         }
         if ($icons) {
             echo '<tr valign="top"><td class="icons">'.$icons.'</td></tr>';
