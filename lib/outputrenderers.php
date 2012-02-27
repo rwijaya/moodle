@@ -1347,7 +1347,6 @@ class core_renderer extends renderer_base {
         } else if ($select->helpicon instanceof old_help_icon) {
             $output .= $this->render($select->helpicon);
         }
-        $output .= html_writer::label($select->selected, 'menu'. $select->name, false, array('class' => 'accesshide'));
         $output .= html_writer::select($select->options, $select->name, $select->selected, $select->nothing, $select->attributes);
 
         $go = html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('go')));
