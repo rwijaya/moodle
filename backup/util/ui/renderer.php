@@ -343,7 +343,7 @@ class core_backup_renderer extends plugin_renderer_base {
         } else {
             $description = '';
         }
-        
+
         if ($type == 'text') {
             if (empty($attributes['id'])) {
                 $attributes['id'] = $name;

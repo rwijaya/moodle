@@ -105,7 +105,6 @@ if (empty($users) and $post = data_submitted()) {
         }
     }
 }
-print_object($state_names);
 foreach ($users as $k => $v) {
     if(!$user = $DB->get_record('user', array('id'=>$v))) {
         continue;

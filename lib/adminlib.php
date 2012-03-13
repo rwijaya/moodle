@@ -6524,7 +6524,7 @@ class admin_setting_managerepository extends admin_setting {
                 }
 
                 $select = new single_select($this->repository_action_url($typename, 'repos'), 'action', $actionchoicesforexisting, $currentaction, null, 'applyto' . basename($typename));
-
+                $select->set_label(get_accesshide(get_string('select') . ' '. get_string('action')));
                 // Display up/down link
                 $updown = '';
                 $spacer = $OUTPUT->spacer(array('height'=>15, 'width'=>15)); // should be done with CSS instead
@@ -6561,6 +6561,7 @@ class admin_setting_managerepository extends admin_setting {
                 // Check that it has not already been listed
                 if (!in_array($plugin, $alreadyplugins)) {
                     $select = new single_select($this->repository_action_url($plugin, 'repos'), 'action', $actionchoicesfornew, 'delete', null, 'applyto' . basename($plugin));
+                    $select->set_label(get_accesshide(get_string('select') . ' '. get_string('action')));
                     $table->data[] = array(get_string('pluginname', 'repository_'.$plugin), $OUTPUT->render($select), '', '');
                 }
             }
@@ -7772,7 +7773,7 @@ class admin_setting_devicedetectregex extends admin_setting {
             }
 
             $out .= html_writer::tag('td',
-                html_writer::label($this->get_full_name(), $this->get_full_name() . 'expression' . $i, false, array('class' => 'accesshide')) .    
+                html_writer::label($this->get_full_name(), $this->get_full_name() . 'expression' . $i, false, array('class' => 'accesshide')) .
                 html_writer::empty_tag('input',
                     array(
                         'id'    => $this->get_full_name() . 'expression' . $i,
@@ -7793,7 +7794,7 @@ class admin_setting_devicedetectregex extends admin_setting {
             }
 
             $out .= html_writer::tag('td',
-                    html_writer::label($this->get_full_name(), $this->get_full_name() . 'value' . $i, false, array('class' => 'accesshide')) .    
+                    html_writer::label($this->get_full_name(), $this->get_full_name() . 'value' . $i, false, array('class' => 'accesshide')) .
                 html_writer::empty_tag('input',
                     array(
                         'id'    => $this->get_full_name() . 'value' . $i,

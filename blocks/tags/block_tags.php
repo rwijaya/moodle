@@ -225,9 +225,8 @@ class block_tags extends block_base {
             if ($officialtags) { $this->content->text .= $officialtagscontent; }
             if ($coursetags) { $this->content->text .= $coursetagscontent; }
             if ($commtags) { $this->content->text .= $commtagscontent; }
-print "bpo";
             // add the input form section (allowing a user to tag the current course) and navigation, or loggin message
-            if ($loggedin) { print 'here';
+            if ($loggedin) {
                 // only show the input form on course pages for those allowed (or not barred)
                 if ($coursepage && $canedit) {
                     //$this->content->footer .= coursetag_get_jscript();
