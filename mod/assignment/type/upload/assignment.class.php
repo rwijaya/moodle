@@ -400,7 +400,7 @@ class assignment_upload extends assignment_base {
                                     LEFT JOIN {assignment} a ON a.id = s.assignment
                                    INNER JOIN ($enroledsql) u ON u.id = s.userid
                                         WHERE s.assignment = :assignmentid AND
-                                              s.data2 = 'submitted'", $params);
+                                              s.timemodified > 0", $params);
     }
 
     function print_responsefiles($userid, $return=false) {
