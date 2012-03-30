@@ -309,7 +309,7 @@ class course_edit_form extends moodleform {
             $mform->addElement('select', 'defaultgroupingid', get_string('defaultgrouping', 'group'), $options);
         }
 
-        if (!has_capability('moodle/course:managegroups', $context)) {
+        if (!has_capability('moodle/course:managegroups', $coursecontext)) {
             $mform->hardFreeze('groupmode');
             $mform->hardFreeze('groupmodeforce');
             $mform->hardFreeze('defaultgroupingid');
