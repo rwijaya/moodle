@@ -165,7 +165,7 @@ class gradingform_rubric_renderer extends plugin_renderer_base {
         if ($mode == gradingform_rubric_controller::DISPLAY_EDIT_FULL) {
             $definition = html_writer::tag('textarea', htmlspecialchars($level['definition']), array('name' => '{NAME}[criteria][{CRITERION-id}][levels][{LEVEL-id}][definition]', 'cols' => '10', 'rows' => '4'));
             $score = html_writer::label(get_string('criterionempty', 'gradingform_rubric'), '{NAME}criteria{CRITERION-id}levels{LEVEL-id}', false, array('class' => 'accesshide'));
-            $score .= html_writer::empty_tag('input', array('type' => 'text', 'name' => '{NAME}[criteria][{CRITERION-id}][levels][{LEVEL-id}][score]', 'size' => '3', 'value' => $level['score']));
+            $score .= html_writer::empty_tag('input', array('type' => 'text','id' => '{NAME}criteria{CRITERION-id}levels{LEVEL-id}', 'name' => '{NAME}[criteria][{CRITERION-id}][levels][{LEVEL-id}][score]', 'size' => '3', 'value' => $level['score']));
         } else {
             if ($mode == gradingform_rubric_controller::DISPLAY_EDIT_FROZEN) {
                 $leveltemplate .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => '{NAME}[criteria][{CRITERION-id}][levels][{LEVEL-id}][definition]', 'value' => $level['definition']));

@@ -112,7 +112,7 @@ case 'renameform':
     $home_url->param('action', 'rename');
     echo ' <form method="post" action="'.$home_url->out().'">';
     echo '  <label class="accesshide" for="newfilename">' . get_string('enternewname', 'repository') . '</label>';
-    echo '  <input name="newfilename" type="text" value="'.s($filename).'" />';
+    echo '  <input id="newfilename" name="newfilename" type="text" value="'.s($filename).'" />';
     echo '  <input name="filename" type="hidden" value="'.s($filename).'" />';
     echo '  <input name="draftpath" type="hidden" value="'.s($draftpath).'" />';
     echo '  <input type="submit" value="'.s(get_string('rename', 'moodle')).'" />';

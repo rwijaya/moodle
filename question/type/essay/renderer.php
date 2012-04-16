@@ -225,7 +225,7 @@ class qtype_essay_format_editor_renderer extends plugin_renderer_base {
                     'name' => $inputname . 'format', 'value' => key($formats)));
 
         } else {
-            $output .= html_writer::label($responseformat, 'menu' . $inputname . 'format');
+            $output .= html_writer::label(get_string('select') . ' ', get_string('format'), 'menu' . $inputname . 'format', false, array("class" => 'accesshide'));
             $output .= html_writer::select($formats, $inputname . 'format', $responseformat, '');
         }
         $output .= html_writer::end_tag('div');

@@ -60,8 +60,8 @@ function authorize_print_orders($courseid, $userid) {
     $buttons = "<form method='post' action='index.php' autocomplete='off'><div>";
     $buttons .= html_writer::label(get_string('orderdetails', 'enrol_authorize'), 'menusearchtype', false, array('class' => 'accesshide'));
     $buttons .= html_writer::select($searchmenu, 'searchtype', $searchtype, false);
-    $buttons .= html_writer::label(get_string('search'), 'menusearchtype', false, array('class' => 'accesshide'));
-    $buttons .= "<input type='text' size='16' name='searchquery' value='' />";
+    $buttons .= html_writer::label(get_string('search'), 'searchquery', false, array('class' => 'accesshide'));
+    $buttons .= "<input id='searchquery' type='text' size='16' name='searchquery' value='' />";
     $buttons .= "<input type='submit' value='$strs->search' />";
     $buttons .= "</div></form>";
 
@@ -83,7 +83,7 @@ function authorize_print_orders($courseid, $userid) {
     if (($popupcrs = $DB->get_records_sql_menu($sql, $params))) {
         $popupcrs = array($SITE->id => $SITE->fullname) + $popupcrs;
     }
-    $popmenulabel = array('' => get_accesshide(get_string('course')));
+    $popmenulabel = array('' => get_accesshide(get_string('select') . ' '. get_string('course')));
     $popupmenu = empty($popupcrs) ? '' : $OUTPUT->single_select(new moodle_url($baseurl.'&status='.$status), 'course', $popupcrs, $courseid, $popmenulabel, 'coursesmenu');
     $popupmenu .= '<br />';
     $statusmenu = array(

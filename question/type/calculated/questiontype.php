@@ -1198,7 +1198,7 @@ class qtype_calculated extends question_type {
                 list($options, $selected) =
                     $this->dataset_options($form, $datasetname);
                 unset($options['0']); // Mandatory...
-                $datasetmenus[$datasetname] = html_writer::label($selected, 'menudataset', false , array('class' => 'accesshide'));
+                $datasetmenus[$datasetname] = html_writer::label(get_string('required') . ' '. get_string('questiondatasets', 'qtype_calculated'), 'menudataset', false , array('class' => 'accesshide'));
                 $datasetmenus[$datasetname] .= html_writer::select(
                         $options, 'dataset[]', $selected, null);
             }
@@ -1207,7 +1207,7 @@ class qtype_calculated extends question_type {
             if (!isset($datasetmenus[$datasetname])) {
                 list($options, $selected) =
                     $this->dataset_options($form, $datasetname);
-                $datasetmenus[$datasetname] = html_writer::label($selected, 'menudataset', false , array('class' => 'accesshide'));
+                $datasetmenus[$datasetname] = html_writer::label(get_string('optional') . ' '. get_string('questiondatasets', 'qtype_calculated'), 'menudataset', false , array('class' => 'accesshide'));
                 $datasetmenus[$datasetname] .= html_writer::select(
                         $options, 'dataset[]', $selected, null);
             }
