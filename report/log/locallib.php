@@ -365,7 +365,7 @@ function report_log_print_mnet_selector_form($hostid, $course, $selecteduser=0, 
                         'downloadascsv' => get_string('downloadtext'),
                         'downloadasods' => get_string('downloadods'),
                         'downloadasexcel' => get_string('downloadexcel'));
-    echo html_writer::label(get_string('log', 'report_log'). ' '. strtolower(get_string('format')), 'menulogformat', false, array('class' => 'accesshide'));
+    echo html_writer::label(get_string('logs'). ' '. strtolower(get_string('format')), 'menulogformat', false, array('class' => 'accesshide'));
     echo html_writer::select($logformats, 'logformat', $logformat, false);
     echo '<input type="submit" value="'.get_string('gettheselogs').'" />';
     echo '</div>';
@@ -580,12 +580,12 @@ function report_log_print_selector_form($course, $selecteduser=0, $selecteddate=
         else {
             $groups = array();
         }
-        echo html_writer::label(get_string('groups'), 'menuid', false, array('class' => 'accesshide'));
+        echo html_writer::label(get_string('groups'), 'menugroup', false, array('class' => 'accesshide'));
         echo html_writer::select($groups, "group", $selectedgroup, get_string("allgroups"));
     }
 
     if ($showusers) {
-        echo html_writer::label(get_string('users'), 'menuid', false, array('class' => 'accesshide'));
+        echo html_writer::label(get_string('users'), 'menuuser', false, array('class' => 'accesshide'));
         echo html_writer::select($users, "user", $selecteduser, get_string("allparticipants"));
     }
     else {
@@ -617,7 +617,7 @@ function report_log_print_selector_form($course, $selecteduser=0, $selecteddate=
                         'downloadasods' => get_string('downloadods'),
                         'downloadasexcel' => get_string('downloadexcel'));
 
-    echo html_writer::label(get_string('log', 'report_log'). ' '. strtolower(get_string('format')), 'menulogformat', false, array('class' => 'accesshide'));
+    echo html_writer::label(get_string('logs'). ' '. strtolower(get_string('format')), 'menulogformat', false, array('class' => 'accesshide'));
     echo html_writer::select($logformats, 'logformat', $logformat, false);
     echo '<input type="submit" value="'.get_string('gettheselogs').'" />';
     echo '</div>';

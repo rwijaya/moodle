@@ -99,7 +99,7 @@ class qtype_numerical_renderer extends qtype_renderer {
                         array('class' => 'unitchoices'));
 
             } else if ($question->unitdisplay == qtype_numerical::UNITSELECT) {
-                $unitchoice = html_writer::label($selectedunit, 'menu' . $qa->get_qt_field_name('unit'));
+                $unitchoice = html_writer::label(get_string('selectunits', 'qtype_numerical'), 'menu' . $qa->get_qt_field_name('unit'));
                 $unitchoice .= html_writer::select($question->ap->get_unit_options(),
                         $qa->get_qt_field_name('unit'), $selectedunit, array(''=>'choosedots'),
                         array('disabled' => $options->readonly));

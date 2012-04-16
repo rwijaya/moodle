@@ -49,9 +49,9 @@
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><?php  print_string("auth_fcuserid_key", "auth_fc") ?>:</td>
+    <td align="right"><label for="userid"><?php  print_string("auth_fcuserid_key", "auth_fc") ?>:</label></td>
     <td>
-        <input name="userid" type="text" size="30" maxlength="15" value="<?php echo $config->userid?>" />
+        <input name="userid" id="userid" type="text" size="30" maxlength="15" value="<?php echo $config->userid?>" />
     <?php  if (isset($err["userid"])) echo $OUTPUT->error_text($err["userid"]); ?>
     </td>
     <td>
@@ -59,9 +59,9 @@
     </td>
 </tr>
 <tr valign="top" class="required">
-    <td align="right"><?php  print_string("auth_fcpasswd_key", "auth_fc") ?>:</td>
+    <td align="right"><label for="passwd"><?php print_string("auth_fcpasswd_key", "auth_fc") ?>:</label></td>
     <td>
-        <input name="passwd" type="password" size="30" maxlength="12" value="<?php echo $config->passwd?>" />
+        <input name="passwd" id="passwd" type="password" size="30" maxlength="12" value="<?php echo $config->passwd?>" />
     <?php  if (isset($err["passwd"])) echo $OUTPUT->error_text($err["passwd"]); ?>
     </td>
     <td>

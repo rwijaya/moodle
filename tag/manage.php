@@ -263,7 +263,7 @@ if ($tagrecords = $DB->get_records_sql($query, $params, $table->get_page_start()
         $text           =   html_writer::label(get_string('newname', 'tag'), 'newname_' . $tag->id, false, array('class' => 'accesshide'));
         $text          .=   '<input type="text" id="newname_' . $tag->id. '" name="newname['.$tag->id.']" />';
         $tagtype        =   html_writer::label(get_string('tagtype', 'tag'), 'menutagtypes'. $tag->id, false, array('class' => 'accesshide'));
-        $tagtype       .=   html_writer::select($existing_tagtypes, 'tagtypes['.$tag->id.']', $tag->tagtype, false);
+        $tagtype       .=   html_writer::select($existing_tagtypes, 'tagtypes['.$tag->id.']', $tag->tagtype, false, array('id' => 'menutagtypes'. $tag->id));
 
         //if the tag if flagged, highlight it
         if ($tag->flag > 0) {

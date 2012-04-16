@@ -1475,7 +1475,7 @@ class assignment_base {
                                 } else if ($quickgrade) {
                                     $attributes = array();
                                     $attributes['tabindex'] = $tabindex++;
-                                    $menu = html_writer::label(get_string('assignment:grade', 'assignment'), 'menumenu'. $auser->id, false, array('class' => 'accesshide'));
+                                    $menu = html_writer::label(get_string('assignment:grade', 'assignment'), 'menumenu'. $auser->id, false, array('class' => ''));
                                     $menu .= html_writer::select(make_grades_menu($this->assignment->grade), 'menu['.$auser->id.']', $auser->grade, array(-1=>get_string('nograde')), $attributes);
                                     $grade = '<div id="g'.$auser->id.'">'. $menu .'</div>';
                                 } else {
@@ -1573,7 +1573,6 @@ class assignment_base {
                                     $attributes = array();
                                     $attributes['tabindex'] = $tabindex++;
                                     $attributes['id'] = 'outcome_'.$n.'_'.$auser->id;
-                                    html_writer::label(get_string('assignment:grade', 'assignment'), 'outcome_'.$n.'_'.$auser->id, false, array('class' => 'accesshide'));
                                     $outcomes .= ' '.html_writer::select($options, 'outcome_'.$n.'['.$auser->id.']', $outcome->grades[$auser->id]->grade, array(0=>get_string('nooutcome', 'grades')), $attributes);
                                 }
                                 $outcomes .= '</div>';

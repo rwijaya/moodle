@@ -115,7 +115,7 @@ class qformat_xhtml extends qformat_default {
 
             // build drop down for answers
             $dropdown = '<label class="accesshide" for="quest_' . $id . '">' . get_string('options', 'question') . '</label>';
-            $dropdown .= "<select name=\"quest_$id\">\n";
+            $dropdown .= "<select id=\"quest_$id\" name=\"quest_$id\">\n";
             foreach($ans_list as $ans) {
                 $dropdown .= "<option value=\"" . s($ans) . "\">" . s($ans) . "</option>\n";
             }

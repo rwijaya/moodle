@@ -1512,7 +1512,7 @@ function scorm_get_toc($user,$scorm,$cmid,$toclink=TOCJSLINK,$currentorg='',$sco
     }
 
     $url = new moodle_url('/mod/scorm/player.php?a='.$scorm->id.'&currentorg='.$currentorg.$modestr);
-    $toclabel = array('' =>  get_accesshide(get_string('organization', 'scorm')));
+    $toclabel = array('' =>  get_accesshide(get_string('select') . ' ' . get_string('organization', 'scorm')));
     $result->tocmenu = $OUTPUT->single_select($url, 'scoid', $tocmenus, $sco->id, $toclabel, "tocmenu");
 
     return $result;
