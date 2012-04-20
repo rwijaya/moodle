@@ -83,8 +83,7 @@ function authorize_print_orders($courseid, $userid) {
     if (($popupcrs = $DB->get_records_sql_menu($sql, $params))) {
         $popupcrs = array($SITE->id => $SITE->fullname) + $popupcrs;
     }
-    $popmenulabel = array('' => get_accesshide(get_string('select') . ' '. get_string('course')));
-    $popupmenu = empty($popupcrs) ? '' : $OUTPUT->single_select(new moodle_url($baseurl.'&status='.$status), 'course', $popupcrs, $courseid, $popmenulabel, 'coursesmenu');
+    $popupmenu = empty($popupcrs) ? '' : $OUTPUT->single_select(new moodle_url($baseurl.'&status='.$status), 'course', $popupcrs, $courseid, null, 'coursesmenu');
     $popupmenu .= '<br />';
     $statusmenu = array(
         AN_STATUS_NONE => $strs->all,
@@ -100,7 +99,6 @@ function authorize_print_orders($courseid, $userid) {
         AN_STATUS_TEST => $authstrs->tested
     );
 
-    $popmenulabel = array('' => get_accesshide(get_string('status')));
     $popupmenu .= $OUTPUT->single_select(new moodle_url($baseurl.'&course='.$courseid), 'status', $statusmenu, $status, null, 'statusmenu');
     if ($canmanagepayments) {
         $popupmenu .= '<br />';

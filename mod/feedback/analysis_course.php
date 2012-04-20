@@ -175,7 +175,7 @@ if ($courseitemfilter > 0) {
     echo '<input type="hidden" name="courseid" value="'.$courseid.'" />';
     echo html_writer::script('', $CFG->wwwroot.'/mod/feedback/feedback.js');
     $sql = 'select DISTINCT c.id, c.shortname from {course} c, '.
-                                         '{feedback_value} fv, {feedback_item} fi '.
+                                          '{feedback_value} fv, {feedback_item} fi '.
                                           'where c.id = fv.course_id and fv.item = fi.id '.
                                           'and fi.feedback = ? '.
                                           'and

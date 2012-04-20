@@ -1336,11 +1336,8 @@ class core_renderer extends renderer_base {
         if ($select->label) {
             $output .= html_writer::label($select->label, $select->attributes['id']);
         } else {
-            if (isset($select->nothing)) {
-                $label = $select->nothing;
-                $label = array_pop($label);
-                $output .= html_writer::label($label, $select->attributes['id'], false, array('class' => 'accesshide'));
-            }
+            $label = get_string('select'). ' '. get_string('options');
+            $output .= html_writer::label($label, $select->attributes['id'], false, array('class' => 'accesshide'));
         }
 
         if ($select->helpicon instanceof help_icon) {
@@ -1419,11 +1416,8 @@ class core_renderer extends renderer_base {
         if ($select->label) {
             $output .= html_writer::label($select->label, $select->attributes['id']);
         } else {
-            if (isset($select->nothing)) {
-                $label = $select->nothing;
-                $label = array_pop($label);
-                $output .= html_writer::label($label, $select->attributes['id'], false, array('class' => 'accesshide'));
-            }
+            $label = get_string('select'). ' '. get_string('options');
+            $output .= html_writer::label($label, $select->attributes['id'], false, array('class' => 'accesshide'));
         }
 
         if ($select->helpicon instanceof help_icon) {
