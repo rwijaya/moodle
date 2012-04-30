@@ -28,12 +28,11 @@ class block_calendar_upcoming extends block_base {
             $this->content->footer = '';
 
         } else {
-            $courseshown = $COURSE->id; print "course: $courseshown";
+            $courseshown = $COURSE->id;
             $this->content->footer = '<br /><a href="'.$CFG->wwwroot.
                                      '/calendar/view.php?view=upcoming&amp;course='.$courseshown.'">'.
                                       get_string('gotocalendar', 'calendar').'</a>...';
             $context = get_context_instance(CONTEXT_COURSE, $courseshown);
-            print_object($context);
             if (has_capability('moodle/calendar:manageentries', $context) ||
                 has_capability('moodle/calendar:manageownentries', $context)) {
                 $this->content->footer .= '<br /><a href="'.$CFG->wwwroot.
