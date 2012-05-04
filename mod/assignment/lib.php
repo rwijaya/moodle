@@ -1910,13 +1910,20 @@ class assignment_base {
         list($enroledsql, $params) = get_enrolled_sql($context, 'mod/assignment:view', $groupid);
         $params['assignmentid'] = $this->cm->instance;
 
-        // Get ids of users enrolled in the given course.
+        $query = '';
+        if ($this->drafts_tracked() and $this->isopen()) {
+            $query = ' AND ' . $DB->sql_compare_text('s.data2') . " = '"  . ASSIGNMENT_STATUS_SUBMITTED . "'";
+        } else {
+            // Count on submissions with files actually uploaded
+            $query = " AND s.numfiles > 0";
+        }
+
         return $DB->count_records_sql("SELECT COUNT('x')
                                          FROM {assignment_submissions} s
                                     LEFT JOIN {assignment} a ON a.id = s.assignment
                                    INNER JOIN ($enroledsql) u ON u.id = s.userid
-                                        WHERE s.assignment = :assignmentid AND
-                                              s.timemodified > 0", $params);
+                                        WHERE s.assignment = :assignmentid" .
+                                              $query, $params);
     }
 
     /**
