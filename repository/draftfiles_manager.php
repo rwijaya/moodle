@@ -111,7 +111,8 @@ case 'renameform':
     $home_url->param('draftpath', $draftpath);
     $home_url->param('action', 'rename');
     echo ' <form method="post" action="'.$home_url->out().'">';
-    echo '  <input name="newfilename" type="text" value="'.s($filename).'" />';
+    echo '  <label class="accesshide" for="newfilename">' . get_string('enternewname', 'repository') . '</label>';
+    echo '  <input id="newfilename" name="newfilename" type="text" value="'.s($filename).'" />';
     echo '  <input name="filename" type="hidden" value="'.s($filename).'" />';
     echo '  <input name="draftpath" type="hidden" value="'.s($draftpath).'" />';
     echo '  <input type="submit" value="'.s(get_string('rename', 'moodle')).'" />';
@@ -227,7 +228,8 @@ case 'mkdirform':
     $home_url->param('draftpath', $draftpath);
     $home_url->param('action', 'mkdir');
     echo ' <form method="post" action="'.$home_url->out().'">';
-    echo '  <input name="newdirname" type="text" />';
+    echo '  <label class="accesshide" for="newdirname">' . get_string('entername', 'repository') . '</label>';
+    echo '  <input name="newdirname" id="newdirname" type="text" />';
     echo '  <input name="draftpath" type="hidden" value="'.s($draftpath).'" />';
     echo '  <input type="submit" value="'.s(get_string('makeafolder', 'moodle')).'" />';
     echo ' </form>';
