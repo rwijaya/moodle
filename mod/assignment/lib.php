@@ -1489,8 +1489,8 @@ class assignment_base {
                                 } else if ($quickgrade) {
                                     $attributes = array();
                                     $attributes['tabindex'] = $tabindex++;
-                                    html_writer::label(get_string('assignment:grade', 'assignment'), 'menumenu'. $auser->id, false, array('class' => 'accesshide'));
-                                    $menu = html_writer::select(make_grades_menu($this->assignment->grade), 'menu['.$auser->id.']', $auser->grade, array(-1=>get_string('nograde')), $attributes);
+                                    $menu = html_writer::label(get_string('assignment:grade', 'assignment'), 'menumenu'. $auser->id, false, array('class' => 'accesshide'));
+                                    $menu .= html_writer::select(make_grades_menu($this->assignment->grade), 'menu['.$auser->id.']', $auser->grade, array(-1=>get_string('nograde')), $attributes);
                                     $grade = '<div id="g'.$auser->id.'">'.$menu.'</div>';
                                 } else {
                                     $grade = '<div id="g'.$auser->id.'">'.$this->display_grade($auser->grade).'</div>';
@@ -1518,8 +1518,8 @@ class assignment_base {
                             } else if ($quickgrade) {   // allow editing
                                 $attributes = array();
                                 $attributes['tabindex'] = $tabindex++;
-                                html_writer::label(get_string('assignment:grade', 'assignment'), 'menumenu'. $auser->id, false, array('class' => 'accesshide'));
-                                $menu = html_writer::select(make_grades_menu($this->assignment->grade), 'menu['.$auser->id.']', $auser->grade, array(-1=>get_string('nograde')), $attributes);
+                                $menu = html_writer::label(get_string('assignment:grade', 'assignment'), 'menumenu'. $auser->id, false, array('class' => 'accesshide'));
+                                $menu .= html_writer::select(make_grades_menu($this->assignment->grade), 'menu['.$auser->id.']', $auser->grade, array(-1=>get_string('nograde')), $attributes);
                                 $grade = '<div id="g'.$auser->id.'">'.$menu.'</div>';
                                 $hassubmission = true;
                             } else {

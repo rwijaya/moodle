@@ -10,6 +10,7 @@
  * @package wiki
  */
 $string['addcomment'] = 'Add comment';
+$string['addtag'] = 'Add tag';
 $string['admin'] = 'Administration';
 $string['adminmenu'] = 'Admin menu';
 $string['attachmentattach'] = 'Add as attachment';

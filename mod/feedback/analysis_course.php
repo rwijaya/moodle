@@ -185,7 +185,7 @@ if ($courseitemfilter > 0) {
 
     if ($courses = $DB->get_records_sql_menu($sql, $params)) {
 
-         echo html_writer::label(get_string('filter_by_course', 'feedback'), 'coursefilterid');
+         echo ' '. html_writer::label(get_string('filter_by_course', 'feedback'), 'coursefilterid'). ': ';
          echo html_writer::select($courses, 'coursefilter', $coursefilter,
                                   null, array('id'=>'coursefilterid'));
 

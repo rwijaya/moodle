@@ -712,7 +712,7 @@ class core_calendar_renderer extends plugin_renderer_base {
         if ($label !== null) {
             $select->set_label($label);
         } else {
-            $select->set_label(get_accesshide(get_string('course')));
+            $select->set_label(get_string('listofcourses'), array('class' => 'accesshide'));
         }
         return $this->output->render($select);
     }
