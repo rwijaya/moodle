@@ -27,7 +27,7 @@
 <table cellspacing="0" cellpadding="5" border="0">
 
 <tr valign="top" class="required">
-    <td align="right"><label for="host"><?php  print_string("auth_fchost_key", "auth_fc") ?>:</label></td>
+    <td align="right"><label for="host"><?php print_string("auth_fchost_key", "auth_fc") ?>:</label></td>
     <td>
         <input name="host" id="host" type="text" size="30" value="<?php echo $config->host?>" />
     <?php  if (isset($err["host"])) echo $OUTPUT->error_text($err["host"]); ?>

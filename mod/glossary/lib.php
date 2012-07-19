@@ -1927,7 +1927,7 @@ function glossary_print_categories_menu($cm, $glossary, $hook, $category) {
      echo '<td align="center" style="width:20%">';
 
      $select = new single_select(new moodle_url("/mod/glossary/view.php", array('id'=>$cm->id, 'mode'=>'cat')), 'hook', $menu, $selected, null, "catmenu");
-     $select->set_label(get_accesshide(get_string('categories', 'glossary')));
+     $select->set_label(get_string('categories', 'glossary'), array('class' => 'accesshide'));
      echo $OUTPUT->render($select);
 
      echo '</td>';

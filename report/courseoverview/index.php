@@ -83,7 +83,7 @@ $timeoptionsmenu .= html_writer::select($timeoptions,'time',$time, false);
 $table->data[] = array(get_string('statsreporttype'),$reporttypemenu,
                        get_string('statstimeperiod'),$timeoptionsmenu,
                        '<label class="accesshide" for="numcourses">' . get_string('numberofcourses') . '</label>' .
-                       '<input type="text" name="numcourses" size="3" maxlength="2" value="'.$numcourses.'" />',
+                       '<input type="text" id="numcourses" name="numcourses" size="3" maxlength="2" value="'.$numcourses.'" />',
                        '<input type="submit" value="'.get_string('view').'" />') ;
 
 echo html_writer::table($table);

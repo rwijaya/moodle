@@ -751,12 +751,12 @@ class qtype_calculated extends question_type {
                     ? 'decimals'
                     : 'significantfigures'), 'qtype_calculated', $i);
             }
-            $menu1 = html_writer::label($regs[4], 'menucalclength', false, array('class' => 'accesshide'));
+            $menu1 = html_writer::label(get_string('selectanoptions'), 'menucalclength', false, array('class' => 'accesshide'));
             $menu1 .= html_writer::select($lengthoptions, 'calclength[]', $regs[4], null);
 
             $options = array('uniform' => get_string('uniformbit', 'qtype_calculated'),
                     'loguniform' => get_string('loguniformbit', 'qtype_calculated'));
-            $menu2 = html_writer::label($regs[1], 'menucalcdistribution', false, array('class' => 'accesshide'));
+            $menu2 = html_writer::label(get_string('selectanoptions'), 'menucalcdistribution', false, array('class' => 'accesshide'));
             $menu2 .= html_writer::select($options, 'calcdistribution[]', $regs[1], null);
             return '<input type="submit" onclick="'
                 . "getElementById('addform').regenerateddefid.value='$defid'; return true;"
@@ -1198,8 +1198,7 @@ class qtype_calculated extends question_type {
                 list($options, $selected) =
                     $this->dataset_options($form, $datasetname);
                 unset($options['0']); // Mandatory...
-                $datasetmenus[$datasetname] = html_writer::label(get_string('required') . ' '. get_string('questiondatasets', 'qtype_calculated'), 'menudataset', false , array('class' => 'accesshide'));
-                $datasetmenus[$datasetname] .= html_writer::select(
+                $datasetmenus[$datasetname] = html_writer::select(
                         $options, 'dataset[]', $selected, null);
             }
         }
@@ -1207,8 +1206,7 @@ class qtype_calculated extends question_type {
             if (!isset($datasetmenus[$datasetname])) {
                 list($options, $selected) =
                     $this->dataset_options($form, $datasetname);
-                $datasetmenus[$datasetname] = html_writer::label(get_string('optional') . ' '. get_string('questiondatasets', 'qtype_calculated'), 'menudataset', false , array('class' => 'accesshide'));
-                $datasetmenus[$datasetname] .= html_writer::select(
+                $datasetmenus[$datasetname] = html_writer::select(
                         $options, 'dataset[]', $selected, null);
             }
         }

@@ -1334,10 +1334,7 @@ class core_renderer extends renderer_base {
         }
 
         if ($select->label) {
-            $output .= html_writer::label($select->label, $select->attributes['id']);
-        } else {
-            $label = get_string('select'). ' '. get_string('options');
-            $output .= html_writer::label($label, $select->attributes['id'], false, array('class' => 'accesshide'));
+            $output .= html_writer::label($select->label, $select->attributes['id'], false, $select->labelattributes);
         }
 
         if ($select->helpicon instanceof help_icon) {
@@ -1414,10 +1411,7 @@ class core_renderer extends renderer_base {
         $output = '';
 
         if ($select->label) {
-            $output .= html_writer::label($select->label, $select->attributes['id']);
-        } else {
-            $label = get_string('select'). ' '. get_string('options');
-            $output .= html_writer::label($label, $select->attributes['id'], false, array('class' => 'accesshide'));
+            $output .= html_writer::label($select->label, $select->attributes['id'], false, $select->labelattributes);
         }
 
         if ($select->helpicon instanceof help_icon) {

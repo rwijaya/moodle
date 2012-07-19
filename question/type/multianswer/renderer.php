@@ -274,7 +274,7 @@ class qtype_multianswer_multichoice_inline_renderer
             $inputattributes['class'] = $this->feedback_class($matchinganswer->fraction);
             $feedbackimg = $this->feedback_image($matchinganswer->fraction);
         }
-        $selecg = html_writer::label($response, $inputattributes['id']);
+        $select = html_writer::label($response, $inputattributes['id'], false, array('class' => 'accesshide'));
         $select .= html_writer::select($choices, $qa->get_qt_field_name($fieldname),
                 $response, array('' => ''), $inputattributes);
 

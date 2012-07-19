@@ -1790,8 +1790,8 @@ class admin_setting_configtext extends admin_setting {
         $default = $this->get_defaultsetting();
 
         return format_admin_setting($this, $this->visiblename,
-        '<div class="form-text defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" /></div>',
-               $this->description, true, '', $default, $query);
+            '<div class="form-text defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" /></div>',
+            $this->description, true, '', $default, $query);
     }
 }
 
@@ -1995,8 +1995,8 @@ class admin_setting_configfile extends admin_setting_configtext {
         }
 
         return format_admin_setting($this, $this->visiblename,
-        '<div class="form-file defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" />'.$executable.'</div>',
-               $this->description, true, '', $default, $query);
+            '<div class="form-file defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" />'.$executable.'</div>',
+            $this->description, true, '', $default, $query);
     }
 }
 
@@ -2029,8 +2029,8 @@ class admin_setting_configexecutable extends admin_setting_configfile {
         }
 
         return format_admin_setting($this, $this->visiblename,
-        '<div class="form-file defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" />'.$executable.'</div>',
-               $this->description, true, '', $default, $query);
+            '<div class="form-file defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" />'.$executable.'</div>',
+            $this->description, true, '', $default, $query);
     }
 }
 
@@ -2063,8 +2063,8 @@ class admin_setting_configdirectory extends admin_setting_configfile {
         }
 
         return format_admin_setting($this, $this->visiblename,
-        '<div class="form-file defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" />'.$executable.'</div>',
-               $this->description, true, '', $default, $query);
+            '<div class="form-file defaultsnext"><input type="text" size="'.$this->size.'" id="'.$this->get_id().'" name="'.$this->get_full_name().'" value="'.s($data).'" />'.$executable.'</div>',
+            $this->description, true, '', $default, $query);
     }
 }
 
@@ -6532,7 +6532,7 @@ class admin_setting_managerepository extends admin_setting {
                 }
 
                 $select = new single_select($this->repository_action_url($typename, 'repos'), 'action', $actionchoicesforexisting, $currentaction, null, 'applyto' . basename($typename));
-                $select->set_label(get_accesshide(get_string('select') . ' '. get_string('action')));
+                $select->set_label(get_string('selectanaction'), array('class' => 'accesshide'));
                 // Display up/down link
                 $updown = '';
                 $spacer = $OUTPUT->spacer(array('height'=>15, 'width'=>15)); // should be done with CSS instead
@@ -6569,7 +6569,7 @@ class admin_setting_managerepository extends admin_setting {
                 // Check that it has not already been listed
                 if (!in_array($plugin, $alreadyplugins)) {
                     $select = new single_select($this->repository_action_url($plugin, 'repos'), 'action', $actionchoicesfornew, 'delete', null, 'applyto' . basename($plugin));
-                    $select->set_label(get_accesshide(get_string('select') . ' '. get_string('action')));
+                    $select->set_label(get_string('selectanaction'), array('class' => 'accesshide'));
                     $table->data[] = array(get_string('pluginname', 'repository_'.$plugin), $OUTPUT->render($select), '', '');
                 }
             }
