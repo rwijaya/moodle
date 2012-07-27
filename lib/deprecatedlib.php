@@ -2529,6 +2529,7 @@ function print_textfield($name, $value, $alt = '', $size=50, $maxlength=0, $retu
     if ($maxlength) {
         $attributes['maxlength'] = $maxlength;
     }
+
     $output = html_writer::empty_tag('input', $attributes);
 
     if (empty($return)) {
