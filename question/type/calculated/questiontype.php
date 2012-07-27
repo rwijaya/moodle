@@ -749,12 +749,12 @@ class qtype_calculated extends question_type {
                     ? 'decimals'
                     : 'significantfigures'), 'qtype_calculated', $i);
             }
-            $menu1 = html_writer::label(get_string('selectanoptions'), 'menucalclength', false, array('class' => 'accesshide'));
+            $menu1 = html_writer::label(get_string('lengthoptions', 'qtype_calculated'), 'menucalclength', false, array('class' => 'accesshide'));
             $menu1 .= html_writer::select($lengthoptions, 'calclength[]', $regs[4], null);
 
             $options = array('uniform' => get_string('uniformbit', 'qtype_calculated'),
                     'loguniform' => get_string('loguniformbit', 'qtype_calculated'));
-            $menu2 = html_writer::label(get_string('selectanoptions'), 'menucalcdistribution', false, array('class' => 'accesshide'));
+            $menu2 = html_writer::label(get_string('distributionoptions', 'qtype_calculated'), 'menucalcdistribution', false, array('class' => 'accesshide'));
             $menu2 .= html_writer::select($options, 'calcdistribution[]', $regs[1], null);
             return '<input type="submit" onclick="'
                 . "getElementById('addform').regenerateddefid.value='$defid'; return true;"

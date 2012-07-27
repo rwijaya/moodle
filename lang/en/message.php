@@ -141,3 +141,4 @@ $string['unreadnewnotifications'] = 'New notifications ({$a})';
 $string['userisblockingyou'] = 'This user has blocked you from sending messages to them';
 $string['userisblockingyounoncontact'] = 'This user is only accepting messages from people listed as contacts, and you are not currently on the list.';
 $string['userssearchresults'] = 'Users found: {$a}';
+$string['viewoptions'] = 'Select view options';
