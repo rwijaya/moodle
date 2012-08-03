@@ -602,6 +602,13 @@ M.core_filepicker.init = function(Y, options) {
                                 scope.cached_responses[params] = data;
                             }
                             // invoke callback
+                            if (data.logouturl) {
+                                var directtosite = confirm(data.logoutmsg);
+                                if (directtosite == true) {
+                                    window.open(data.logouturl, 'repo_auth', 'location=0,status=0,width=500,height=300,scrollbars=yes');
+                                }
+                                data.logouturl = '';  //set to empty to prevent occurance in future
+                            }
                             args.callback(id,data,p);
                         }
                     }
@@ -1386,6 +1393,8 @@ M.core_filepicker.init = function(Y, options) {
             this.active_repo.norefresh = (data.login || data.norefresh); // this is either login form or 'norefresh' attribute set
             this.active_repo.nologin = (data.login || data.nologin); // this is either login form or 'nologin' attribute is set
             this.active_repo.logouttext = data.logouttext?data.logouttext:null;
+            this.active_repo.logouturl = (data.logouturl || '');
+            this.active_repo.logoutmsg = (data.logoutmsg || '');
             this.active_repo.help = data.help?data.help:null;
             this.active_repo.manage = data.manage?data.manage:null;
             this.print_header();
@@ -1440,6 +1449,12 @@ M.core_filepicker.init = function(Y, options) {
                             e.preventDefault();
                         }
                     }, this);
+                    if (data['login_btn_label']) {
+                        popupbutton.setContent(data['login_btn_label'])
+                    }
+                    if (data['login_text']) {
+                        node.one('label').setContent(data['login_text']);
+                    }
                     loginform_node.all('.fp-login-submit').remove();
                     action = 'popup';
                 } else if(l[k].type=='textarea') {

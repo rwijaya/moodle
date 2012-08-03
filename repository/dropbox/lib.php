@@ -129,9 +129,11 @@ class repository_dropbox extends repository {
             $popup_btn->type = 'popup';
             $popup_btn->url = $url;
             $ret['login'] = array($popup_btn);
+            $ret['login_btn_label'] = get_string('connect', 'repository_dropbox');
+            $ret['login_text'] = get_string('connecttext', 'repository_dropbox');
             return $ret;
         } else {
-            echo '<a target="_blank" href="'.$url.'">'.get_string('login', 'repository').'</a>';
+            echo '<a target="_blank" href="'.$url.'">'.get_string('connect', 'repository_dropbox').'</a>';
         }
     }
 
@@ -169,6 +171,8 @@ class repository_dropbox extends repository {
         $list['manage'] = false;
         $list['dynload'] = true;
         $list['nosearch'] = true;
+        $list['logouturl'] = 'http://www.dropbox.com/logout';
+        $list['logoutmsg'] = get_string('logoutmsg', 'repository_dropbox');
         // process breadcrumb trail
         $list['path'] = array(
             array('name'=>get_string('dropbox', 'repository_dropbox'), 'path'=>'/')
@@ -242,7 +246,7 @@ class repository_dropbox extends repository {
         $this->access_key    = '';
         $this->access_secret = '';
         return $this->print_login();
-    }
+        }
 
     /**
      * Set dropbox option
