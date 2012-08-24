@@ -1386,6 +1386,8 @@ M.core_filepicker.init = function(Y, options) {
             this.active_repo.norefresh = (data.login || data.norefresh); // this is either login form or 'norefresh' attribute set
             this.active_repo.nologin = (data.login || data.nologin); // this is either login form or 'nologin' attribute is set
             this.active_repo.logouttext = data.logouttext?data.logouttext:null;
+            this.active_repo.logouturl = (data.logouturl || '');
+            this.active_repo.logoutdesc = (data.logoutdesc || '');
             this.active_repo.help = data.help?data.help:null;
             this.active_repo.manage = data.manage?data.manage:null;
             this.print_header();
@@ -1698,7 +1700,12 @@ M.core_filepicker.init = function(Y, options) {
                         callback: this.display_response
                     }, true);
                 }
+                if (this.active_repo.logouturl) {
+                    window.open(this.active_repo.logouturl, 'repo_auth', 'location=0,status=0,width=500,height=300,scrollbars=yes');
+                }
             }, this);
+            var logoutdesc = Y.Node.create('<div id="logoutdesc"></div>');
+            toolbar.one('.fp-tb-logout').appendChild(logoutdesc);
             toolbar.one('.fp-tb-refresh').one('a,button').on('click', function(e) {
                 e.preventDefault();
                 if (!this.active_repo.norefresh) {
@@ -1808,6 +1815,10 @@ M.core_filepicker.init = function(Y, options) {
             if (!r.nologin) {
                 var label = r.logouttext ? r.logouttext : M.str.repository.logout;
                 toolbar.one('.fp-tb-logout').one('a,button').setContent(label)
+
+                if (r.logoutdesc) {
+                    toolbar.one('.fp-tb-logout').one('#logoutdesc').setContent(r.logoutdesc);
+                }
             }
 
             // manage url
