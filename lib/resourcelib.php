@@ -502,6 +502,11 @@ function resourcelib_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
         $iframe = true;
     }
 
+    // embed 'not found' page -- MDL-30769
+    if (!@fopen($fullurl, 'rb')) {
+       $iframe = true;
+    }
+
     if ($iframe) {
         $code = <<<EOT
 <div class="resourcecontent resourcegeneral">
