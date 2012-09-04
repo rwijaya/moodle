@@ -208,7 +208,7 @@ $completion->set_module_viewed($cm);
     $PAGE->requires->js_init_call('M.mod_survey.init', $checkarray, true, $module);
 
     echo '<br />';
-    echo '<input type="submit" value="'.get_string("clicktocontinue", "survey").'" />';
+    echo '<div class="submitbutton"><input name="submitbtn" type="submit" value="'.get_string("clicktocontinue", "survey").'" /></div>';
     echo '</div>';
     echo "</form>";
 

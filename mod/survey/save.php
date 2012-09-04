@@ -75,7 +75,7 @@
     $answers = array();
 
     foreach ($formdata as $key => $val) {
-        if ($key <> "userid" && $key <> "id") {
+        if ($key <> "userid" && $key <> "id" && $key != 'submitbtn') {
             if ( substr($key,0,1) == "q") {
                 $key = clean_param(substr($key,1), PARAM_ALPHANUM);   // keep everything but the 'q', number or Pnumber
             }
