@@ -261,7 +261,7 @@ function resourcelib_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
     if ($fullurl instanceof moodle_url) {
         $fullurl = $fullurl->out();
     }
-
+    $unabletoload = get_string('unabletoload', 'url');
     $iframe = false;
 
     $param = '<param name="src" value="'.$fullurl.'" />';
@@ -286,7 +286,10 @@ EOT;
 <div class="resourcecontent resourcegeneral">
   <object id="resourceobject" data="$fullurl" type="$mimetype"  width="800" height="600">
     $param
-    $clicktoopen
+      <object id="resourceobjectlink" width="500" height="300">
+        $unabletoload
+        $clicktoopen
+      </object>
   </object>
 </div>
 EOT;
