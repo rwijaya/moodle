@@ -1423,6 +1423,7 @@ class question_bank_view {
 
     protected function print_table_headers() {
         echo "<tr>\n";
+        echo '<th class="hide" scope="col">' . get_string('questiontype','question') . '</th>';
         foreach ($this->visiblecolumns as $column) {
             $column->display_header();
         }
@@ -1448,6 +1449,7 @@ class question_bank_view {
         } else {
             echo "<tr>\n";
         }
+        echo '<th class="hide" scope="row">' . $question->qtype . '</th>';
         foreach ($this->visiblecolumns as $column) {
             $column->display($question, $rowclasses);
         }
