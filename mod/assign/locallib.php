@@ -417,7 +417,7 @@ class assign {
         $update->duedate = $formdata->duedate;
         $update->allowsubmissionsfromdate = $formdata->allowsubmissionsfromdate;
         $update->grade = $formdata->grade;
-        $update->completionsubmit = $formdata->completionsubmit;
+        $update->completionsubmit = '';//$formdata->completionsubmit;
         $returnid = $DB->insert_record('assign', $update);
         $this->instance = $DB->get_record('assign', array('id'=>$returnid), '*', MUST_EXIST);
         // cache the course record
@@ -637,7 +637,7 @@ class assign {
         $update->duedate = $formdata->duedate;
         $update->allowsubmissionsfromdate = $formdata->allowsubmissionsfromdate;
         $update->grade = $formdata->grade;
-        $update->completionsubmit = $formdata->completionsubmit;
+        $update->completionsubmit = '';//$formdata->completionsubmit;
 
         $result = $DB->update_record('assign', $update);
         $this->instance = $DB->get_record('assign', array('id'=>$update->id), '*', MUST_EXIST);
@@ -905,7 +905,8 @@ class assign {
                 } else {
                     $displaygrade = format_float($grade);
                 }
-                $o = '<input type="text" name="quickgrade_' . $userid . '" value="' . $displaygrade . '" size="6" maxlength="10" class="quickgrade"/>';
+                $o = '<label class="accesshide" for="quickgrade_' . $userid . '">' . get_string('usergrade', 'assign') . '</label>';
+                $o .= '<input type="text" id="quickgrade_' . $userid . '" name="quickgrade_' . $userid . '" value="' . $displaygrade . '" size="6" maxlength="10" class="quickgrade"/>';
                 $o .= '&nbsp;/&nbsp;' . format_float($this->get_instance()->grade,2);
                 $o .= '<input type="hidden" name="grademodified_' . $userid . '" value="' . $modified . '"/>';
                 return $o;
