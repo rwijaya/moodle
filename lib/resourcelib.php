@@ -262,6 +262,10 @@ function resourcelib_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
         $fullurl = $fullurl->out();
     }
 
+    $missingpageparam = array('msg' => $clicktoopen, 'id' => $PAGE->context->instanceid);
+    $missingpageurl = new moodle_url('missingpage.php', $missingpageparam);
+    $missingpageurl = $missingpageurl->out();
+
     $iframe = false;
 
     $param = '<param name="src" value="'.$fullurl.'" />';
@@ -284,9 +288,11 @@ EOT;
     } else {
         $code = <<<EOT
 <div class="resourcecontent resourcegeneral">
-  <object id="resourceobject" data="$fullurl" type="$mimetype"  width="800" height="600">
+  <object id="resourceobject" data="$fullurl" type="$mimetype" width="800" height="600">
     $param
-    $clicktoopen
+      <object id="resourceobjectlink" type="text/html" data="$missingpageurl" width="500" height="100">
+        $clicktoopen
+      </object>
   </object>
 </div>
 EOT;
