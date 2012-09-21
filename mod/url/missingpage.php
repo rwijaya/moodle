@@ -16,20 +16,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Definition of log events
+ * Missing page for unloadable URL
  *
  * @package    mod
  * @subpackage url
- * @copyright  2010 Petr Skoda (http://skodak.org)
+ * @copyright  2012 onwards Rossiani Wijaya <rwijaya@moodle.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require('../../config.php');
 
-$logs = array(
-    array('module'=>'url', 'action'=>'view', 'mtable'=>'url', 'field'=>'name'),
-    array('module'=>'url', 'action'=>'view all', 'mtable'=>'url', 'field'=>'name'),
-    array('module'=>'url', 'action'=>'update', 'mtable'=>'url', 'field'=>'name'),
-    array('module'=>'url', 'action'=>'add', 'mtable'=>'url', 'field'=>'name'),
-    array('module'=>'url', 'action'=>'missing page', 'mtable'=>'url', 'field'=>'name'),
-);
+global $DB;
+
+$id = required_param('id', PARAM_INT);  // Course module id
+$msg = optional_param('msg', null, PARAM_RAW);  // messages
+
+$cm = get_coursemodule_from_id('url', $id, 0, false, MUST_EXIST);
+$url = $DB->get_record('url', array('id' => $cm->instance), '*', MUST_EXIST);
+
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+
+require_course_login($course, true, $cm);
+$context = context_module::instance($cm->id);
+require_capability('mod/url:view', $context);
+
+add_to_log($course->id, 'url', 'missing page', 'view.php?id=' . $cm->id, $url->id, $cm->id);
+
+echo get_string('unabletoload', 'url') . '<br />';
+
+if (!empty($msg)) {
+    echo $msg;
+}
