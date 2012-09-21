@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,17 +16,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Folder module version information
+ * Missing page for unloadable URL
  *
  * @package    mod
  * @subpackage url
- * @copyright  2009 Petr Skoda  {@link http://skodak.org}
+ * @copyright  2012 onwards Rossiani Wijaya <rwijaya@moodle.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require('../../config.php');
 
-$module->version   = 2012061701;       // The current module version (Date: YYYYMMDDXX)
-$module->requires  = 2012061700;    // Requires this Moodle version
-$module->component = 'mod_url';        // Full name of the plugin (used for diagnostics)
-$module->cron      = 0;
+global $DB;
+
+$id = required_param('id', PARAM_INT);  // Course module id
+$msg = optional_param('msg', null, PARAM_RAW);  // messages
+
+$cm = get_coursemodule_from_id('url', $id, 0, false, MUST_EXIST);
+$url = $DB->get_record('url', array('id' => $cm->instance), '*', MUST_EXIST);
+
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+
+require_course_login($course, true, $cm);
+$context = context_module::instance($cm->id);
+require_capability('mod/url:view', $context);
+
+add_to_log($course->id, 'url', 'missing page', 'view.php?id=' . $cm->id, $url->id, $cm->id);
+
+echo get_string('unabletoload', 'url') . '<br />';
+
+if (!empty($msg)) {
+    echo $msg;
+}
