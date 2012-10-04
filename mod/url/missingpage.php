@@ -29,7 +29,7 @@ require('../../config.php');
 global $DB;
 
 $id = required_param('id', PARAM_INT);  // Course module id
-$msg = optional_param('msg', null, PARAM_RAW);  // messages
+$link = optional_param('url', '', PARAM_URL);
 
 $cm = get_coursemodule_from_id('url', $id, 0, false, MUST_EXIST);
 $url = $DB->get_record('url', array('id' => $cm->instance), '*', MUST_EXIST);
@@ -44,6 +44,8 @@ add_to_log($course->id, 'url', 'missing page', 'view.php?id=' . $cm->id, $url->i
 
 echo get_string('unabletoload', 'url') . '<br />';
 
-if (!empty($msg)) {
-    echo $msg;
+if (!empty($link)) {
+    $link = new moodle_url($link);
+    $printlink = html_writer::link($link, $link->out(), array('target' => '_blank'));
+    print_string('clicktoopen', 'url', $printlink);
 }
