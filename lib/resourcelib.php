@@ -262,7 +262,7 @@ function resourcelib_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
         $fullurl = $fullurl->out();
     }
 
-    $missingpageparam = array('msg' => $clicktoopen, 'id' => $PAGE->context->instanceid);
+    $missingpageparam = array('url' => $fullurl, 'id' => $PAGE->context->instanceid);
     $missingpageurl = new moodle_url('missingpage.php', $missingpageparam);
     $missingpageurl = $missingpageurl->out();
 
