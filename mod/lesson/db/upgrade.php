@@ -64,6 +64,18 @@ function xmldb_lesson_upgrade($oldversion) {
     // Moodle v2.3.0 release upgrade line
     // Put any upgrade step following this
 
+    if ($oldversion < 2012061701) {
+        
+        // Drop "slideshow" fields
+        $table = new xmldb_table('lesson');
+        $field = new xmldb_field('slideshow');
+
+        // Conditionally launch drop field 'slideshow' from 'lesson'
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2012061701, 'lesson');
+    }
 
     return true;
 }

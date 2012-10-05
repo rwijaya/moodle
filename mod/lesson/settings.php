@@ -29,16 +29,6 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
-    /** Slideshow settings */
-    $settings->add(new admin_setting_configtext('lesson_slideshowwidth', get_string('slideshowwidth', 'lesson'),
-            get_string('configslideshowwidth', 'lesson'), 640, PARAM_INT));
-
-    $settings->add(new admin_setting_configtext('lesson_slideshowheight', get_string('slideshowheight', 'lesson'),
-            get_string('configslideshowheight', 'lesson'), 480, PARAM_INT));
-
-    $settings->add(new admin_setting_configtext('lesson_slideshowbgcolor', get_string('slideshowbgcolor', 'lesson'),
-            get_string('configslideshowbgcolor', 'lesson'), '#FFFFFF', PARAM_TEXT));
-
     /** Media file popup settings */
     $settings->add(new admin_setting_configtext('lesson_mediawidth', get_string('mediawidth', 'lesson'),
             get_string('configmediawidth', 'lesson'), 640, PARAM_INT));

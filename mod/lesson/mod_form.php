@@ -47,21 +47,6 @@ class mod_lesson_mod_form extends moodleform_mod {
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        /** Legacy slideshow width element to maintain backwards compatibility */
-        $mform->addElement('hidden', 'width');
-        $mform->setType('width', PARAM_INT);
-        $mform->setDefault('width', $CFG->lesson_slideshowwidth);
-
-        /** Legacy slideshow height element to maintain backwards compatibility */
-        $mform->addElement('hidden', 'height');
-        $mform->setType('height', PARAM_INT);
-        $mform->setDefault('height', $CFG->lesson_slideshowheight);
-
-        /** Legacy slideshow background color element to maintain backwards compatibility */
-        $mform->addElement('hidden', 'bgcolor');
-        $mform->setType('bgcolor', PARAM_TEXT);
-        $mform->setDefault('bgcolor', $CFG->lesson_slideshowbgcolor);
-
         /** Legacy media popup width element to maintain backwards compatibility */
         $mform->addElement('hidden', 'mediawidth');
         $mform->setType('mediawidth', PARAM_INT);
@@ -229,11 +214,6 @@ class mod_lesson_mod_form extends moodleform_mod {
         $mform->addHelpButton('maxpages', 'numberofpagestoshow', 'lesson');
         $mform->setAdvanced('maxpages');
         $mform->setDefault('maxpages', 0);
-
-        $mform->addElement('selectyesno', 'slideshow', get_string('slideshow', 'lesson'));
-        $mform->addHelpButton('slideshow', 'slideshow', 'lesson');
-        $mform->setDefault('slideshow', 0);
-        $mform->setAdvanced('slideshow');
 
         // get the modules
         if ($mods = get_course_mods($COURSE->id)) {

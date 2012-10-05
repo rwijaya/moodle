@@ -74,7 +74,7 @@ class backup_lesson_activity_structure_step extends backup_activity_structure_st
             'dependency','conditions','grade','custom','ongoing','usemaxgrade',
             'maxanswers','maxattempts','review','nextpagedefault','feedback',
             'minquestions','maxpages','timed','maxtime','retake','activitylink',
-            'mediafile','mediaheight','mediawidth','mediaclose','slideshow',
+            'mediafile','mediaheight','mediawidth','mediaclose',
             'width','height','bgcolor','displayleft','displayleftif','progressbar',
             'showhighscores','maxhighscores','available','deadline','timemodified'
         ));

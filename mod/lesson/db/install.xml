@@ -33,9 +33,8 @@
         <FIELD NAME="mediafile" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="activitylink" NEXT="mediaheight" COMMENT="Local file path or full external URL"/>
         <FIELD NAME="mediaheight" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" PREVIOUS="mediafile" NEXT="mediawidth"/>
         <FIELD NAME="mediawidth" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="650" SEQUENCE="false" PREVIOUS="mediaheight" NEXT="mediaclose"/>
-        <FIELD NAME="mediaclose" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="mediawidth" NEXT="slideshow"/>
-        <FIELD NAME="slideshow" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="mediaclose" NEXT="width"/>
-        <FIELD NAME="width" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="640" SEQUENCE="false" PREVIOUS="slideshow" NEXT="height"/>
+        <FIELD NAME="mediaclose" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="mediawidth" NEXT="width"/>
+        <FIELD NAME="width" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="640" SEQUENCE="false" PREVIOUS="mediaclose" NEXT="height"/>
         <FIELD NAME="height" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="480" SEQUENCE="false" PREVIOUS="width" NEXT="bgcolor"/>
         <FIELD NAME="bgcolor" TYPE="char" LENGTH="7" NOTNULL="true" DEFAULT="#FFFFFF" SEQUENCE="false" PREVIOUS="height" NEXT="displayleft"/>
         <FIELD NAME="displayleft" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="bgcolor" NEXT="displayleftif"/>

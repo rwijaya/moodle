@@ -369,9 +369,6 @@ class mod_lesson_renderer extends plugin_renderer_base {
         $importquestionsurl = new moodle_url('/mod/lesson/import.php',array('id'=>$this->page->cm->id, 'pageid'=>$prevpageid));
         $links[] = html_writer::link($importquestionsurl, get_string('importquestions', 'lesson'));
 
-        $importppturl = new moodle_url('/mod/lesson/importppt.php',array('id'=>$this->page->cm->id, 'pageid'=>$prevpageid));
-        $links[] = html_writer::link($importppturl, get_string('importppt', 'lesson'));
-
         $manager = lesson_page_type_manager::get($lesson);
         foreach ($manager->get_add_page_type_links($prevpageid) as $link) {
             $link['addurl']->param('firstpage', 1);
@@ -555,22 +552,6 @@ class mod_lesson_renderer extends plugin_renderer_base {
         return $this->output->box($printprogress, 'progress_bar');
     }
 
-    /**
-     * Returns HTML to show the start of a slideshow
-     * @param lesson $lesson
-     */
-    public function slideshow_start(lesson $lesson) {
-        $attributes = array();
-        $attributes['class'] = 'slideshow';
-        $attributes['style'] = 'background-color:'.$lesson->bgcolor.';height:'.$lesson->height.'px;width:'.$lesson->width.'px;';
-        $output = html_writer::start_tag('div', $attributes);
-    }
-    /**
-     * Returns HTML to show the end of a slideshow
-     */
-    public function slideshow_end() {
-        $output = html_writer::end_tag('div');
-    }
     /**
      * Returns a P tag containing contents
      * @param string $contents

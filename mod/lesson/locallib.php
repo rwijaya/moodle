@@ -864,10 +864,6 @@ abstract class lesson_add_page_form_base extends moodleform {
  * @property int $mediaheight Sets the height of the media file popup
  * @property int $mediawidth Sets the width of the media file popup
  * @property int $mediaclose Toggle display of a media close button
- * @property int $slideshow Flag for whether branch pages should be shown as slideshows
- * @property int $width Width of slideshow
- * @property int $height Height of slideshow
- * @property string $bgcolor Background colour of slideshow
  * @property int $displayleft Display a left menu
  * @property int $displayleftif Sets the condition on which the left menu is displayed
  * @property int $progressbar Flag to toggle display of a lesson progress bar
