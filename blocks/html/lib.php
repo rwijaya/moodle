@@ -38,11 +38,14 @@ function block_html_pluginfile($course, $birecord_or_cm, $context, $filearea, $a
         send_file_not_found();
     }
 
-    if ($course == null) {
+    if (empty($course)) {
         // No course object given - let's check if block is inserted into a category page
         global $CFG;
-        $parentcontext = get_context_instance_by_id(get_parent_contextid($context));
-        if ($parentcontext->contextlevel != CONTEXT_COURSECAT || ($CFG->forcelogin && !isloggedin())) {
+        $parentcontext = context::instance_by_id($context->get_parent_context());
+        $invalidcontext = (!empty($parentcontext));
+        $invalidcontext = ($invalidcontext && $parentcontext->contextlevel != CONTEXT_COURSECAT);
+        $invalidcontext = ($invalidcontext && $parentcontext->contextlevel != CONTEXT_SYSTEM);
+        if ($invalidcontext || ($CFG->forcelogin && !isloggedin())) {
             send_file_not_found();
         }
     } else {
