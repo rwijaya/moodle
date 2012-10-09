@@ -30,7 +30,16 @@ function block_html_pluginfile($course, $birecord_or_cm, $context, $filearea, $a
         send_file_not_found();
     }
 
-    require_course_login($course);
+    if ($course == null) {
+        // No course object given - let's check if block is inserted into a category page
+        global $CFG;
+        $parentcontext = get_context_instance_by_id(get_parent_contextid($context));
+        if ($parentcontext->contextlevel != CONTEXT_COURSECAT || ($CFG->forcelogin && !isloggedin())) {
+            send_file_not_found();
+        }
+    } else {
+        require_course_login($course);
+    }
 
     if ($filearea !== 'content') {
         send_file_not_found();
