@@ -281,8 +281,12 @@ if (($action == 'edit') || ($action == 'new')) {
     // Table to list plug-ins
     $table = new html_table();
     $table->head = array(get_string('name'), get_string('isactive', 'repository'), get_string('order'), $settingsstr);
-    $table->align = array('left', 'center', 'center', 'center', 'center');
+//    $table->
+    $table->colclasses = array('leftalign', 'centeralign', 'centeralign', 'centeralign', 'centeralign');
+    //$table->align = array('left', 'center', 'center', 'center', 'center');
+    $table->id = 'repositoriessetting';
     $table->data = array();
+    $table->attributes['class'] = 'admintable';
 
     // Get list of used plug-ins
     $instances = repository::get_types();

@@ -3577,7 +3577,7 @@ class admin_setting_emoticons extends admin_setting {
     public function output_html($data, $query='') {
         global $OUTPUT;
 
-        $out  = html_writer::start_tag('table', array('border' => 1, 'class' => 'generaltable'));
+        $out  = html_writer::start_tag('table', array('border' => 1, 'id' => 'emoticonsetting', 'class' => 'admintable generaltable'));
         $out .= html_writer::start_tag('thead');
         $out .= html_writer::start_tag('tr');
         $out .= html_writer::tag('th', get_string('emoticontext', 'admin'));
@@ -5016,8 +5016,9 @@ class admin_setting_manageenrols extends admin_setting {
 
         $table = new html_table();
         $table->head  = array(get_string('name'), $strusage, $strenable, $strup.'/'.$strdown, $strsettings, $struninstall);
-        $table->align = array('left', 'center', 'center', 'center', 'center', 'center');
-        $table->width = '90%';
+        $table->colclasses = array('leftalign', 'centeralign', 'centeralign', 'centeralign', 'centeralign', 'centeralign');
+        $table->id = 'courseenrolmentplugins';
+        $table->attributes['class'] = 'admintable generaltable';
         $table->data  = array();
 
         // iterate through enrol plugins and add to the display table
@@ -5548,9 +5549,10 @@ class admin_setting_manageauths extends admin_setting {
 
         $table = new html_table();
         $table->head  = array($txt->name, $txt->enable, $txt->updown, $txt->settings);
-        $table->align = array('left', 'center', 'center', 'center');
+        $table->colclasses = array('leftalign', 'centeralign', 'centeralign', 'centeralign');
         $table->data  = array();
-        $table->attributes['class'] = 'manageauthtable generaltable';
+        $table->attributes['class'] = 'admintable generaltable';
+        $table->id = 'manageauthtable';
 
         //add always enabled plugins first
         $displayname = "<span>".$displayauths['manual']."</span>";
@@ -5726,8 +5728,9 @@ class admin_setting_manageeditors extends admin_setting {
 
         $table = new html_table();
         $table->head  = array($txt->name, $txt->enable, $txt->updown, $txt->settings);
-        $table->align = array('left', 'center', 'center', 'center');
-        $table->width = '90%';
+        $table->colclasses = array('leftalign', 'centeralign', 'centeralign', 'centeralign');
+        $table->id = 'editormanagement';
+        $table->attributes['class'] = 'admintable generaltable';
         $table->data  = array();
 
         // iterate through auth plugins and add to the display table
@@ -5854,8 +5857,9 @@ class admin_setting_managelicenses extends admin_setting {
 
         $table = new html_table();
         $table->head  = array($txt->name, $txt->enable);
-        $table->align = array('left', 'center');
-        $table->width = '100%';
+        $table->colclasses = array('leftalign', 'centeralign');
+        $table->id = 'availablelicenses';
+        $table->attributes['class'] = 'admintable generaltable';
         $table->data  = array();
 
         foreach ($licenses as $value) {
@@ -7010,9 +7014,9 @@ class admin_setting_manageexternalservices extends admin_setting {
 
             $table = new html_table();
             $table->head  = array($strservice, $strplugin, $strfunctions, $strusers, $stredit);
-            $table->align = array('left', 'left', 'center', 'center', 'center');
-            $table->size = array('30%', '20%', '20%', '20%', '10%');
-            $table->width = '100%';
+            $table->colclasses = array('leftalign service', 'leftalign plugin', 'centeralign functions', 'centeralign users', 'centeralign ');
+            $table->id = 'builtinservices';
+            $table->attributes['class'] = 'admintable externalservices generaltable';
             $table->data  = array();
 
             // iterate through auth plugins and add to the display table
@@ -7050,9 +7054,9 @@ class admin_setting_manageexternalservices extends admin_setting {
 
         $table = new html_table();
         $table->head  = array($strservice, $strdelete, $strfunctions, $strusers, $stredit);
-        $table->align = array('left', 'center', 'center', 'center', 'center');
-        $table->size = array('30%', '20%', '20%', '20%', '10%');
-        $table->width = '100%';
+        $table->colclasses = array('leftalign service', 'leftalign plugin', 'centeralign functions', 'centeralign users', 'centeralign ');
+        $table->id = 'customservices';
+        $table->attributes['class'] = 'admintable externalservices generaltable';
         $table->data  = array();
 
         // iterate through auth plugins and add to the display table
@@ -7171,9 +7175,10 @@ class admin_setting_webservicesoverview extends admin_setting {
         $table = new html_table();
         $table->head = array(get_string('step', 'webservice'), get_string('status'),
             get_string('description'));
-        $table->size = array('30%', '10%', '60%');
-        $table->align = array('left', 'left', 'left');
-        $table->width = '90%';
+
+        $table->colclasses = array('leftalign step', 'leftalign status', 'leftalign description');
+        $table->id = 'onesystemcontrol';
+        $table->attributes['class'] = 'admintable wsoverview generaltable';
         $table->data = array();
 
         $return .= $brtag . get_string('onesystemcontrollingdescription', 'webservice')
@@ -7295,9 +7300,10 @@ class admin_setting_webservicesoverview extends admin_setting {
         $table = new html_table();
         $table->head = array(get_string('step', 'webservice'), get_string('status'),
             get_string('description'));
-        $table->size = array('30%', '10%', '60%');
-        $table->align = array('left', 'left', 'left');
-        $table->width = '90%';
+        $table->colclasses = array('leftalign step', 'leftalign status', 'leftalign description');
+        $table->id = 'userasclients';
+        
+        $table->attributes['class'] = 'admintable wsoverview generaltable';
         $table->data = array();
 
         $return .= $brtag . get_string('userasclientsdescription', 'webservice') .
@@ -7482,8 +7488,9 @@ class admin_setting_managewebserviceprotocols extends admin_setting {
 
         $table = new html_table();
         $table->head  = array($strprotocol, $strversion, $strenable, $struninstall, $strsettings);
-        $table->align = array('left', 'center', 'center', 'center', 'center');
-        $table->width = '100%';
+        $table->colclasses = array('leftalign', 'centeralign', 'centeralign', 'centeralign', 'centeralign');
+        $table->id = 'webserviceprotocols';
+        $table->attributes['class'] = 'admintable generaltable';
         $table->data  = array();
 
         // iterate through auth plugins and add to the display table
@@ -7596,8 +7603,9 @@ class admin_setting_managewebservicetokens extends admin_setting {
 
         $table = new html_table();
         $table->head  = array($strtoken, $struser, $strservice, $striprestriction, $strvaliduntil, $stroperation);
-        $table->align = array('left', 'left', 'left', 'center', 'center', 'center');
-        $table->width = '100%';
+        $table->colclasses = array('leftalign', 'leftalign', 'leftalign', 'centeralign', 'centeralign', 'centeralign');
+        $table->id = 'webservicetokens';
+        $table->attributes['class'] = 'admintable generaltable';
         $table->data  = array();
 
         $tokenpageurl = "$CFG->wwwroot/$CFG->admin/webservice/tokens.php?sesskey=" . sesskey();
