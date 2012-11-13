@@ -186,7 +186,7 @@
     $table->head  = array(get_string('filter'), get_string('isactive', 'filters'),
             get_string('order'), get_string('applyto', 'filters'), get_string('settings'), get_string('delete'));
     $table->colclasses = array ('leftalign', 'leftalign', 'centeralign', 'leftalign', 'leftalign', 'leftalign');
-    $table->attributes['class'] = 'admintable';
+    $table->attributes['class'] = 'admintable generaltable';
     $table->id = 'filterssetting';
     $table->data  = array();
 

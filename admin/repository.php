@@ -283,10 +283,9 @@ if (($action == 'edit') || ($action == 'new')) {
     $table->head = array(get_string('name'), get_string('isactive', 'repository'), get_string('order'), $settingsstr);
 //    $table->
     $table->colclasses = array('leftalign', 'centeralign', 'centeralign', 'centeralign', 'centeralign');
-    //$table->align = array('left', 'center', 'center', 'center', 'center');
     $table->id = 'repositoriessetting';
     $table->data = array();
-    $table->attributes['class'] = 'admintable';
+    $table->attributes['class'] = 'admintable generaltable';
 
     // Get list of used plug-ins
     $instances = repository::get_types();

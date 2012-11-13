@@ -163,7 +163,7 @@ if (empty($availablefilters)) {
     $table->colclasses = array('leftalign', 'leftalign');
     if ($settingscol) {
         $table->head[] = $strsettings;
-        $table->align[] = 'leftalign';
+        $table->colclasses[] = 'leftalign';
     }
     $table->id = 'frontpagefiltersettings';
     $table->attributes['class'] = 'admintable';

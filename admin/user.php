@@ -247,7 +247,7 @@
         $table->head = array ();
         $table->colclasses = array();
         $table->head[] = $fullnamedisplay;
-        $table->attributes['class'] = 'admintable';
+        $table->attributes['class'] = 'admintable generaltable';
         $table->colclasses[] = 'leftalign';
         foreach ($extracolumns as $field) {
             $table->head[] = ${$field};

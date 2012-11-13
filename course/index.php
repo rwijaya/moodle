@@ -254,7 +254,7 @@ $parentlist = array();
 $displaylist[0] = get_string('top');
 make_categories_list($displaylist, $parentlist);
 
-echo '<table id="coursecategories" class="admintable generalbox editcourse"><tr class="header">';
+echo '<table id="coursecategories" class="admintable generaltable editcourse"><tr class="header">';
 echo '<th class="header" scope="col">'.$strcategories.'</th>';
 echo '<th class="header" scope="col">'.$strcourses.'</th>';
 echo '<th class="header" scope="col">'.$stredit.'</th>';
@@ -319,9 +319,9 @@ function print_category_edit($category, $displaylist, $parentslist, $depth=-1, $
              format_string($category->name, true, array('context' => $category->context)).'</a>';
         echo '</td>';
 
-        echo '<td class="count">'.$category->coursecount.'</td>';
+        echo '<td class="centeralign count">'.$category->coursecount.'</td>';
 
-        echo '<td class="icons">';    /// Print little icons
+        echo '<td class="centeralign  icons">';    /// Print little icons
 
         if (has_capability('moodle/category:manage', $category->context)) {
             echo '<a title="'.$str->edit.'" href="editcategory.php?id='.$category->id.'"><img'.
