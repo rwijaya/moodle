@@ -6,7 +6,6 @@
 .path-admin #manageauthtable,
 .path-admin .admintable {width: 100%;}
 
-.path-admin #gradeletters {width: 30%;}
 .path-admin #assignrole {width: 60%;margin-left: auto;margin-right: auto;}
 .path-admin .admintable .leftalign {text-align: left;}
 .path-admin .admintable .centeralign {text-align: center;}
@@ -32,17 +31,6 @@
 .path-admin .wsoverview.admintable .step {width: 30%;}
 .path-admin .wsoverview.admintable .status {width: 10%;}
 .path-admin .wsoverview.admintable .description {width: 60%;}
-
-.path-grade-edit-letter #gradeletters .highest,
-.path-grade-edit-letter #gradeletters .lowest {width: 30%;}
-.path-grade-edit-letter #gradeletters .letter {width: 40%;}
-
-.path-grade-edit-scale .scaletable .leftalign  {text-align: left;}
-.path-grade-edit-scale .scaletable .centeralign {text-align: center;}
-.path-grade-edit-scale .scaletable .scale {width: 70%;}
-.path-grade-edit-scale .scaletable .used {width: 20%;}
-.path-grade-edit-scale .scaletable .action {width: 10%;}
-
 
 .path-admin #assignrole .admintable .role,
 .path-admin #assignrole .admintable .userrole,
