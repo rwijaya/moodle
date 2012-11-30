@@ -181,13 +181,13 @@ class lesson_page_type_matching extends lesson_page {
         $userresponse = array();
         foreach ($response as $key => $value) {
             foreach($answers as $answer) {
-                if ($value === $answer->response) {
+                if ($value === htmlspecialchars($answer->response)) {
                     $userresponse[] = $answer->id;
                 }
                 if ((int)$answer->id === (int)$key) {
                     $result->studentanswer .= '<br />'.format_text($answer->answer, $answer->answerformat, $formattextdefoptions).' = '.$value;
                 }
-                if ((int)$answer->id === (int)$key and $value === $answer->response) {
+                if ((int)$answer->id === (int)$key and $value === htmlspecialchars($answer->response)) {
                     $hits++;
                 }
             }
@@ -527,6 +527,7 @@ class lesson_display_answer_form_matching extends moodleform {
                     $mform->addElement('hidden', 'response['.$answer->id.']', htmlspecialchars(trim($answers[$useranswers[$i]]->response)));
                     $mform->setType('response['.$answer->id.']', PARAM_TEXT);
                 }
+                print_object($responseoptions);
                 $mform->addElement('select', $responseid, format_text($answer->answer,$answer->answerformat,$options), $responseoptions, $disabled);
                 $mform->setType($responseid, PARAM_TEXT);
                 if ($hasattempt) {

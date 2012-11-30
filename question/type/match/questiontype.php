@@ -51,7 +51,6 @@ class qtype_match extends question_type {
         global $DB;
         $context = $question->context;
         $result = new stdClass();
-
         $oldsubquestions = $DB->get_records('question_match_sub',
                 array('question' => $question->id), 'id ASC');
 

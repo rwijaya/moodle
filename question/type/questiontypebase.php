@@ -406,7 +406,7 @@ class question_type {
         $form->questiontextformat = $question->questiontextformat;
         // current context
         $form->context = $context;
-
+print_object($form);
         $result = $this->save_question_options($form);
 
         if (!empty($result->error)) {

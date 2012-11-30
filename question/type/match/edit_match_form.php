@@ -111,6 +111,7 @@ class qtype_match_edit_form extends question_edit_form {
         $questions = $data['subquestions'];
         $questioncount = 0;
         $answercount = 0;
+        print_object($answers);
         foreach ($questions as $key => $question) {
             $trimmedquestion = trim($question['text']);
             $trimmedanswer = trim($answers[$key]);
@@ -138,7 +139,7 @@ class qtype_match_edit_form extends question_edit_form {
         }
         if ($answercount < 3) {
             $errors['subanswers[2]'] =
-                    get_string('notenoughqsandas', 'qtype_match', $numberqanda);
+                    get_string('notenoughqsandas', 'qtype_match', $numberqanda) . 'lsls';
         }
         return $errors;
     }

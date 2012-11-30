@@ -228,6 +228,8 @@ if ($mform->is_cancelled()) {
     }
 
 } else if ($fromform = $mform->get_data()) {
+    print "fromform";
+    print_object($fromform);
     /// If we are saving as a copy, break the connection to the old question.
     if (!empty($fromform->makecopy)) {
         $question->id = 0;
