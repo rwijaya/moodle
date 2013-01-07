@@ -86,6 +86,7 @@ class restore_url_activity_task extends restore_activity_task {
         $rules[] = new restore_log_rule('url', 'add', 'view.php?id={course_module}', '{url}');
         $rules[] = new restore_log_rule('url', 'update', 'view.php?id={course_module}', '{url}');
         $rules[] = new restore_log_rule('url', 'view', 'view.php?id={course_module}', '{url}');
+        $rules[] = new restore_log_rule('url', 'missing page', 'view.php?id={course_module}', '{url}');
 
         return $rules;
     }
