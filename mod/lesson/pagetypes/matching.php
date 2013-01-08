@@ -181,13 +181,15 @@ class lesson_page_type_matching extends lesson_page {
         $userresponse = array();
         foreach ($response as $key => $value) {
             foreach($answers as $answer) {
-                if ($value === $answer->response) {
+                $cleanedvalue = strip_tags(htmlspecialchars_decode($value));
+                $cleandeanswer = strip_tags(htmlspecialchars_decode($answer->response));
+                if ($cleanedvalue === $cleandeanswer) {
                     $userresponse[] = $answer->id;
                 }
                 if ((int)$answer->id === (int)$key) {
                     $result->studentanswer .= '<br />'.format_text($answer->answer, $answer->answerformat, $formattextdefoptions).' = '.$value;
                 }
-                if ((int)$answer->id === (int)$key and $value === $answer->response) {
+                if ((int)$answer->id === (int)$key and $cleanedvalue === $cleandeanswer) {
                     $hits++;
                 }
             }
