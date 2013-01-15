@@ -1868,9 +1868,9 @@ abstract class lesson_page extends lesson_base {
      * @final
      * @return array
      */
-    final public function get_answers() {
+    final public function get_answers($setidaskey = false, $forceupdate = false) {
         global $DB;
-        if ($this->answers === null) {
+        if ($this->answers === null || $forceupdate == true) {
             $this->answers = array();
             $answers = $DB->get_records('lesson_answers', array('pageid'=>$this->properties->id, 'lessonid'=>$this->lesson->id), 'id');
             if (!$answers) {
@@ -1880,7 +1880,11 @@ abstract class lesson_page extends lesson_base {
                 return array();
             }
             foreach ($answers as $answer) {
-                $this->answers[count($this->answers)] = new lesson_page_answer($answer);
+                $key = count($this->answers);
+                if ($setidaskey) {
+                    $key = $answer->id;
+                }
+                $this->answers[$key] = new lesson_page_answer($answer);
             }
         }
         return $this->answers;

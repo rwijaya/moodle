@@ -61,12 +61,7 @@ class lesson_page_type_matching extends lesson_page {
     protected function make_answer_form($attempt=null) {
         global $USER, $CFG;
         // don't shuffle answers (could be an option??)
-        $getanswers = array_slice($this->get_answers(), 2);
-
-        $answers = array();
-        foreach ($getanswers as $getanswer) {
-            $answers[$getanswer->id] = $getanswer;
-        }
+        $answers = array_slice($this->get_answers(true, true), 2, null, true);
 
         $responses = array();
         foreach ($answers as $answer) {
