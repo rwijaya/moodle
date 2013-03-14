@@ -324,6 +324,9 @@ class qformat_default {
 
         $count = 0;
 
+        $currentlessonpage = $DB->get_record('lesson_pages', array('id' => $pageid));
+        $nextlessonpage = $DB->get_record('lesson_pages', array('id' => $currentlessonpage->nextpageid));
+
         $unsupportedquestions = 0;
 
         foreach ($questions as $question) {   // Process and store each question
@@ -378,7 +381,6 @@ class qformat_default {
                         $newpageid = $DB->insert_record("lesson_pages", $newpage);
                         // update the linked list
                         $DB->set_field("lesson_pages", "nextpageid", $newpageid, array("id" => $pageid));
-
                     } else {
                         // new page is the first page
                         // get the existing (first) page (if any)
@@ -426,6 +428,7 @@ class qformat_default {
             }
 
         }
+        $DB->set_field("lesson_pages", "prevpageid", $pageid, array("id" => $nextlessonpage->id));
         if ($unsupportedquestions) {
             echo $OUTPUT->notification(get_string('unknownqtypesnotimported', 'lesson', $unsupportedquestions));
         }
