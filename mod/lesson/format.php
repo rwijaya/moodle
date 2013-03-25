@@ -304,7 +304,7 @@ function lesson_save_question_options($question, $lesson) {
 class qformat_default {
 
     var $displayerrors = true;
-    var $category = NULL;
+    var $category = null;
     var $questionids = array();
     var $qtypeconvert = array(NUMERICAL   => LESSON_PAGE_NUMERICAL,
                               MULTICHOICE => LESSON_PAGE_MULTICHOICE,
@@ -531,7 +531,7 @@ class qformat_default {
 
         echo "<p>This flash question format has not yet been completed!</p>";
 
-        return NULL;
+        return null;
     }
 
     /**
