@@ -325,7 +325,10 @@ class qformat_default {
         $count = 0;
 
         $currentlessonpage = $DB->get_record('lesson_pages', array('id' => $pageid));
-        $nextlessonpage = $DB->get_record('lesson_pages', array('id' => $currentlessonpage->nextpageid));
+        $nextlessonpage = null;
+        if (isset($currentlessonpage->nextpageid)) {
+            $nextlessonpage = $DB->get_record('lesson_pages', array('id' => $currentlessonpage->nextpageid));
+        }
 
         $unsupportedquestions = 0;
 
@@ -428,7 +431,9 @@ class qformat_default {
             }
 
         }
-        $DB->set_field("lesson_pages", "prevpageid", $pageid, array("id" => $nextlessonpage->id));
+        if ($nextlessonpage != null) {
+            $DB->set_field("lesson_pages", "prevpageid", $pageid, array("id" => $nextlessonpage->id));
+        }
         if ($unsupportedquestions) {
             echo $OUTPUT->notification(get_string('unknownqtypesnotimported', 'lesson', $unsupportedquestions));
         }
