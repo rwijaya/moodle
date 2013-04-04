@@ -2698,21 +2698,37 @@ class lesson_page_type_manager {
         $orderedpages = array();
         $lastpageid = 0;
 
-        while (true) {
-            foreach ($pages as $page) {
-                if ((int)$page->prevpageid === (int)$lastpageid) {
-                    $orderedpages[$page->id] = $page;
-                    unset($pages[$page->id]);
-                    $lastpageid = $page->id;
-                    if ((int)$page->nextpageid===0) {
-                        break 2;
-                    } else {
-                        break 1;
-                    }
-                }
+        foreach ($pages as $key => $page) {
+            if ((int)$page->prevpageid === (int)$lastpageid) {
+                $orderedpages[$page->id] = $page;
             }
-        }
+            //if ($lastpageid != 0 && $pages[$lastpageid]->nextpageid != 0 && !array_key_exists($pages[$lastpageid]->nextpageid, $pages)) {
+            if ($pages[$lastpageid]->nextpageid != 0 && !array_key_exists($pages[$lastpageid]->nextpageid, $pages)) {
+                $pages[$lastpageid]->nextpageid = $page->id;
+                $obj = new stdClass;
+                $obj->id = $lastpageid;
+                $obj->nextpageid = $page->id;
+                $DB->update_record('lesson_pages', $obj);
+                $orderedpages[$page->id] = $page;
+            }
+            //if ($lastpageid != 0 && $pages[$page->id]->prevpageid != 0 && !array_key_exists($pages[$page->id]->prevpageid, $pages)) {
+            if ($page->prevpageid != 0 && !array_key_exists($page->prevpageid, $pages)) {
+                $page->prevpageid = $lastpageid;
+                $obj = new stdClass;
+                $obj->id = $page->id;
+                $obj->prevpageid = $lastpageid;
+                $DB->update_record('lesson_pages', $obj);
+            }
 
+            if ($page == end($pages) && $page->nextpageid !=0) {
+                $page->nextpageid = 0;
+                $obj = new stdClass;
+                $obj->id = $page->id;
+                $obj->nextpageid = $page->nextpageid;
+                $DB->update_record('lesson_pages', $obj);   
+            }
+            $lastpageid = $page->id;
+        }
         return $orderedpages;
     }
 

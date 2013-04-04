@@ -223,6 +223,7 @@ class mod_lesson_renderer extends plugin_renderer_base {
         $canedit = has_capability('mod/lesson:edit', context_module::instance($this->page->cm->id));
 
         while ($pageid != 0) {
+            
             $page = $lesson->load_page($pageid);
             $data = array();
             $data[] = "<a href=\"$CFG->wwwroot/mod/lesson/edit.php?id=".$this->page->cm->id."&amp;mode=single&amp;pageid=".$page->id."\">".format_string($page->title,true).'</a>';
