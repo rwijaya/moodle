@@ -762,13 +762,11 @@ abstract class lesson_add_page_form_base extends moodleform {
         if ($label === null) {
             $label = get_string("score", "lesson");
         }
-        $elname = $name;
         if (is_int($name)) {
             $name = "score[$name]";
-            $elname = 'score';
         }
         $this->_form->addElement('text', $name, $label, array('size'=>5));
-        $this->_form->setType($elname, PARAM_INT);
+        $this->_form->setType($name, PARAM_INT);
         if ($value !== null) {
             $this->_form->setDefault($name, $value);
         }
