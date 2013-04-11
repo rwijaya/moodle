@@ -152,6 +152,7 @@ class assignment_base {
      * This in turn calls the methods producing individual parts of the page
      */
     function view() {
+        global $OUTPUT;
 
         $context = get_context_instance(CONTEXT_MODULE,$this->cm->id);
         require_capability('mod/assignment:view', $context);
@@ -168,7 +169,7 @@ class assignment_base {
         if ($this->isopen() && $this->assignment->timedue > 0 && $this->assignment->timedue < time()) {
             echo $OUTPUT->heading(get_string('closedassignment','assignment'), 3);
         } else if ($this->assignment->timeavailable > time()) {
-            echo $OUTPUT->heading(get_string('futureaassignment','assignment'), 3);
+            echo $OUTPUT->heading(get_string('futureassignment','assignment'), 3);
         }
 
         $this->view_feedback();

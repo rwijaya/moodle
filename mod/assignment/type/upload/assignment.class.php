@@ -256,10 +256,10 @@ class assignment_upload extends assignment_base {
             echo '</form>';
             echo '</div>';
         } else if (!$this->isopen()) {
-            if ($this->assignment->timeavailable < time()) {
+            if ($this->assignment->timedue > 0 && $this->assignment->timedue < time()) {
                 echo $OUTPUT->heading(get_string('closedassignment','assignment'), 3);
-            } else {
-                echo $OUTPUT->heading(get_string('futureaassignment','assignment'), 3);
+            } else if ($this->assignment->timeavailable > time()) {
+                echo $OUTPUT->heading(get_string('futureassignment','assignment'), 3);
             }
         } else if ($this->drafts_tracked() and $state = $this->is_finalized($submission)) {
             if ($state == ASSIGNMENT_STATUS_SUBMITTED) {
