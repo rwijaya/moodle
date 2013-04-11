@@ -1417,7 +1417,7 @@ function quiz_send_notification_messages($course, $quiz, $attempt, $context, $cm
 
     // Check for notifications required.
     $notifyfields = 'u.id, u.username, u.firstname, u.lastname, u.idnumber, u.email, u.emailstop, ' .
-            'u.lang, u.timezone, u.mailformat, u.maildisplay';
+            'u.lang, u.timezone, u.dateformat, u.timeformat, u.mailformat, u.maildisplay';
     $groups = groups_get_all_groups($course->id, $submitter->id);
     if (is_array($groups) && count($groups) > 0) {
         $groups = array_keys($groups);

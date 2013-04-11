@@ -1109,7 +1109,7 @@ class backup_users_structure_step extends backup_structure_step {
         // First, the fields not needing anonymization nor special handling
         $normalfields = array(
             'confirmed', 'policyagreed', 'deleted',
-            'lang', 'theme', 'timezone', 'firstaccess',
+            'lang', 'theme', 'timezone', 'dateformat', 'timeformat', 'firstaccess',
             'lastaccess', 'lastlogin', 'currentlogin',
             'mailformat', 'maildigest', 'maildisplay', 'htmleditor',
             'autosubscribe', 'trackforums', 'timecreated',

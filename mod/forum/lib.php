@@ -2930,6 +2930,8 @@ function forum_subscribed_users($course, $forum, $groupid=0, $context = null, $f
                   u.lastlogin,
                   u.picture,
                   u.timezone,
+                  u.dateformat,
+                  u.timeformat,
                   u.theme,
                   u.lang,
                   u.trackforums,

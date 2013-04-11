@@ -241,6 +241,19 @@ function useredit_shared_definition(&$mform, $editoroptions = null, $filemanager
         $mform->setDefault('timezone', '99');
     }
 
+    $choices = array('0' => get_string('default', 'calendar'),
+                     DATEFORMAT_DDMMYYYY => get_string('dateformatddmmyyyy'),
+                     DATEFORMAT_MMDDYYYY => get_string('dateformatmmddyyyy'),
+                     DATEFORMAT_YYYYMMDD => get_string('dateformatyyyymmdd'));
+    $mform->addElement('select', 'dateformat', get_string('dateformat'), $choices);
+    $mform->setDefault('dateformat', 0);
+
+    $choices = array('0' => get_string('default', 'calendar'),
+                     TIMEFORMAT_12 => get_string('timeformat12'),
+                     TIMEFORMAT_24 => get_string('timeformat24'));
+    $mform->addElement('select', 'timeformat', get_string('timeformat'), $choices);
+    $mform->setDefault('timeformat', 0);
+
     $mform->addElement('select', 'lang', get_string('preferredlanguage'), get_string_manager()->get_list_of_translations());
     $mform->setDefault('lang', $CFG->lang);
 

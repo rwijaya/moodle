@@ -1990,5 +1990,23 @@ function xmldb_main_upgrade($oldversion) {
         upgrade_main_savepoint(true, 2013040300.01);
     }
 
+    if ($oldversion < 2013040500.01) {
+        // Define field component to be added to user
+/*
+        $table = new xmldb_table('user');
+        $field = new xmldb_field('dateformat', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, '0', 'timezone');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('timeformat', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, 0, 'dateformat');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+*/
+        // Main savepoint reached.
+        upgrade_main_savepoint(true, 2013040500.01);
+    }
+
     return true;
 }
