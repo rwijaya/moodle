@@ -23,6 +23,7 @@ if ($data = data_submitted() and confirm_sesskey()) {
 }
 
 $newsettings = admin_output_new_settings_by_page($adminroot);
+
 if (isset($newsettings['frontpagesettings'])) {
     $frontpage = $newsettings['frontpagesettings'];
     unset($newsettings['frontpagesettings']);
@@ -32,7 +33,7 @@ $newsettingshtml = implode($newsettings);
 unset($newsettings);
 
 $focus = '';
-
+//print_object($newsettingshtml);die;
 if (empty($adminroot->errors) and $newsettingshtml === '') {
     // there must be either redirect without message or continue button or else upgrade would be sometimes broken
     if ($return == 'site') {
