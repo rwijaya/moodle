@@ -5623,7 +5623,7 @@ function forum_print_latest_discussions($course, $forum, $maxdiscussions=-1, $di
 
     $canviewparticipants = has_capability('moodle/course:viewparticipants',$context);
 
-    $strdatestring = get_string('strftimerecentfull');
+    $strdatestring = '';//get_string('strftimerecentfull');
 
     // Check if the forum is tracked.
     if ($cantrack = forum_tp_can_track_forums($forum)) {
