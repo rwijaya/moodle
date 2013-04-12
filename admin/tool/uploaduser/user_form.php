@@ -273,6 +273,21 @@ class admin_uploaduser_form2 extends moodleform {
         $mform->setDefault('timezone', $templateuser->timezone);
         $mform->setAdvanced('timezone');
 
+        $choices = array('0' => get_string('default', 'calendar'),
+                     DATEFORMAT_DDMMYYYY => get_string('dateformatddmmyyyy'),
+                     DATEFORMAT_MMDDYYYY => get_string('dateformatmmddyyyy'),
+                     DATEFORMAT_YYYYMMDD => get_string('dateformatyyyymmdd'));
+        $mform->addElement('select', 'dateformat', get_string('dateformat'), $choices);
+        $mform->setDefault('dateformat', $templateuser->dateformat);
+        $mform->setAdvanced('dateformat');
+
+        $choices = array('0' => get_string('default', 'calendar'),
+                     TIMEFORMAT_12 => get_string('timeformat12'),
+                     TIMEFORMAT_24 => get_string('timeformat24'));
+        $mform->addElement('select', 'timeformat', get_string('timeformat'), $choices);
+        $mform->setDefault('timeformat', $templateuser->timeformat);
+        $mform->setAdvanced('timeformat');
+
         $mform->addElement('select', 'lang', get_string('preferredlanguage'), get_string_manager()->get_list_of_translations());
         $mform->setDefault('lang', $templateuser->lang);
         $mform->setAdvanced('lang');

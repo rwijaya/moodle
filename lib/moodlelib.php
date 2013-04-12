@@ -296,6 +296,31 @@ define('PARAM_MULTILANG',  'text');
 define('PARAM_TIMEZONE', 'timezone');
 
 /**
+ * DATEFORMAT_DDMMYYYY - used for displaying date in DD-MM-YYYY format
+ */
+define('DATEFORMAT_DDMMYYYY', '%d-%B-%Y');
+
+/**
+ * DATEFORMAT_MMDDYYYY - used for displaying date in MM-DD-YYYY format
+ */
+define('DATEFORMAT_MMDDYYYY', '%B %d, %Y');
+
+/**
+ * DATEFORMAT_YYYYMMDD - used for displaying date in YYYY-MM-DD format
+ */
+define('DATEFORMAT_YYYYMMDD', '%Y-%B-%d');
+
+/**
+ * TIMEFORMAT_24 - used for displaying time in 24 hours format
+ */
+define('TIMEFORMAT_24', '%H:%M');
+
+/**
+ * TIMEFORMAT_12 - used for displaying time in 12 hours format
+ */
+define('TIMEFORMAT_12', '%I:%M %P');
+
+/**
  * PARAM_CLEANFILE - deprecated alias of PARAM_FILE; originally was removing regional chars too
  */
 define('PARAM_CLEANFILE', 'file');
@@ -2097,7 +2122,7 @@ function make_timestamp($year, $month=1, $day=1, $hour=0, $minute=0, $second=0, 
  */
 function userdate($date, $format = '', $timezone = 99, $fixday = true, $fixhour = true) {
 
-    global $CFG;
+    global $CFG, $USER;
 
     if (empty($format)) {
         $format = get_string('strftimedaydatetime', 'langconfig');
@@ -2111,6 +2136,27 @@ function userdate($date, $format = '', $timezone = 99, $fixday = true, $fixhour 
         $format = $formatnoday;
     }
 
+if (!empty($USER->dateformat)) {
+        $dateformat = $USER->dateformat;
+    } else if (!empty($CFG->site_dateformat)) {
+        $dateformat = $CFG->site_dateformat;
+    } else {
+        $dateformat = get_string('strftimedate', 'langconfig');
+    }
+
+    if (!empty($USER->timeformat)) {
+        $timeformat = $USER->timeformat;
+    } else if (!empty($CFG->site_timeformat)) {
+        $timeformat = $CFG->site_timeformat;
+    } else {
+        $timeformat = get_string('strftimetime', 'langconfig');
+    }
+
+    if (!stristr($format, '%H')) {
+        $defaultformat = '%I';
+    }
+    //$timeformatsetting = '%I';
+
     // Note: This logic about fixing 12-hour time to remove unnecessary leading
     // zero is required because on Windows, PHP strftime function does not
     // support the correct 'hour without leading zero' parameter (%l).
@@ -2118,8 +2164,22 @@ function userdate($date, $format = '', $timezone = 99, $fixday = true, $fixhour 
         // Config.php can force %I not to be fixed.
         $fixhour = false;
     } else if ($fixhour) {
-        $formatnohour = str_replace('%I', 'HH', $format);
-        $fixhour = ($formatnohour != $format);
+        if (stristr($timeformat, '%l')) {
+            $timeformat = str_replace('%l', 'HH', $timeformat);
+        }
+
+        /*if (!empty($timeformat)) {
+            $format = str_replace('%p', '', $format);
+            if (stristr($timeformat, '%H')) { //24 hours format
+                $timeformatsetting = '%H';
+            } else {
+                $format = str_replace('%M', '%M %p', $format);
+                $timeformatsetting = '%I';
+            }
+            $format = trim($format);
+        }*/
+        $formatnohour = str_replace('%l', 'HH', $timeformat);
+        $fixhour = ($formatnohour != $timeformat);
         $format = $formatnohour;
     }
 
@@ -2135,25 +2195,25 @@ function userdate($date, $format = '', $timezone = 99, $fixday = true, $fixhour 
     // (because it's impossible to specify UTF-8 to fetch locale info in Win32)
 
     if (abs($timezone) > 13) {   /// Server time
-        $datestring = date_format_string($date, $format, $timezone);
+        $datestring = date_format_string($date, $dateformat, $timezone);
         if ($fixday) {
             $daystring  = ltrim(str_replace(array(' 0', ' '), '', strftime(' %d', $date)));
             $datestring = str_replace('DD', $daystring, $datestring);
         }
         if ($fixhour) {
-            $hourstring = ltrim(str_replace(array(' 0', ' '), '', strftime(' %I', $date)));
+            $hourstring = ltrim(str_replace(array(' 0', ' '), '', strftime(' ' . $timeformat, $date)));
             $datestring = str_replace('HH', $hourstring, $datestring);
         }
 
     } else {
         $date += (int)($timezone * 3600);
-        $datestring = date_format_string($date, $format, $timezone);
+        $datestring = date_format_string($date, $dateformat, $timezone);
         if ($fixday) {
             $daystring  = ltrim(str_replace(array(' 0', ' '), '', gmstrftime(' %d', $date)));
             $datestring = str_replace('DD', $daystring, $datestring);
         }
         if ($fixhour) {
-            $hourstring = ltrim(str_replace(array(' 0', ' '), '', gmstrftime(' %I', $date)));
+            $hourstring = ltrim(str_replace(array(' 0', ' '), '', gmstrftime(' ' . $timeformat, $date)));
             $datestring = str_replace('HH', $hourstring, $datestring);
         }
     }

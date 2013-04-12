@@ -379,12 +379,12 @@
 
     $extrasql = get_extra_user_fields_sql($context, 'u', '', array(
             'id', 'username', 'firstname', 'lastname', 'email', 'city', 'country',
-            'picture', 'lang', 'timezone', 'maildisplay', 'imagealt', 'lastaccess'));
+            'picture', 'lang', 'timezone', 'dateformat', 'timeformat', 'maildisplay', 'imagealt', 'lastaccess'));
 
     if ($isfrontpage) {
         $select = "SELECT u.id, u.username, u.firstname, u.lastname,
                           u.email, u.city, u.country, u.picture,
-                          u.lang, u.timezone, u.maildisplay, u.imagealt,
+                          u.lang, u.timezone, u.dateformat, u.timeformat, u.maildisplay, u.imagealt,
                           u.lastaccess$extrasql";
         $joins[] = "JOIN ($esql) e ON e.id = u.id"; // everybody on the frontpage usually
         if ($accesssince) {

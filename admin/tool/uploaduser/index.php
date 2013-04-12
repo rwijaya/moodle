@@ -85,7 +85,7 @@ $today = make_timestamp(date('Y', $today), date('m', $today), date('d', $today),
 
 // array of all valid fields for validation
 $STD_FIELDS = array('id', 'firstname', 'lastname', 'username', 'email',
-        'city', 'country', 'lang', 'timezone', 'mailformat',
+        'city', 'country', 'lang', 'timezone', 'dateformat', 'timeformat', 'mailformat',
         'maildisplay', 'maildigest', 'htmleditor', 'autosubscribe',
         'institution', 'department', 'idnumber', 'skype',
         'msn', 'aim', 'yahoo', 'icq', 'phone1', 'phone2', 'address',
