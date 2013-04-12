@@ -1987,7 +1987,7 @@ function xmldb_main_upgrade($oldversion) {
         }
 
         // Main savepoint reached.
-        upgrade_main_savepoint(true, 2013040500.01);
+        upgrade_main_savepoint(true, 2013040300.01);
     }
 
     if ($oldversion < 2013040500.01) {
