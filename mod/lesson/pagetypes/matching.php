@@ -72,17 +72,15 @@ class lesson_page_type_matching extends lesson_page {
         foreach ($answers as $answer) {
             // get all the response
             if ($answer->response != null) {
-                $responses[$answer->id] = trim($answer->response);
+                $responses[] = trim($answer->response);
             }
         }
 
         $responseoptions = array(''=>get_string('choosedots'));
         if (!empty($responses)) {
-            $shuffleresponses = $responses;
-            shuffle($shuffleresponses);
-            foreach ($shuffleresponses as  $response) {
-                $key = array_search($response, $responses);
-                $responseoptions[$key] = $response;
+            shuffle($responses);
+            foreach ($responses as  $response) {
+                $responseoptions[htmlspecialchars($response)] = $response;
             }
         }
         if (isset($USER->modattempts[$this->lesson->id]) && !empty($attempt->useranswer)) {
@@ -167,12 +165,12 @@ class lesson_page_type_matching extends lesson_page {
         $wrong   = array_shift($getanswers);
 
         $answers = array();
-        foreach ($getanswers as $key=>$answer) {
+        foreach ($getanswers as $key => $answer) {
             if ($answer->answer !== '' or $answer->response !== '') {
                 $answers[$answer->id] = $answer;
             }
-            unset($getanswers[$key]);
         }
+
         // get the user's exact responses for record keeping
         $hits = 0;
         $userresponse = array();
@@ -181,12 +179,12 @@ class lesson_page_type_matching extends lesson_page {
                 $result->noanswer = true;
                 return $result;
             }
-            $userresponse[] = $value;
+            $userresponse[] = htmlspecialchars_decode($value);
             // Make sure the user's answer exists in question's answer
             if (array_key_exists($id, $answers)) {
                 $answer = $answers[$id];
-                $result->studentanswer .= '<br />'.format_text($answer->answer, $answer->answerformat, $formattextdefoptions).' = '.$answers[$value]->response;
-                if ($id == $value) {
+                $result->studentanswer .= '<br />'.format_text($answer->answer, $answer->answerformat, $formattextdefoptions).' = '.$value;
+                if ($answer->response == $value) {
                     $hits++;
                 }
             }
