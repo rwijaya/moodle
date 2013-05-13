@@ -179,12 +179,14 @@ class lesson_page_type_matching extends lesson_page {
                 $result->noanswer = true;
                 return $result;
             }
+            $value = htmlspecialchars_decode($value);
             $userresponse[] = htmlspecialchars_decode($value);
             // Make sure the user's answer exists in question's answer
             if (array_key_exists($id, $answers)) {
                 $answer = $answers[$id];
                 $result->studentanswer .= '<br />'.format_text($answer->answer, $answer->answerformat, $formattextdefoptions).' = '.$value;
-                if ($answer->response == $value) {
+                print "<br />".$answer->response .'=='. trim($value);
+                if (trim($answer->response) == trim($value)) {
                     $hits++;
                 }
             }
@@ -399,13 +401,13 @@ class lesson_page_type_matching extends lesson_page {
                 }
             } elseif ($n > 1) {
                 $data = '<label class="accesshide" for="answer_' . $n . '">' . get_string('answer', 'lesson') . '</label>';
-                $data .= "<select id=\"answer_". $n ."\" disabled=\"disabled\"><option selected=\"selected\">".strip_tags(format_string($answer->answer))."</option></select>";
+                $data .= strip_tags(format_string($answer->answer)) . ' ';
                 if ($useranswer != null) {
                     $userresponse = explode(",", $useranswer->useranswer);
                     $data .= '<label class="accesshide" for="stu_answer_response_' . $n . '">' . get_string('matchesanswer', 'lesson') . '</label>';
                     $data .= "<select id=\"stu_answer_response_" . $n . "\" disabled=\"disabled\"><option selected=\"selected\">";
                     if (array_key_exists($i, $userresponse)) {
-                        $data .= strip_tags(format_string($answers[$userresponse[$i]]->response));
+                        $data .= $userresponse[$i];
                     }
                     $data .= "</option></select>";
                 } else {
