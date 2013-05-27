@@ -185,7 +185,6 @@ class lesson_page_type_matching extends lesson_page {
             if (array_key_exists($id, $answers)) {
                 $answer = $answers[$id];
                 $result->studentanswer .= '<br />'.format_text($answer->answer, $answer->answerformat, $formattextdefoptions).' = '.$value;
-                print "<br />".$answer->response .'=='. trim($value);
                 if (trim($answer->response) == trim($value)) {
                     $hits++;
                 }
@@ -520,20 +519,21 @@ class lesson_display_answer_form_matching extends moodleform {
         $mform->setType('pageid', PARAM_INT);
 
         $i = 0;
+
         foreach ($answers as $answer) {
             $mform->addElement('html', '<div class="answeroption">');
             if ($answer->response != null) {
                 $responseid = 'response['.$answer->id.']';
                 if ($hasattempt) {
                     $responseid = 'response_'.$answer->id;
-                    $mform->addElement('hidden', 'response['.$answer->id.']', htmlspecialchars(trim($answers[$useranswers[$i]]->response)));
+                    $mform->addElement('hidden', 'response['.$answer->id.']', htmlspecialchars($useranswers[$i]));
                     // Temporary fixed until MDL-38885 gets integrated
                     $mform->setType('response', PARAM_TEXT);
                 }
                 $mform->addElement('select', $responseid, format_text($answer->answer,$answer->answerformat,$options), $responseoptions, $disabled);
                 $mform->setType($responseid, PARAM_TEXT);
                 if ($hasattempt) {
-                    $mform->setDefault($responseid, htmlspecialchars(trim($answers[$useranswers[$i]]->response))); //TODO: this is suspicious
+                    $mform->setDefault($responseid, htmlspecialchars(trim($useranswers[$i])));
                 } else {
                     $mform->setDefault($responseid, 'answeroption');
                 }
