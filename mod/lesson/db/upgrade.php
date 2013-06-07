@@ -72,8 +72,35 @@ function xmldb_lesson_upgrade($oldversion) {
     // Moodle v2.5.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2013050101) {
+        // Fixed page order for missing page in lesson
+        upgrade_set_timeout(600);  // increase excution time for large sites
+        $lessons = $DB->get_records('lesson');
 
+        foreach ($lessons as $lesson) {
+            $pages = $DB->get_records('lesson_pages', array('lessonid'=>$lesson->id));
+            $lastpageid = 0;
+            foreach ($pages as $key => $page) {
+                if ($lastpageid != 0 && $pages[$lastpageid]->nextpageid != 0 && !array_key_exists($pages[$lastpageid]->nextpageid, $pages)) {
+                    $pages[$lastpageid]->nextpageid = $page->id;
+                    $obj = new stdClass;
+                    $obj->id = $lastpageid;
+                    $obj->nextpageid = $page->id;
+                    $DB->update_record('lesson_pages', $obj);
+                }
+
+                if ($page->prevpageid != 0 && !array_key_exists($page->prevpageid, $pages)) {
+                    $page->prevpageid = $lastpageid;
+                    $obj = new stdClass;
+                    $obj->id = $page->id;
+                    $obj->prevpageid = $lastpageid;
+                    $DB->update_record('lesson_pages', $obj);
+                 }
+
+                $lastpageid = $page->id;
+            }
+        }
+        upgrade_mod_savepoint(true, 2013050101, 'lesson');
+    }
     return true;
 }
-
-

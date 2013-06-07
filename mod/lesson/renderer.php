@@ -313,7 +313,6 @@ class mod_lesson_renderer extends plugin_renderer_base {
             if ($page->prevpageid != $prevpageid) {
                 // fix it
                 $DB->set_field("lesson_pages", "prevpageid", $prevpageid, array("id" => $page->id));
-                debugging("<p>***prevpageid of page $page->id set to $prevpageid***");
             }
 
             $prevpageid = $page->id;
