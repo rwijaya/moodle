@@ -2699,7 +2699,7 @@ class lesson_page_type_manager {
             $pagetype = get_class($this->types[$page->qtype]);
             $pages[$key] = new $pagetype($page, $lesson);
         }
-
+print_object($pages);
         $orderedpages = array();
         $lastpageid = 0;
 

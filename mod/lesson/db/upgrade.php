@@ -81,7 +81,8 @@ function xmldb_lesson_upgrade($oldversion) {
             $pages = $DB->get_records('lesson_pages', array('lessonid'=>$lesson->id));
             $lastpageid = 0;
             foreach ($pages as $key => $page) {
-                if ($lastpageid != 0 && $pages[$lastpageid]->nextpageid != 0 && !array_key_exists($pages[$lastpageid]->nextpageid, $pages)) {
+                $pageexist = array_key_exists($pages[$lastpageid]->nextpageid, $pages);
+                if ($lastpageid != 0 && $pages[$lastpageid]->nextpageid != 0 && !$pageexist) {
                     $pages[$lastpageid]->nextpageid = $page->id;
                     $obj = new stdClass;
                     $obj->id = $lastpageid;
