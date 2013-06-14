@@ -331,10 +331,6 @@ class qformat_default {
             $updatelessonpage = $DB->get_record('lesson_pages', array('id' => $pageid));
         }
 
-        if (isset($currentlessonpage->nextpageid)) {
-            $nextlessonpage = $DB->get_record('lesson_pages', array('id' => $currentlessonpage->nextpageid));
-        }
-
         $unsupportedquestions = 0;
 
         foreach ($questions as $question) {   // Process and store each question
