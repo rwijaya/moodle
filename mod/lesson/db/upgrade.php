@@ -81,61 +81,47 @@ function xmldb_lesson_upgrade($oldversion) {
         foreach ($lessons as $lesson) {
             $pages = $DB->get_records('lesson_pages', array('lessonid' => $lesson->id));
 
-            // Make sure the prev/next id for each page refers to other pages within the lesson.
-            // Otherwise set it to -1. This will prevent breakage during the update process.
             $iscorrupt = false;
+            $duplicateprevpage = 0;
+            $duplicatenextpage = 0;
 
-            // Validate page link is exist within the lesson.
+            // Validate page's link is exist within the lesson.
             foreach ($pages as $id => $page) {
-                if ($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) {
-                    $page->prevpageid = -1;
+                if ($page->prevpageid == 0) {
+                    $duplicateprevpage++;
+                } else if ($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) {
                     $iscorrupt = true;
                 }
-                if ($page->nextpageid != 0 && !isset($pages[$page->nextpageid])) {
-                    $page->nextpageid = -1;
+                if ($page->nextpageid == 0) {
+                    $duplicatenextpage++;
+                } else if ($page->nextpageid != 0 && !isset($pages[$page->nextpageid])) {
                     $iscorrupt = true;
                 }
             }
 
-            // Check for duplicate end page ids.
-            // If there is any multiple end page ids, set the last one as end page.
-            $params = array();
-            $params['lessonid'] = $lesson->id;
-            $params['nextpageid'] = 0;
-            $duplicateendpage = $DB->get_records('lesson_pages', $params);
-            if (array_key_exists($page->id, $duplicateendpage) && count($duplicateendpage) > 1) {
+            // Make sure there's start/end pages and no multiple occurrence.
+            if ($duplicateprevpage != 1 || $duplicatenextpage != 1) {
                 $iscorrupt = true;
-                array_pop($duplicateendpage);
-                foreach ($duplicateendpage as $duplicate) {
-                    $pages[$duplicate->id]->nextpageid = -1;
-                }
             }
 
             // Process the update
-            $continue = true;
-            $orderedpages = array();
+            $count = 0;
             $lastpageid = 0;
-            while($continue && $iscorrupt) {
+            if ($iscorrupt) {
                 foreach($pages as $page) {
-                    // Reset prevpageid if it is corrupted.
-                    if ($lastpageid != 0 && $page->prevpageid == -1) {
-                        $page->prevpageid = $lastpageid;
-                    }
-                    $orderedpages[$page->id] = $page;
-                    $DB->set_field(lesson_pages, 'prevpageid', $lastpageid, array('id' => $page->id));
-                    unset($pages[$page->id]);
-
-                    // Reset nextpageid if it is corrupted.
-                    if ($lastpageid !=0 && isset($orderedpages[$lastpageid]) && $orderedpages[$lastpageid]->nextpageid == -1) {
-                        $orderedpages[$lastpageid]->nextpageid = $page->id;
-                        $DB->set_field(lesson_pages, 'nextpageid', $page->id, array('id' => $orderedpages[$lastpageid]->id));
+                    $count++;
+                    if ($lastpageid == 0) {  // First page
+                        $DB->set_field('lesson_pages', 'prevpageid', 0, array('id' => $page->id));
+                        $DB->set_field('lesson_pages', 'nextpageid', 0, array('id' => $page->id));
+                    } elseif (count($pages) == $count) {
+                        $DB->set_field('lesson_pages', 'prevpageid', $lastpageid, array('id' => $page->id));
+                        $DB->set_field('lesson_pages', 'nextpageid', 0, array('id' => $page->id));
+                        $DB->set_field('lesson_pages', 'nextpageid', $page->id, array('id' => $lastpageid));
+                    } else {
+                        $DB->set_field('lesson_pages', 'prevpageid', $lastpageid, array('id' => $page->id));
+                        $DB->set_field('lesson_pages', 'nextpageid', $page->id, array('id' => $lastpageid));
                     }
                     $lastpageid = $page->id;
-
-                    if ((int)$page->nextpageid===0) {
-                        $orderedpages[$page->id] = $page;
-                        $continue = false;
-                    }
                 }
             }
         }
