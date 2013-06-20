@@ -82,29 +82,28 @@ function xmldb_lesson_upgrade($oldversion) {
             $pages = $DB->get_records('lesson_pages', array('lessonid' => $lesson->id));
 
             $iscorrupt = false;
-            $duplicateprevpage = 0;
-            $duplicatenextpage = 0;
 
-            // Validate page's link is exist within the lesson.
+            // Validate lesson prev and next pages.
             foreach ($pages as $id => $page) {
-                if ($page->prevpageid == 0) {
-                    $duplicateprevpage++;
-                } else if ($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) {
+                // Setting up prev and next id to 0 is only valid if lesson only has 1 page.
+                // Other than that, it indicates lesson page links are corrupted.
+                if ($page->prevpageid == 0 && $page->nextpageid == 0 && count($pages) != 1) {
                     $iscorrupt = true;
-                }
-                if ($page->nextpageid == 0) {
-                    $duplicatenextpage++;
-                } else if ($page->nextpageid != 0 && !isset($pages[$page->nextpageid])) {
+                    break;
+                // Make sure page links to an existing page within the lesson.
+                } else if (($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) ||
+                    ($page->nextpageid != 0 && !isset($pages[$page->nextpageid]))) {
                     $iscorrupt = true;
+                    break;
+                //  Check the pages linked correctly
+                } else if((($page->prevpageid == 0 || $page->nextpageid != 0 ) && $pages[$page->nextpageid]->prevpageid != $page->id) ||
+                    (($page->prevpageid != 0 || $page->nextpageid == 0) && $pages[$page->prevpageid]->nextpageid != $page->id)) {
+                    $iscorrupt = true;
+                    break;
                 }
             }
 
-            // Make sure there's start/end pages and no multiple occurrence.
-            if ($duplicateprevpage != 1 || $duplicatenextpage != 1) {
-                $iscorrupt = true;
-            }
-
-            // Process the update
+            // Process the update for the corrupted lesson pages.
             $count = 0;
             $lastpageid = 0;
             if ($iscorrupt) {
