@@ -77,39 +77,48 @@ function xmldb_lesson_upgrade($oldversion) {
         upgrade_set_timeout(600);  // increase excution time for large sites
 
         $lessons = $DB->get_records('lesson');
-        $fixedpages = array();
 
         foreach ($lessons as $lesson) {
             $pages = $DB->get_records('lesson_pages', array('lessonid' => $lesson->id));
 
+            $countfirstpage = $DB->count_records('lesson_pages', array('prevpageid' => 0, 'lessonid' => $lesson->id));
+            $countlastpage = $DB->count_records('lesson_pages', array('nextpageid' => 0, 'lessonid' => $lesson->id));
             $iscorrupt = false;
 
-            // Validate lesson prev and next pages.
-            foreach ($pages as $id => $page) {
-                // Setting up prev and next id to 0 is only valid if lesson only has 1 page.
-                // Other than that, it indicates lesson page links are corrupted.
-                if ($page->prevpageid == 0 && $page->nextpageid == 0 && count($pages) != 1) {
-                    $iscorrupt = true;
-                    break;
-                }
-                // Make sure page links to an existing page within the lesson.
-                if (($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) ||
-                    ($page->nextpageid != 0 && !isset($pages[$page->nextpageid]))) {
-                    $iscorrupt = true;
-                    break;
-                }
-                //  Check the pages linked correctly
-                if(($page->nextpageid != 0 && $pages[$page->nextpageid]->prevpageid != $page->id) ||
-                    ($page->prevpageid != 0 && $pages[$page->prevpageid]->nextpageid != $page->id)) {
-                    $iscorrupt = true;
-                    break;
+            // Validate multiple first and last pages
+            // Validation for not existence first and last pages will be done on the next test
+            if ($countfirstpage > 1 || $countlastpage > 1) {
+                $iscorrupt = true;
+            }
+
+            if (!$iscorrupt) { // Skip the following validation if pages contains corrupted id.
+                // Validate lesson prev and next pages.
+                foreach ($pages as $id => $page) {
+                    // Setting up prev and next id to 0 is only valid if lesson only has 1 page.
+                    // Other than that, it indicates lesson page links are corrupted.
+                    if ($page->prevpageid == 0 && $page->nextpageid == 0 && count($pages) != 1) {
+                        $iscorrupt = true;
+                        break;
+                    }
+                    // Make sure page links to an existing page within the lesson.
+                    if (($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) ||
+                        ($page->nextpageid != 0 && !isset($pages[$page->nextpageid]))) {
+                        $iscorrupt = true;
+                        break;
+                    }
+                    //  Check the pages linked correctly
+                    if(($page->nextpageid != 0 && $pages[$page->nextpageid]->prevpageid != $page->id) ||
+                        ($page->prevpageid != 0 && $pages[$page->prevpageid]->nextpageid != $page->id)) {
+                        $iscorrupt = true;
+                        break;
+                    }
                 }
             }
 
             // Fix the corrupted prev and next id for all pages
-            $count = 0;
-            $lastpageid = 0;
             if ($iscorrupt) {
+                $count = 0;
+                $lastpageid = 0;
                 foreach($pages as $page) {
                     $count++;
                     if ($lastpageid == 0) {  // First page
@@ -125,13 +134,11 @@ function xmldb_lesson_upgrade($oldversion) {
                     }
                     $lastpageid = $page->id;
                 }
-                array_push ($fixedpages, $pages);
-            }
-        }
-        // Process the update for the corrupted lesson pages.
-        foreach ($fixedpages as $fixpage) {
-            foreach($fixpage as $fp) {
-                $DB->update_record('lesson_pages', $fp);
+
+                // Process the update for the corrupted lesson pages.
+                foreach($pages as $fp) {
+                    $DB->update_record('lesson_pages', $fp);
+                }
             }
         }
         upgrade_mod_savepoint(true, 2013050101, 'lesson');
