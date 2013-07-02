@@ -16,6 +16,32 @@ a.logo {
     float: right;
 }
 
+#page-navbar .breadcrumb-nav {
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05) X;
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05) X;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05) X;
+    background-color: #F5F5F5;
+    float: left;
+    margin-bottom: 10px;
+}
+
+#page-navbar .singlebutton div {
+    margin-right: 0;
+}
+
+.breadcrumb-button {
+    padding-top: 0px;
+}
+
+ul.breadcrumb, .breadcrumb {
+    background-color: transparent;
+    margin: 0px;
+}
+
 /* Custom CSS Settings
 -------------------------*/
 [[setting:customcss]]
