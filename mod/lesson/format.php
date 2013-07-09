@@ -344,7 +344,13 @@ class qformat_default {
                 $this->count_questions($questions)), 'notifysuccess');
 
         $count = 0;
-
+        $addquestionontop = false;
+        if ($pageid == 0) {
+            $addquestionontop = true;
+            $updatelessonpage = $DB->get_record('lesson_pages', array('lessonid' => $lesson->id, 'prevpageid' => 0));
+        } else {
+            $updatelessonpage = $DB->get_record('lesson_pages', array('id' => $pageid));
+        }
         $unsupportedquestions = 0;
 
         foreach ($questions as $question) {   // Process and store each question
@@ -446,6 +452,12 @@ class qformat_default {
                     break;
             }
 
+        }
+        // update the prev links
+        if ($addquestionontop) {
+            $DB->set_field("lesson_pages", "prevpageid", $pageid, array("id" => $updatelessonpage->id));
+        } else {
+            $DB->set_field("lesson_pages", "prevpageid", $pageid, array("id" => $updatelessonpage->nextpageid));
         }
         if ($unsupportedquestions) {
             echo $OUTPUT->notification(get_string('unknownqtypesnotimported', 'lesson', $unsupportedquestions));
