@@ -76,69 +76,54 @@ function xmldb_lesson_upgrade($oldversion) {
         // Fixed page order for missing page in lesson
         upgrade_set_timeout(600);  // increase excution time for large sites
 
-        $lessons = $DB->get_records('lesson');
+        // Validation test:
+        // 1. Prev/next page id is exist within the lesson.
+        // 2. Duplicate prev/next page id.
+        // 3. No existence of first and/or last page.
+        $sql = "SELECT lessonid FROM mdl_lesson_pages lp
+                WHERE prevpageid != 0 AND
+                      prevpageid NOT IN (SELECT id FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)
+                UNION
+                    SELECT lessonid FROM mdl_lesson_pages lp
+                    WHERE nextpageid != 0 AND
+                          nextpageid NOT IN (SELECT id FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)
+                UNION
+                     SELECT distinct(lessonid) FROM mdl_lesson_pages lp  group by lessonid, prevpageid HAVING COUNT(prevpageid) > 1
+                UNION
+                     SELECT distinct(lessonid) FROM mdl_lesson_pages lp  group by lessonid, nextpageid HAVING COUNT(nextpageid) > 1
+                UNION
+                    SELECT lessonid FROM mdl_lesson_pages lp WHERE nextpageid != 0 group by lessonid
+                    HAVING COUNT(lessonid) = (SELECT COUNT(id) FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)
+                UNION
+                    SELECT lessonid FROM mdl_lesson_pages lp WHERE prevpageid != 0 group by lessonid
+                    HAVING COUNT(lessonid) = (SELECT COUNT(id) FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)";
 
+        $lessons = $DB->get_records_sql($sql);
         foreach ($lessons as $lesson) {
-            $pages = $DB->get_records('lesson_pages', array('lessonid' => $lesson->id));
-
-            $countfirstpage = $DB->count_records('lesson_pages', array('prevpageid' => 0, 'lessonid' => $lesson->id));
-            $countlastpage = $DB->count_records('lesson_pages', array('nextpageid' => 0, 'lessonid' => $lesson->id));
-            $iscorrupt = false;
-
-            // Validate multiple first and last pages
-            // Validation for not existence first and last pages will be done on the next test
-            if ($countfirstpage > 1 || $countlastpage > 1) {
-                $iscorrupt = true;
-            }
-
-            if (!$iscorrupt) { // Skip the following validation if pages contains corrupted id.
-                // Validate lesson prev and next pages.
-                foreach ($pages as $id => $page) {
-                    // Setting up prev and next id to 0 is only valid if lesson only has 1 page.
-                    // Other than that, it indicates lesson page links are corrupted.
-                    if ($page->prevpageid == 0 && $page->nextpageid == 0 && count($pages) != 1) {
-                        $iscorrupt = true;
-                        break;
-                    }
-                    // Make sure page links to an existing page within the lesson.
-                    if (($page->prevpageid != 0 && !isset($pages[$page->prevpageid])) ||
-                        ($page->nextpageid != 0 && !isset($pages[$page->nextpageid]))) {
-                        $iscorrupt = true;
-                        break;
-                    }
-                    //  Check the pages linked correctly
-                    if(($page->nextpageid != 0 && $pages[$page->nextpageid]->prevpageid != $page->id) ||
-                        ($page->prevpageid != 0 && $pages[$page->prevpageid]->nextpageid != $page->id)) {
-                        $iscorrupt = true;
-                        break;
-                    }
-                }
-            }
+            $pages = $DB->get_records('lesson_pages', array('lessonid' => $lesson->lessonid));
 
             // Fix the corrupted prev and next id for all pages
-            if ($iscorrupt) {
-                $count = 0;
-                $lastpageid = 0;
-                foreach($pages as $page) {
-                    $count++;
-                    if ($lastpageid == 0) {  // First page
-                        $page->prevpageid = 0;
-                        $page->nextpageid = 0;
-                    } elseif (count($pages) == $count) {
-                        $page->prevpageid = $lastpageid;
-                        $page->nextpageid = 0;
-                        $pages[$lastpageid]->nextpageid = $page->id;
-                    } else {
-                        $page->prevpageid = $lastpageid;
-                        $pages[$lastpageid]->nextpageid = $page->id;
-                    }
-                    $lastpageid = $page->id;
+            $count = 0;
+            $lastpageid = 0;
+            foreach($pages as $page) {
+                $count++;
+                if ($lastpageid == 0) {  // First page
+                    $page->prevpageid = 0;
+                    $page->nextpageid = 0;
+                } elseif (count($pages) == $count) {  // Last page
+                    $page->prevpageid = $lastpageid;
+                    $page->nextpageid = 0;
+                    $pages[$lastpageid]->nextpageid = $page->id;
+                } else {
+                    $page->prevpageid = $lastpageid;
+                    $pages[$lastpageid]->nextpageid = $page->id;
                 }
+                $lastpageid = $page->id;
+            }
 
-                // Process the update for the corrupted lesson pages.
-                foreach($pages as $fp) {
-                    $DB->update_record('lesson_pages', $fp);
-                }
+            // Process the update for the corrupted lesson pages.
+            foreach($pages as $fp) {
+                $DB->update_record('lesson_pages', $fp);
             }
         }
         upgrade_mod_savepoint(true, 2013050101, 'lesson');
