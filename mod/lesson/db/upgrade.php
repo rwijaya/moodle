@@ -68,6 +68,60 @@ function xmldb_lesson_upgrade($oldversion) {
     // Moodle v2.4.0 release upgrade line
     // Put any upgrade step following this
 
+    if ($oldversion < 2012112901) {
+        // Fixed page order for missing page in lesson
+        upgrade_set_timeout(600);  // increase excution time for large sites
+        // Validation test:
+        // 1. Prev/next page id is exist within the lesson.
+        // 2. Duplicate prev/next page id.
+        // 3. No existence of first and/or last page.
+        $sql = "SELECT lessonid FROM mdl_lesson_pages lp
+                WHERE prevpageid != 0 AND
+                      prevpageid NOT IN (SELECT id FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)
+                UNION
+                    SELECT lessonid FROM mdl_lesson_pages lp
+                    WHERE nextpageid != 0 AND
+                          nextpageid NOT IN (SELECT id FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)
+                UNION
+                     SELECT distinct(lessonid) FROM mdl_lesson_pages lp  group by lessonid, prevpageid HAVING COUNT(prevpageid) > 1
+                UNION
+                     SELECT distinct(lessonid) FROM mdl_lesson_pages lp  group by lessonid, nextpageid HAVING COUNT(nextpageid) > 1
+                UNION
+                    SELECT lessonid FROM mdl_lesson_pages lp WHERE nextpageid != 0 group by lessonid
+                    HAVING COUNT(lessonid) = (SELECT COUNT(id) FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)
+                UNION
+                    SELECT lessonid FROM mdl_lesson_pages lp WHERE prevpageid != 0 group by lessonid
+                    HAVING COUNT(lessonid) = (SELECT COUNT(id) FROM mdl_lesson_pages WHERE lessonid = lp.lessonid)";
+
+        $lessons = $DB->get_records_sql($sql);
+        foreach ($lessons as $lesson) {
+            $pages = $DB->get_records('lesson_pages', array('lessonid' => $lesson->lessonid));
+            // Fix the corrupted prev and next id for all pages
+            $count = 0;
+            $lastpageid = 0;
+            foreach($pages as $page) {
+                $count++;
+                if ($lastpageid == 0) {  // First page
+                    $page->prevpageid = 0;
+                    $page->nextpageid = 0;
+                } elseif (count($pages) == $count) {  // Last page
+                    $page->prevpageid = $lastpageid;
+                    $page->nextpageid = 0;
+                    $pages[$lastpageid]->nextpageid = $page->id;
+                } else {
+                    $page->prevpageid = $lastpageid;
+                    $pages[$lastpageid]->nextpageid = $page->id;
+                }
+                $lastpageid = $page->id;
+            }
+
+            // Process the update for the corrupted lesson pages.
+            foreach($pages as $fp) {
+                $DB->update_record('lesson_pages', $fp);
+            }
+        }
+        upgrade_mod_savepoint(true, 2012112901, 'lesson');
+    }
 
     return true;
 }
