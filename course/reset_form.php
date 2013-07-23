@@ -132,4 +132,14 @@ class course_reset_form extends moodleform {
             $mform->setDefault($element, $default);
         }
     }
+    function add_course_to_bulk_reset($courseid) {
+        $mform =& $this->_form;
+        $mform->addElement('hidden', 'c'.$courseid, $courseid);
+    }
+
+    function add_bulk_action($catid) {
+        $mform =& $this->_form;
+        $mform->addElement('hidden', 'categoryid', $catid);
+        $mform->addElement('hidden', 'action', 'reset');
+    }
 }

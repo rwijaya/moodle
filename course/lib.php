@@ -2051,6 +2051,27 @@ function move_courses($courseids, $categoryid) {
 }
 
 /**
+ * Efficiently delete courses within a category
+ *
+ * @param array $courseids is an array of course ids
+ * @return bool success
+ */
+function delete_courses($courseids) {
+    global $DB;
+
+    if (empty($courseids)) {
+        // nothing to do
+        return;
+    }
+
+    foreach ($courseids as $courseid) {
+        delete_course($courseid, false);
+    }
+    fix_course_sortorder(); //update course count in catagories
+    return true;
+}
+
+/**
  * Returns the display name of the given section that the course prefers
  *
  * Implementation of this function is provided by course format

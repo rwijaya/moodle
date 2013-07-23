@@ -53,6 +53,7 @@ $moveup = optional_param('moveup', 0, PARAM_INT);
 $movedown = optional_param('movedown', 0, PARAM_INT);
 $moveto = optional_param('moveto', 0, PARAM_INT);
 $resort = optional_param('resort', 0, PARAM_BOOL);
+$action = optional_param('action', 0, PARAM_ALPHANUM);
 
 // Actions to manage categories.
 $deletecat = optional_param('deletecat', 0, PARAM_INT);
@@ -87,6 +88,8 @@ if ($id) {
 }
 
 $canmanage = has_capability('moodle/category:manage', $context);
+$candelete = has_capability('moodle/course:delete', $context);
+$canreset = has_capability('moodle/course:reset', $context);
 
 // Process any category actions.
 if (!empty($deletecat) and confirm_sesskey()) {
@@ -107,6 +110,7 @@ if (!empty($deletecat) and confirm_sesskey()) {
     // Start output.
     echo $OUTPUT->header();
     echo $OUTPUT->heading($heading);
+    echo $OUTPUT->page_title('lalala');
 
     if ($data = $mform->get_data()) {
         // The form has been submit handle it.
@@ -252,6 +256,117 @@ if ((!empty($hide) or !empty($show)) && confirm_sesskey()) {
     add_to_log($course->id, "course", ($visible ? 'show' : 'hide'), "edit.php?id=$course->id", $course->id);
 }
 
+if ((($action == 'bulkhide') or ($action == 'bulkshow')) && ($data = data_submitted()) && confirm_sesskey()) {
+    // Hide or show  courses.
+    foreach ($data as $key => $value) {
+        if (preg_match('/^c\d+$/', $key)) {
+            $courseid = substr($key, 1);
+
+            if ($courseexist = $DB->get_record('course', array('id' => $courseid))) {
+                if ($action == 'bulkhide') {
+                    $visible = 0;
+                } else {
+                    $visible = 1;
+                }
+                $coursecontext = context_course::instance($courseexist->id);
+                require_capability('moodle/course:visibility', $coursecontext);
+                // Set the visibility of the course. we set the old flag when user manually changes visibility of course.
+                $params = array('id' => $courseexist->id, 'visible' => $visible, 'visibleold' => $visible, 'timemodified' => time());
+                $DB->update_record('course', $params);
+                cache_helper::purge_by_event('changesincourse');
+                add_to_log($courseexist->id, "course", ($visible ? 'show' : 'hide'), "edit.php?id=$courseexist->id", $courseexist->id);
+
+            } else {
+                print_error('cannotfindcourse');
+            }
+        }
+    }
+}
+
+if ($action == 'delete' && $candelete && ($data = data_submitted()) && confirm_sesskey()) { print "in delete";
+    // Remove a specified course.
+    $courses = array();
+    foreach ($data as $key => $value) {
+        if (preg_match('/^c\d+$/', $key)) {
+            $courseid = substr($key, 1);
+            array_push($courses, $courseid);
+            // Check this course existence
+            if ($courseexist = $DB->get_record('course', array('id' => $courseid))) {
+                if (!can_delete_course($courseid)) {
+                    print_error('cannotdeletecourse');
+                }
+            } else {
+                print_error('cannotfindcourse');
+            }
+        }
+    }
+    delete_courses($courses);
+}
+
+if ($action == 'reset' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
+    require_once('reset_form.php');
+
+    $resetform = new course_reset_form();
+
+    if ($resetform->is_cancelled()) {
+        redirect($CFG->wwwroot.'/course/manage.php?categoryid='.$id);
+
+    } else if ($resetdata = $resetform->get_data()) { // no magic quotes
+
+        if (isset($resetdata->selectdefault)) {
+            $_POST = array();
+            $mform = new course_reset_form();
+            $mform->load_defaults();
+
+        } else if (isset($resetdata->deselectall)) {
+            $_POST = array();
+            $mform = new course_reset_form();
+
+        } else {
+            //echo $OUTPUT->header();
+            //echo $OUTPUT->heading($strresetcourse);
+            foreach ($data as $key => $value) {
+                if (preg_match('/^c\d+$/', $key)) {
+                    $courseid = substr($key, 1);
+                    if ($course = $DB->get_record('course', array('id' => $courseid))) {
+                        if (!can_delete_course($courseid)) {
+                            print_error('cannotdeletecourse');
+                        }
+                        $resetdata->reset_start_date_old = $course->startdate;
+                        $status = reset_course_userdata($resetdata);
+                    } else {
+                        print_error('cannotfindcourse');
+                    }
+
+                }
+            }
+
+
+            $data = array();
+            foreach ($status as $item) {
+                $line = array();
+                $line[] = $item['component'];
+                $line[] = $item['item'];
+                $line[] = ($item['error']===false) ? get_string('ok') : '<div class="notifyproblem">'.$item['error'].'</div>';
+                $data[] = $line;
+            }
+
+            $table = new html_table();
+            $table->head  = array(get_string('resetcomponent'), get_string('resettask'), get_string('resetstatus'));
+            $table->size  = array('20%', '40%', '40%');
+            $table->align = array('left', 'left', 'left');
+            $table->width = '80%';
+            $table->data  = $data;
+            //echo html_writer::table($table);
+
+            //echo $OUTPUT->continue_button('view.php?id='.$course->id);  // Back to course page
+            //echo $OUTPUT->footer();
+            //exit;
+            redirect(new moodle_url('/course/manage.php', array('categoryid' => $id)));
+        }
+    }
+}
+
 if ((!empty($moveup) or !empty($movedown)) && confirm_sesskey()) {
     // Move a course up or down.
     require_capability('moodle/category:manage', $context);
@@ -320,6 +435,31 @@ echo $OUTPUT->header();
 
 if (!empty($searchcriteria)) {
     echo $OUTPUT->heading(new lang_string('searchresults'));
+} else if ($action == 'resetoption' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
+    require_once('reset_form.php');
+
+    $resetform = new course_reset_form();
+    $coursenames = array();
+    foreach ($data as $key => $value) {
+        if (preg_match('/^c\d+$/', $key)) {
+            $courseid = substr($key, 1);
+            if ($course = $DB->get_record('course', array('id' => $courseid))) {
+                $resetform->add_course_to_bulk_reset($course->id);
+                array_push($coursenames, $course->fullname);
+            } else {
+                print_error('cannotfindcourse');
+            }
+
+        }
+    }
+    $listofcourses = get_string('listofcourses') . ': '. implode(', ', $coursenames);
+    echo $OUTPUT->heading(get_string('resetcourses'));
+    echo html_writer::tag('div', $listofcourses, array('class' => 'resetcourses'));
+    $resetform->add_bulk_action($id);
+    $resetform->display();
+    echo $OUTPUT->footer();
+    exit;
+
 } else if (!$coursecat->id) {
     // Print out the categories with all the knobs.
     $table = new html_table;
@@ -572,6 +712,28 @@ if (!$courses) {
         $PAGE->requires->yui_module('moodle-core-formautosubmit',
             'M.core.init_formautosubmit',
             array(array('selectid' => 'movetoid', 'nothing' => $id))
+        );
+        $table->data[] = new html_table_row(array($cell));
+    }
+
+    if ($candelete) {
+        $actions = array();
+        $actions[0] = get_string('selectbulkcourseaction');
+        $actions['delete'] = get_string('deletecourses');
+        $actions['resetoption'] = get_string('resetcourses');
+        $actions['bulkhide'] = get_string('hide');
+        $actions['bulkshow'] = get_string('show');
+
+        $nothing = empty($select->nothing) ? false : key($select->nothing);
+        $cell = new html_table_cell();
+        $cell->colspan = 3;
+        $cell->attributes['class'] = 'mdl-right';
+        $cell->text = html_writer::label(get_string('selectbulkcourseaction'), 'action', false, array('class' => 'accesshide'));
+        $cell->text .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
+        $cell->text .= html_writer::select($actions, 'action', $actions, null, array('id' => 'action', 'class' => 'autosubmit'));
+        $PAGE->requires->yui_module('moodle-core-formautosubmit',
+            'M.core.init_formautosubmit',
+            array(array('selectid' => 'action', 'nothing' => $action))
         );
         $table->data[] = new html_table_row(array($cell));
     }
