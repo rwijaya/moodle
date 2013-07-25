@@ -2479,6 +2479,43 @@ function average_number_of_courses_modules() {
 }
 
 /**
+ * Efficiently show/hide course
+ *
+ * @param obj $course The course object
+ * @param bool $visible The course visibility
+ * @return bool success
+ */
+function showhide_course ($course, $visible = true) {
+    global $DB;
+
+    // Set the visibility of the course. we set the old flag when user manually changes visibility of course.
+    $params = array('id' => $course->id, 'visible' => $visible, 'visibleold' => $visible, 'timemodified' => time());
+    if ($success = $DB->update_record('course', $params)) {
+        add_to_log($course->id, "course", ($visible ? 'show' : 'hide'), "edit.php?id=$course->id", $course->id);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Efficiently bulk show/hide courses
+ *
+ * @param arr $courses Collection of course objects
+ * @param bool $visible The course visibility
+ * @return bool success
+ */
+function bulk_showhide_courses($courses, $visible = true) {
+
+    foreach ($courses as $course) {
+        showhide_course ($course, $visible);
+    }
+
+    cache_helper::purge_by_event('changesincourse');
+
+    return true;
+}
+
+/**
  * This class pertains to course requests and contains methods associated with
  * create, approving, and removing course requests.
  *
