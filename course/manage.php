@@ -175,7 +175,7 @@ if (($bulkcataction === 'bulkcathide' || $bulkcataction === 'bulkcatshow') && ($
             $cat->show();
         }
     }
-//    redirect(new moodle_url('/course/manage.php'));
+    redirect(new moodle_url('/course/manage.php', array('categoryid' => $category->id)));
 }
 
 // bulk delete category
@@ -554,24 +554,8 @@ if (!empty($searchcriteria)) {
     print_category_edit($table, $coursecat);
 
     echo html_writer::table($table);
+    print_bulk_actions();
 
-    $actions = array();
-    $actions[0] = get_string('selectbulkcataction');
-    $actions['bulkcatdeleteoption'] = get_string('delete');
-    $actions['bulkcathide'] = get_string('hide');
-    $actions['bulkcatshow'] = get_string('show');
-
-    $nothing = empty($select->nothing) ? false : key($select->nothing);
-
-    echo html_writer::start_tag('div', array('class' => 'buttons text-right'));
-    echo html_writer::label(get_string('selectbulkcataction'), 'bulkcataction', false, array('class' => 'accesshide'));
-    //$cell->text .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
-    echo html_writer::select($actions, 'bulkcataction', $actions, null, array('id' => 'bulkcataction', 'class' => 'autosubmit'));
-    $PAGE->requires->yui_module('moodle-core-formautosubmit',
-        'M.core.init_formautosubmit',
-        array(array('selectid' => 'bulkcataction', 'nothing' => $action))
-    );
-    echo html_writer::end_tag('div');
     echo html_writer::end_tag('div');
     echo html_writer::end_tag('form');
 
@@ -636,10 +620,31 @@ if (!empty($searchcriteria)) {
         'border' => '0',
         'cellspacing' => '2',
         'cellpadding' => '4',
-        'class' => 'generalbox boxaligncenter category_subcategories'
+        'class' => 'generaltable boxaligncenter category_subcategories'
     );
-    $table->head = array(new lang_string('subcategories'));
+    //$table->head = array(new lang_string('subcategories'));
+    $table->head = array(
+        get_string('categories'),
+        get_string('courses'),
+        get_string('edit'),
+        get_string('movecategoryto'),
+        get_string('select')
+    );
+    $table->colclasses = array(
+        'leftalign name',
+        'centeralign count',
+        'centeralign icons',
+        'leftalign actions',
+        'centeralign bulkcataction'
+    );
     $table->data = array();
+    $actionurl = new moodle_url('/course/manage.php');
+
+    echo html_writer::start_tag('form', array('id' => 'bulkcataction', 'action' => $actionurl, 'method' => 'post'));
+    echo html_writer::start_tag('div');
+    echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
+
+
     $baseurl = new moodle_url('/course/manage.php');
     foreach ($subcategories as $subcategory) {
         // Preload the context we will need it to format the category name shortly.
@@ -650,13 +655,17 @@ if (!empty($searchcriteria)) {
         $text = format_string($subcategory->name, true, array('context' => $context));
         // Add the subcategory to the table.
         $baseurl->param('categoryid', $subcategory->id);
-        $table->data[] = array(html_writer::link($baseurl, $text, $attributes));
+        $catobj = coursecat::get($subcategory->id);
+
+        print_category_edit($table, $catobj, 0);
     }
 
     $subcategorieswereshown = (count($table->data) > 0);
     if ($subcategorieswereshown) {
         echo html_writer::table($table);
     }
+    print_bulk_actions();
+    echo html_writer::end_tag('form');
 
     $courses = get_courses_page($coursecat->id, 'c.sortorder ASC',
             'c.id,c.sortorder,c.shortname,c.fullname,c.summary,c.visible',
@@ -676,7 +685,7 @@ if (!$courses) {
 } else {
     // Display a basic list of courses with paging/editing options.
     $table = new html_table;
-    $table->attributes = array('border' => 0, 'cellspacing' => 0, 'cellpadding' => '4', 'class' => 'generalbox boxaligncenter');
+    $table->attributes = array('border' => 0, 'cellspacing' => 0, 'cellpadding' => '4', 'class' => 'generaltable boxaligncenter');
     $table->head = array(
         get_string('courses'),
         get_string('edit'),
@@ -691,7 +700,6 @@ if (!$courses) {
     $table->data = array();
 
     $count = 0;
-    $abletomovecourses = false;
 
     // Checking if we are at the first or at the last page, to allow courses to
     // be moved up and down beyond the paging border.
@@ -774,7 +782,6 @@ if (!$courses) {
                 $url = new moodle_url($baseurl, array('movedown' => $acourse->id));
                 $icons[] = $OUTPUT->action_icon($url, new pix_icon('t/down', get_string('movedown')));
             }
-            $abletomovecourses = true;
         }
 
         $table->data[] = new html_table_row(array(
@@ -792,46 +799,7 @@ if (!$courses) {
         }
     }
 
-    if ($abletomovecourses) {
-        $movetocategories = coursecat::make_categories_list('moodle/category:manage');
-        $movetocategories[$id] = get_string('moveselectedcoursesto');
-
-        $cell = new html_table_cell();
-        $cell->colspan = 3;
-        $cell->attributes['class'] = 'mdl-right';
-        $cell->text = html_writer::label(get_string('moveselectedcoursesto'), 'movetoid', false, array('class' => 'accesshide'));
-        $cell->text .= html_writer::select($movetocategories, 'moveto', $id, null, array('id' => 'movetoid', 'class' => 'autosubmit'));
-        $cell->text .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
-        $PAGE->requires->yui_module('moodle-core-formautosubmit',
-            'M.core.init_formautosubmit',
-            array(array('selectid' => 'movetoid', 'nothing' => $id))
-        );
-        $table->data[] = new html_table_row(array($cell));
-    }
-
-    if ($canmanage) {
-        $actions = array();
-        $actions[0] = get_string('selectbulkcourseaction');
-        $actions['bulkdelete'] = get_string('delete');
-        $actions['resetoption'] = get_string('reset');
-        $actions['bulkhide'] = get_string('hide');
-        $actions['bulkshow'] = get_string('show');
-
-        $nothing = empty($select->nothing) ? false : key($select->nothing);
-        $cell = new html_table_cell();
-        $cell->colspan = 3;
-        $cell->attributes['class'] = 'mdl-right';
-        $cell->text = html_writer::label(get_string('selectbulkcourseaction'), 'action', false, array('class' => 'accesshide'));
-        $cell->text .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
-        $cell->text .= html_writer::select($actions, 'action', $actions, null, array('id' => 'action', 'class' => 'autosubmit'));
-        $PAGE->requires->yui_module('moodle-core-formautosubmit',
-            'M.core.init_formautosubmit',
-            array(array('selectid' => 'action', 'nothing' => $action))
-        );
-        $table->data[] = new html_table_row(array($cell));
-    }
-
-    $actionurl = new moodle_url('/course/manage.php');
+    $actionurl = new moodle_url('/course/manage.php', array('coursecategory' => $id, 'ccseskey' => $));
     $pagingurl = new moodle_url('/course/manage.php', array('categoryid' => $id, 'perpage' => $perpage) + $searchcriteria);
 
     echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $pagingurl);
@@ -842,6 +810,43 @@ if (!$courses) {
         echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => $key, 'value' => $value));
     }
     echo html_writer::table($table);
+
+
+    if ($canmanage) {
+        echo html_writer::start_tag('div', array('class' => 'buttons text-right'));
+        $movetocategories = coursecat::make_categories_list('moodle/category:manage');
+        $movetocategories[$id] = get_string('moveselectedcoursesto');
+
+        echo html_writer::label(get_string('moveselectedcoursesto'), 'movetoid', false, array('class' => 'accesshide'));
+        echo html_writer::select($movetocategories, 'moveto', $id, null, array('id' => 'movetoid', 'class' => 'autosubmit'));
+        echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
+
+        $PAGE->requires->yui_module('moodle-core-formautosubmit',
+            'M.core.init_formautosubmit',
+            array(array('selectid' => 'movetoid', 'nothing' => $id))
+        );
+
+        // Bulk action
+        $actions = array();
+        $actions[0] = get_string('selectbulkcourseaction');
+        $actions['bulkdelete'] = get_string('delete');
+        $actions['resetoption'] = get_string('reset');
+        $actions['bulkhide'] = get_string('hide');
+        $actions['bulkshow'] = get_string('show');
+
+        echo html_writer::label(get_string('selectbulkcourseaction'), 'action', false, array('class' => 'accesshide'));
+        echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
+        echo html_writer::select($actions, 'action', $actions, null, array('id' => 'action', 'class' => 'autosubmit'));
+
+        $PAGE->requires->yui_module('moodle-core-formautosubmit',
+            'M.core.init_formautosubmit',
+            array(array('selectid' => 'action', 'nothing' => ''))
+        );
+
+        echo html_writer::end_tag('div');
+    }
+
+
     echo html_writer::end_tag('div');
     echo html_writer::end_tag('form');
     echo html_writer::empty_tag('br');
@@ -1061,4 +1066,23 @@ Function get_data_cat_ids($data) {
         }
     }
     return $categories;
+}
+
+function print_bulk_actions () {
+    global $PAGE;
+
+    $actions = array();
+    $actions[0] = get_string('selectbulkcataction');
+    $actions['bulkcatdeleteoption'] = get_string('delete');
+    $actions['bulkcathide'] = get_string('hide');
+    $actions['bulkcatshow'] = get_string('show');
+
+    echo html_writer::start_tag('div', array('class' => 'buttons text-right'));
+    echo html_writer::label(get_string('selectbulkcataction'), 'bulkcataction', false, array('class' => 'accesshide'));
+    echo html_writer::select($actions, 'bulkcataction', $actions, null, array('id' => 'bulkcataction', 'class' => 'autosubmit'));
+    $PAGE->requires->yui_module('moodle-core-formautosubmit',
+        'M.core.init_formautosubmit',
+        array(array('selectid' => 'bulkcataction', 'nothing' => ''))
+    );
+    echo html_writer::end_tag('div');
 }
