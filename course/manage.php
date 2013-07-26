@@ -63,6 +63,7 @@ $movecat = optional_param('movecat', 0, PARAM_INT);
 $movetocat = optional_param('movetocat', -1, PARAM_INT);
 $moveupcat = optional_param('moveupcat', 0, PARAM_INT);
 $movedowncat = optional_param('movedowncat', 0, PARAM_INT);
+$bulkcataction = optional_param('bulkcataction', 0, PARAM_ALPHANUM);
 
 require_login();
 
@@ -161,6 +162,80 @@ if ($hidecat and confirm_sesskey()) {
     $cattoshow->show();
 }
 
+// bulk hide or show category
+if (($bulkcataction === 'bulkcathide' || $bulkcataction === 'bulkcatshow') && ($data = data_submitted()) && confirm_sesskey()) {
+
+    $categories = get_data_cat_ids($data);
+    foreach ($categories as $category) {
+        $cat = coursecat::get($category->id);
+        require_capability('moodle/category:manage', get_category_or_system_context($cat->parent));
+        if ($bulkcataction == 'bulkcathide') {
+            $cat->hide();
+        } else {
+            $cat->show();
+        }
+    }
+//    redirect(new moodle_url('/course/manage.php'));
+}
+
+// bulk delete category
+if ($bulkcataction === 'bulkcatdelete' && ($data = data_submitted()) && confirm_sesskey()) {
+    $catids = get_data_cat_ids($data);
+    $coursecategories = array();
+    foreach ($catids as $cat) {
+        $cattodelete = coursecat::get($cat->id);
+        $context = context_coursecat::instance($cat->id);
+        require_capability('moodle/category:manage', $context);
+        require_capability('moodle/category:manage', get_category_or_system_context($cattodelete->parent));
+        array_push($coursecategories, $cattodelete);
+    }
+    // Start output.
+    //$heading = get_string('deletecategory', 'moodle', null, true, array('context' => $context));
+
+    //echo $OUTPUT->heading($heading);
+
+    require_once($CFG->dirroot.'/course/delete_category_bulk_form.php');
+    $mform = new delete_category_bulk_form(null, $coursecategories);
+
+    if ($mform->is_cancelled()) {
+        redirect(new moodle_url('/course/manage.php'));
+    } else if ($data = $mform->get_data()) {
+        $continuebutton = false;
+        foreach ($coursecategories as $cattodelete) {
+
+            // The form has been submit handle it.
+            $fulldelete = 'fulldelete'.$cattodelete->id;
+            $newparent = 'newparent'.$cattodelete->id;
+
+            if ($data->$fulldelete == 1 && $cattodelete->can_delete_full()) {
+                $cattodeletename = $cattodelete->get_formatted_name();
+                $deletedcourses = $cattodelete->delete_full(true);
+
+                foreach ($deletedcourses as $course) {
+                    echo $OUTPUT->notification(get_string('coursedeleted', '', $course->shortname), 'notifysuccess');
+                }
+                echo $OUTPUT->notification(get_string('coursecategorydeleted', '', $cattodeletename), 'notifysuccess');
+                echo $OUTPUT->continue_button(new moodle_url('/course/manage.php'));
+
+            } else if ($data->$fulldelete == 0 && $cattodelete->can_move_content_to((int)$data->$newparent)) {
+                $cattodelete->delete_move($data->$newparent, true);
+                $continuebutton = true;
+            } else {
+                // Some error in parameters (user is cheating?)
+                $mform->display();
+            }
+        }
+        if ($continuebutton) {
+            echo $OUTPUT->continue_button(new moodle_url('/course/manage.php'));
+        }
+        //redirect(new moodle_url('/course/manage.php'));
+    } else {
+        // Display the form.
+        $mform->display();
+    }
+
+}
+
 if ((!empty($moveupcat) or !empty($movedowncat)) and confirm_sesskey()) {
     // Move a category up or down.
     fix_course_sortorder();
@@ -209,7 +284,6 @@ if ($coursecat->id && $canmanage && $resort && confirm_sesskey()) {
     }
 }
 
-
 if (!empty($moveto) && (($data = data_submitted()) && confirm_sesskey())) {
     // Move a specified course to a new category.
     // User must have category update in both cats to perform this.
@@ -249,10 +323,10 @@ if ((!empty($hide) or !empty($show)) && confirm_sesskey()) {
 
 }
 
-if ((($action == 'bulkhide') or ($action == 'bulkshow')) && ($data = data_submitted()) && confirm_sesskey()) {
+if (($action === 'bulkhide' || $action === 'bulkshow') && ($data = data_submitted()) && confirm_sesskey()) {
     // Hide or show  courses.
 
-    if ($action == 'bulkhide') {
+    if ($action === 'bulkhide') {
         $visible = 0;
     } else {
         $visible = 1;
@@ -266,7 +340,7 @@ if ((($action == 'bulkhide') or ($action == 'bulkshow')) && ($data = data_submit
     cache_helper::purge_by_event('changesincourse');
 }
 
-if ($action == 'bulkdelete' && $candelete && ($data = data_submitted()) && confirm_sesskey()) {
+if ($action === 'bulkdelete' && $candelete && ($data = data_submitted()) && confirm_sesskey()) {
     // Remove a specified course.
     $courses = array();
 
@@ -280,7 +354,7 @@ if ($action == 'bulkdelete' && $candelete && ($data = data_submitted()) && confi
     delete_courses($courses);
 }
 
-if ($action == 'reset' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
+if ($action === 'reset' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
     if (!isset($data->selectdefault) && !isset($data->deselectall)) {
         require_once('reset_form.php');
 
@@ -372,7 +446,7 @@ echo $OUTPUT->header();
 if (!empty($searchcriteria)) {
     echo $OUTPUT->heading(new lang_string('searchresults'));
 
-} else if ($action == 'resetoption' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
+} else if ($action === 'resetoption' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
     require_once('reset_form.php');
 
     $resetform = new course_reset_form();
@@ -392,7 +466,7 @@ if (!empty($searchcriteria)) {
     echo $OUTPUT->footer();
     exit;
 
-} else if ($action == 'reset' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
+} else if ($action === 'reset' && $canreset && ($data = data_submitted()) && confirm_sesskey()) {
     require_once('reset_form.php');
 
     $resetform = new course_reset_form();
@@ -421,6 +495,36 @@ if (!empty($searchcriteria)) {
         echo $OUTPUT->footer();
         exit;
     }
+}else if ($bulkcataction === 'bulkcatdeleteoption' && ($data = data_submitted()) && confirm_sesskey()) {
+    $categories = get_data_cat_ids($data);
+    $coursecategories = array();
+    // Start output.
+    $heading = get_string('deletecategory', 'moodle', null, true, array('context' => $context));
+
+    foreach ($categories as $deletecat) {
+        $cattodelete = coursecat::get($deletecat->id);
+        $context = context_coursecat::instance($cattodelete->id);
+        require_capability('moodle/category:manage', $context);
+        require_capability('moodle/category:manage', get_category_or_system_context($cattodelete->parent));
+        array_push($coursecategories, $cattodelete);
+    }
+
+        require_once($CFG->dirroot.'/course/delete_category_bulk_form.php');
+        $mform = new delete_category_bulk_form(null, $coursecategories);
+        if ($mform->is_cancelled()) {
+            redirect(new moodle_url('/course/manage.php'));
+        }
+
+        // Display the form.
+        $mform->display();
+        //$mform->delete_bulk();
+
+        // Finish output and exit.
+
+    echo $OUTPUT->footer();
+    exit();
+
+
 } else if (!$coursecat->id) {
     // Print out the categories with all the knobs.
     $table = new html_table;
@@ -431,18 +535,46 @@ if (!empty($searchcriteria)) {
         get_string('courses'),
         get_string('edit'),
         get_string('movecategoryto'),
+        get_string('select')
     );
     $table->colclasses = array(
         'leftalign name',
         'centeralign count',
         'centeralign icons',
-        'leftalign actions'
+        'leftalign actions',
+        'centeralign bulkcataction'
     );
     $table->data = array();
+
+    $actionurl = new moodle_url('/course/manage.php');
+    echo html_writer::start_tag('form', array('id' => 'bulkcataction', 'action' => $actionurl, 'method' => 'post'));
+    echo html_writer::start_tag('div');
+    echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
 
     print_category_edit($table, $coursecat);
 
     echo html_writer::table($table);
+
+    $actions = array();
+    $actions[0] = get_string('selectbulkcataction');
+    $actions['bulkcatdeleteoption'] = get_string('delete');
+    $actions['bulkcathide'] = get_string('hide');
+    $actions['bulkcatshow'] = get_string('show');
+
+    $nothing = empty($select->nothing) ? false : key($select->nothing);
+
+    echo html_writer::start_tag('div', array('class' => 'buttons text-right'));
+    echo html_writer::label(get_string('selectbulkcataction'), 'bulkcataction', false, array('class' => 'accesshide'));
+    //$cell->text .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'categoryid', 'value' => $id));
+    echo html_writer::select($actions, 'bulkcataction', $actions, null, array('id' => 'bulkcataction', 'class' => 'autosubmit'));
+    $PAGE->requires->yui_module('moodle-core-formautosubmit',
+        'M.core.init_formautosubmit',
+        array(array('selectid' => 'bulkcataction', 'nothing' => $action))
+    );
+    echo html_writer::end_tag('div');
+    echo html_writer::end_tag('div');
+    echo html_writer::end_tag('form');
+
 } else {
     // Print the category selector.
     $displaylist = coursecat::make_categories_list();
@@ -677,7 +809,7 @@ if (!$courses) {
         $table->data[] = new html_table_row(array($cell));
     }
 
-    if ($candelete) {
+    if ($canmanage) {
         $actions = array();
         $actions[0] = get_string('selectbulkcourseaction');
         $actions['bulkdelete'] = get_string('delete');
@@ -845,6 +977,8 @@ function print_category_edit(html_table $table, coursecat $category, $depth = -1
             $select = new single_select($popupurl, 'movetocat', $tempdisplaylist, $category->parent, null, "moveform$category->id");
             $select->set_label(get_string('frontpagecategorynames'), array('class' => 'accesshide'));
             $actions = $OUTPUT->render($select);
+
+            $bulkcataction = html_writer::empty_tag('input', array('type' => 'checkbox', 'name' => 'cat'.$category->id));
         }
 
         $table->data[] = new html_table_row(array(
@@ -855,7 +989,9 @@ function print_category_edit(html_table $table, coursecat $category, $depth = -1
             // Icons.
             new html_table_cell(join(' ', $icons)),
             // Actions.
-            new html_table_cell($actions)
+            new html_table_cell($actions),
+            // Bulk actions
+            new html_table_cell ($bulkcataction)
         ));
     }
 
@@ -901,4 +1037,28 @@ Function get_data_course_ids($data) {
         }
     }
     return $courses;
+}
+
+/**
+ * Get the catids from submitted form
+ *
+ * @param array $data The submitted form data
+ * @return array
+ */
+Function get_data_cat_ids($data) {
+    global $DB;
+
+    $categories = array();
+    foreach ($data as $key => $value) {
+        if (preg_match('/^cat\d+$/', $key)) {
+            $catid = substr($key, 3);
+            if ($category = $DB->get_record('course_categories', array('id' => $catid))) {
+                array_push($categories, $category);
+            } else {
+                print_error('cannotfindcategory', 'error', '', $catid);
+            }
+
+        }
+    }
+    return $categories;
 }

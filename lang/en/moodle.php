@@ -1494,6 +1494,7 @@ $string['selctauser'] = 'Select a user';
 $string['selectall'] = 'Select all';
 $string['selectamodule'] = 'Please select an activity module';
 $string['selectanoptions'] = 'Select an option';
+$string['selectbulkcataction'] = 'Select bulk category action';
 $string['selectbulkcourseaction'] = 'Select bulk course action';
 $string['selectdefault'] = 'Select default';
 $string['selectedfile'] = 'Selected file';
