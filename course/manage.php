@@ -169,7 +169,7 @@ if (($bulkcataction === 'bulkcathide' || $bulkcataction === 'bulkcatshow') && ($
     foreach ($categories as $category) {
         $cat = coursecat::get($category->id);
         require_capability('moodle/category:manage', get_category_or_system_context($cat->parent));
-        if ($bulkcataction == 'bulkcathide') {
+        if ($bulkcataction === 'bulkcathide') {
             $cat->hide();
         } else {
             $cat->show();
@@ -799,7 +799,7 @@ if (!$courses) {
         }
     }
 
-    $actionurl = new moodle_url('/course/manage.php', array('coursecategory' => $id, 'ccseskey' => $));
+    $actionurl = new moodle_url('/course/manage.php', array('coursecategory' => $id, 'ccseskey' => sesskey()));
     $pagingurl = new moodle_url('/course/manage.php', array('categoryid' => $id, 'perpage' => $perpage) + $searchcriteria);
 
     echo $OUTPUT->paging_bar($totalcount, $page, $perpage, $pagingurl);

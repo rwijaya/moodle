@@ -1,10 +1,11 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: rossianiw
- * Date: 26/07/13
- * Time: 12:04 PM
- * To change this template use File | Settings | File Templates.
+ * Defines the bulk delete for course category form.
+ *
+ * @package    core
+ * @subpackage course
+ * @copyright  2013 Rossiani Wijaya
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 if (!defined('MOODLE_INTERNAL')) {
