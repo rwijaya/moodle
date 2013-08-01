@@ -114,7 +114,7 @@ $PAGE->set_title($book->name);
 $PAGE->set_heading($course->fullname);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($book->name));
+echo $OUTPUT->heading(format_string($book->name), 2, null);
 
 $mform->display();
 

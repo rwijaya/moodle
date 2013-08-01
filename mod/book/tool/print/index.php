@@ -98,7 +98,7 @@ if ($chapter) {
     echo html_writer::link('#', $printicon.$printtext, $printlinkatt);
     ?>
     <a name="top"></a>
-    <h1 class="book_title"><?php echo format_string($book->name, true, array('context'=>$context)) ?></h1>
+    <h1><?php echo format_string($book->name, true, array('context'=>$context)) ?></h1>
     <div class="chapter">
     <?php
 
@@ -106,11 +106,11 @@ if ($chapter) {
     if (!$book->customtitles) {
         if (!$chapter->subchapter) {
             $currtitle = book_get_chapter_title($chapter->id, $chapters, $book, $context);
-            echo '<h2 class="book_chapter_title">'.$currtitle.'</h2>';
+            echo '<h2>'.$currtitle.'</h2>';
         } else {
             $currtitle = book_get_chapter_title($chapters[$chapter->id]->parent, $chapters, $book, $context);
             $currsubtitle = book_get_chapter_title($chapter->id, $chapters, $book, $context);
-            echo '<h2 class="book_chapter_title">'.$currtitle.'</h2><h3 class="book_chapter_title">'.$currsubtitle.'</h3>';
+            echo '<h2>'.$currtitle.'</h2><h3>'.$currsubtitle.'</h3>';
         }
     }
 
@@ -143,7 +143,7 @@ if ($chapter) {
     echo html_writer::link('#', $printicon.$printtext, $printlinkatt);
     ?>
     <a name="top"></a>
-    <h1 class="book_title"><?php echo format_string($book->name, true, array('context'=>$context)) ?></h1>
+    <h1><?php echo format_string($book->name, true, array('context'=>$context)) ?></h1>
     <p class="book_summary"><?php echo format_text($book->intro, $book->introformat, array('noclean'=>true, 'context'=>$context)) ?></p>
     <div class="book_info"><table>
     <tr>
@@ -178,9 +178,9 @@ if ($chapter) {
         echo '<div class="book_chapter"><a name="ch'.$ch->id.'"></a>';
         if (!$book->customtitles) {
             if (!$chapter->subchapter) {
-                echo '<h2 class="book_chapter_title">'.$titles[$ch->id].'</h2>';
+                echo '<h2>'.$titles[$ch->id].'</h2>';
             } else {
-                echo '<h3 class="book_chapter_title">'.$titles[$ch->id].'</h3>';
+                echo '<h3>'.$titles[$ch->id].'</h3>';
             }
         }
         $content = str_replace($link1, '#ch', $chapter->content);

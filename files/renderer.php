@@ -524,7 +524,7 @@ class core_files_renderer extends plugin_renderer_base {
 <div class="file-picker fp-generallayout">
     <div class="fp-repo-area">
         <ul class="fp-list">
-            <li class="{!}fp-repo"><a href="#"><img class="{!}fp-repo-icon" alt="'. get_string('repositoryicon', 'repository') .'" width="16" height="16" />&nbsp;<span class="{!}fp-repo-name"></span></a></li>
+            <li class="{!}fp-repo"><a href="#"><img class="{!}fp-repo-icon" alt="'. get_string('repositoryicon', 'repository') .'" width="16" height="16" />&nbsp;<span class="{!}fp-repo-name" role="dialog" aria-live="assertive" aria-atomic="true"></span></a></li>
         </ul>
     </div>
     <div class="fp-repo-items">

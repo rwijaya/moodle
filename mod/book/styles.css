@@ -1,10 +1,6 @@
 
-.dir-rtl.path-mod-book .book_chapter_title {
-    text-align: right;
-}
-
 .path-mod-book .navtop img.icon,
-.path-mod-book .navbotton img.icon {
+.path-mod-book .navbottom img.icon {
   margin-right: 4px;
   margin-left: 4px;
   border: 0;

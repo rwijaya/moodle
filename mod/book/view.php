@@ -181,15 +181,15 @@ echo '<div class="navtop">'.$chnavigation.'</div>';
 // chapter itself
 echo $OUTPUT->box_start('generalbox book_content');
 if (!$book->customtitles) {
-    $hidden = $chapter->hidden ? 'dimmed_text' : '';
+    $hidden = $chapter->hidden ? array('class' => 'dimmed_text') : null;
     if (!$chapter->subchapter) {
         $currtitle = book_get_chapter_title($chapter->id, $chapters, $book, $context);
-        echo $OUTPUT->heading($currtitle, 3, array('class' => 'book_chapter_title '.$hidden));
+        echo $OUTPUT->heading($currtitle, 3, $hidden);
     } else {
         $currtitle = book_get_chapter_title($chapters[$chapter->id]->parent, $chapters, $book, $context);
         $currsubtitle = book_get_chapter_title($chapter->id, $chapters, $book, $context);
-        echo $OUTPUT->heading($currtitle, 3, array('class' => 'book_chapter_title '.$hidden));
-        echo $OUTPUT->heading($currsubtitle, 4, array('class' => 'book_chapter_title '.$hidden));
+        echo $OUTPUT->heading($currtitle, 3, $hidden);
+        echo $OUTPUT->heading($currsubtitle, 4, $hidden);
     }
 }
 $chaptertext = file_rewrite_pluginfile_urls($chapter->content, 'pluginfile.php', $context->id, 'mod_book', 'chapter', $chapter->id);
