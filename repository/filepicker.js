@@ -770,6 +770,7 @@ M.core_filepicker.init = function(Y, options) {
                 this.msg_dlg_node.one('.fp-msg-butok').on('click', function(e) {
                     e.preventDefault();
                     this.msg_dlg.hide();
+                    window.location = M.cfg.wwwroot + '/login/index.php';
                 }, this);
             }
 
