@@ -80,9 +80,10 @@ $PAGE->set_url('/mod/wiki/files.php', array('pageid'=>$pageid));
 require_login($course, true, $cm);
 $PAGE->set_context($context);
 $PAGE->set_title(get_string('wikifiles', 'wiki'));
-$PAGE->set_heading(get_string('wikifiles', 'wiki'));
+$PAGE->set_heading($course->fullname);
 $PAGE->navbar->add(format_string(get_string('wikifiles', 'wiki')));
 echo $OUTPUT->header();
+echo $OUTPUT->heading($wiki->name, 2, null);
 
 $renderer = $PAGE->get_renderer('mod_wiki');
 

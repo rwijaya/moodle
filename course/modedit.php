@@ -291,11 +291,12 @@ if ($mform->is_cancelled()) {
     $PAGE->set_title($streditinga);
     $PAGE->set_cacheable(false);
     echo $OUTPUT->header();
+    echo $OUTPUT->heading($course->fullname, 2, null);
 
     if (get_string_manager()->string_exists('modulename_help', $module->name)) {
-        echo $OUTPUT->heading_with_help($pageheading, 'modulename', $module->name, 'icon');
+        echo $OUTPUT->heading_with_help($pageheading, 'modulename', $module->name, 'icon', '', 3, null);
     } else {
-        echo $OUTPUT->heading_with_help($pageheading, '', $module->name, 'icon');
+        echo $OUTPUT->heading_with_help($pageheading, '', $module->name, 'icon', '', 3, null);
     }
 
     $mform->display();

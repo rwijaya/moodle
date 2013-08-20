@@ -2035,9 +2035,11 @@ class core_renderer extends renderer_base {
      * @param string $component component name
      * @param string|moodle_url $icon
      * @param string $iconalt icon alt text
+     * @param int $level heading level
+     * @param string $classname heading classname
      * @return string HTML fragment
      */
-    public function heading_with_help($text, $helpidentifier, $component = 'moodle', $icon = '', $iconalt = '') {
+    public function heading_with_help($text, $helpidentifier, $component = 'moodle', $icon = '', $iconalt = '', $level = 2, $classname = 'main help') {
         $image = '';
         if ($icon) {
             $image = $this->pix_icon($icon, $iconalt, $component, array('class'=>'icon'));
@@ -2048,7 +2050,7 @@ class core_renderer extends renderer_base {
             $help = $this->help_icon($helpidentifier, $component);
         }
 
-        return $this->heading($image.$text.$help, 2, 'main help');
+        return $this->heading($image.$text.$help, $level, $classname);
     }
 
     /**

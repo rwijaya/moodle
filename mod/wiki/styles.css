@@ -270,10 +270,6 @@ a.wiki_newentry:link, a.wiki_newentry:visited {
     margin-right: 5%;
 }
 
-.wiki_headingtitle {
-    text-align: center;
-}
-
 .wiki_clear {
     clear: both;
 }
