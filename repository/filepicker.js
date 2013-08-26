@@ -1389,6 +1389,7 @@ M.core_filepicker.init = function(Y, options) {
             }
             // display repository that was used last time
             this.mainui.show();
+            this.mainui.focus();
             //this.mainui.trapFocus();
             this.show_recent_repository();
         },
