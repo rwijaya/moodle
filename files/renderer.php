@@ -309,8 +309,8 @@ class core_files_renderer extends plugin_renderer_base {
         <label id="fp-mkdir-dlg-title">' . get_string('newfoldername', 'repository') . '</label><br/>
         <input type="text" />
     </div>
-    <button class="{!}fp-dlg-butcreate">'.get_string('makeafolder').'</button>
-    <button class="{!}fp-dlg-butcancel">'.get_string('cancel').'</button>
+    <button id="fp-dlg-butcreate" class="{!}fp-dlg-butcreate">'.get_string('makeafolder').'</button>
+    <button id="fp-dlg-butcancel" class="{!}fp-dlg-butcancel">'.get_string('cancel').'</button>
 </div>';
         return preg_replace('/\{\!\}/', '', $rv);
     }
@@ -374,12 +374,12 @@ class core_files_renderer extends plugin_renderer_base {
     <div class="fp-select-loading">
         <img src="'.$this->pix_url('i/loading_small').'" />
     </div>
-    <form>
-        <button class="{!}fp-file-download">'.get_string('download').'</button>
-        <button class="{!}fp-file-delete">'.get_string('delete').'</button>
-        <button class="{!}fp-file-setmain">'.get_string('setmainfile', 'repository').'</button>
-        <button class="{!}fp-file-zip">'.get_string('zip', 'editor').'</button>
-        <button class="{!}fp-file-unzip">'.get_string('unzip').'</button>
+    <form id="filemanager_fp_select">
+        <button id="fp-file-download" class="{!}fp-file-download">'.get_string('download').'</button>
+        <button id="fp-file-delete" class="{!}fp-file-delete">'.get_string('delete').'</button>
+        <button id="fp-file-setmain" class="{!}fp-file-setmain">'.get_string('setmainfile', 'repository').'</button>
+        <button id="fp-file-zip" class="{!}fp-file-zip">'.get_string('zip', 'editor').'</button>
+        <button id="fp-file-unzip" class="{!}fp-file-unzip">'.get_string('unzip').'</button>
         <div class="fp-hr"></div>
         <table>
             <tr class="{!}fp-saveas"><td class="mdl-right"><label>'.get_string('name', 'moodle').'</label>:</td>
@@ -396,8 +396,8 @@ class core_files_renderer extends plugin_renderer_base {
             <td class="mdl-left"><p class="{!}fp-refcount"></p><span class="fp-reflistloading">'.$icon_progress.' '.$strloading.'</span><ul class="fp-value"></ul></td></tr>
         </table>
         <div class="fp-select-buttons">
-            <button class="{!}fp-file-update">'.get_string('update', 'moodle').'</button>
-            <button class="{!}fp-file-cancel">'.get_string('cancel').'</button>
+            <button id="fp-file-update" class="{!}fp-file-update">'.get_string('update', 'moodle').'</button>
+            <button id="fp-file-cancel" class="{!}fp-file-cancel">'.get_string('cancel').'</button>
         </div>
     </form>
     <div class="fp-info">
@@ -429,8 +429,8 @@ class core_files_renderer extends plugin_renderer_base {
         $rv = '
 <div class="filemanager fp-dlg">
     <div class="{!}fp-dlg-text"></div>
-    <button class="{!}fp-dlg-butconfirm">'.get_string('ok').'</button>
-    <button class="{!}fp-dlg-butcancel">'.get_string('cancel').'</button>
+    <button id="fp-dlg-butconfirm" class="{!}fp-dlg-butconfirm">'.get_string('ok').'</button>
+    <button id="fp-dlg-butcancel" class="{!}fp-dlg-butcancel">'.get_string('cancel').'</button>
 </div>';
         return preg_replace('/\{\!\}/', '', $rv);
     }
@@ -673,7 +673,7 @@ class core_files_renderer extends plugin_renderer_base {
     <div class="fp-select-loading">
         <img src="'.$this->pix_url('i/loading_small').'" />
     </div>
-    <form>
+    <form id="filepicker_selectform">
         <table>
             <tr class="{!}fp-linktype-2">
                 <td class="mdl-right"></td>
@@ -694,9 +694,9 @@ class core_files_renderer extends plugin_renderer_base {
                 <td class="mdl-right"><label>'.get_string('chooselicense', 'repository').'</label>:</td>
                 <td class="mdl-left"><select></select></td></tr>
         </table>
-        <div class="fp-select-buttons">
-            <button class="{!}fp-select-confirm">'.get_string('getfile', 'repository').'</button>
-            <button class="{!}fp-select-cancel">'.get_string('cancel').'</button>
+        <div id="fpselectbuttons" class="fp-select-buttons">
+            <button id="fp-select-confirm" class="{!}fp-select-confirm">'.get_string('getfile', 'repository').'</button>
+            <button id="fp-select-cancel" class="{!}fp-select-cancel">'.get_string('cancel').'</button>
         </div>
     </form>
     <div class="fp-info">
@@ -830,9 +830,9 @@ class core_files_renderer extends plugin_renderer_base {
 <div class="file-picker fp-dlg">
     <p class="{!}fp-dlg-text"></p>
     <div class="fp-dlg-buttons">
-        <button class="{!}fp-dlg-butoverwrite">'.get_string('overwrite', 'repository').'</button>
-        <button class="{!}fp-dlg-butrename"></button>
-        <button class="{!}fp-dlg-butcancel">'.get_string('cancel').'</button>
+        <button id="fp-dlg-butoverwrite" class="{!}fp-dlg-butoverwrite">'.get_string('overwrite', 'repository').'</button>
+        <button id="fp-dlg-butrename" class="{!}fp-dlg-butrename"></button>
+        <button id="fp-dlg-butcancel" class="{!}fp-dlg-butcancel">'.get_string('cancel').'</button>
     </div>
 </div>';
         return preg_replace('/\{\!\}/', '', $rv);

@@ -726,6 +726,7 @@ M.core_filepicker.init = function(Y, options) {
                 });
                 node.one('.fp-dlg-butoverwrite').on('click', handleOverwrite, this);
                 node.one('.fp-dlg-butrename').on('click', handleRename, this);
+                node.one('.fp-dlg-butcancel').setAttribute('id', 'fp-dlg-butcancel-'+node.get('id'));
                 node.one('.fp-dlg-butcancel').on('click', handleCancel, this);
                 if (this.options.env == 'editor') {
                     node.one('.fp-dlg-text').setContent(M.str.repository.fileexistsdialog_editor);
@@ -1146,6 +1147,7 @@ M.core_filepicker.init = function(Y, options) {
                 node.one('input').on('change', changelinktype, this);
             });
             this.populate_licenses_select(selectnode.one('.fp-setlicense select'));
+            getfile.setAttribute('id', 'fp-select-confirm-'+client_id)
             // register event on clicking submit button
             getfile.on('click', function(e) {
                 e.preventDefault();
@@ -1219,6 +1221,7 @@ M.core_filepicker.init = function(Y, options) {
                 }
             }, this);
             var cancel = selectnode.one('.fp-select-cancel');
+            cancel.setAttribute('id', 'fp-select-cancel-'+client_id);
             cancel.on('click', function(e) {
                 e.preventDefault();
                 this.selectui.hide();
