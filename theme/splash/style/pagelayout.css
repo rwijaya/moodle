@@ -276,13 +276,7 @@ h2.main,h3.main,h4.main,h5.main,h6.main{
     margin:0 0 10px;
     padding:3px;
 }
-#region-main h2.headingblock{
-    font-size:1.6em;
-    font-weight:400;
-    line-height:1.6em;
-    margin:0 0 10px;
-    padding:3px;
-}
+
 #region-main .coursebox h3{
     font-size:1em;
 }
