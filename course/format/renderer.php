@@ -608,7 +608,7 @@ abstract class format_section_renderer_base extends plugin_renderer_base {
      * @param int $displaysection The section number in the course which is being displayed
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
-        global $PAGE;
+        global $PAGE, $OUTPUT;
 
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
@@ -651,7 +651,7 @@ abstract class format_section_renderer_base extends plugin_renderer_base {
         // Title with section navigation links.
         $sectionnavlinks = $this->get_nav_links($course, $modinfo->get_section_info_all(), $displaysection);
         $sectiontitle = '';
-        $sectiontitle .= html_writer::start_tag('div', array('class' => 'section-navigation header headingblock'));
+        $sectiontitle .= html_writer::start_tag('div', array('class' => 'section-navigation header'));
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['previous'], array('class' => 'mdl-left'));
         $sectiontitle .= html_writer::tag('span', $sectionnavlinks['next'], array('class' => 'mdl-right'));
         // Title attributes
@@ -659,7 +659,7 @@ abstract class format_section_renderer_base extends plugin_renderer_base {
         if (!$thissection->visible) {
             $titleattr .= ' dimmed_text';
         }
-        $sectiontitle .= html_writer::tag('div', get_section_name($course, $displaysection), array('class' => $titleattr));
+        $sectiontitle .= html_writer::tag('div', $OUTPUT->heading(get_section_name($course, $displaysection)), array('class' => $titleattr));
         $sectiontitle .= html_writer::end_tag('div');
         echo $sectiontitle;
 
