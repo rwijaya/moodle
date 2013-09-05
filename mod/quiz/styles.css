@@ -1007,9 +1007,10 @@ bank window's title is prominent enough*/
     font-weight: bold;
     border: 0 none;
 }
-#page-mod-quiz-edit .questionbankwindow.block div.header div.title h2 {
+#page-mod-quiz-edit .questionbankwindow.block div.header div.title h3 {
     color: #FFF;
     text-align: center;
+    margin: 0;
 }
 #page-mod-quiz-edit .collapsed .container {
     display: none;
