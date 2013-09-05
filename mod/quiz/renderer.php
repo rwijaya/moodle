@@ -52,6 +52,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
 
         $output = '';
         $output .= $this->header();
+        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
         $output .= $this->review_summary_table($summarydata, $page);
         $output .= $this->review_form($page, $showall, $displayoptions,
                 $this->questions($attemptobj, true, $slots, $page, $showall, $displayoptions),
@@ -77,6 +78,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
 
         $output = '';
         $output .= $this->header();
+        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
         $output .= $this->review_summary_table($summarydata, 0);
 
         if (!is_null($seq)) {
@@ -99,6 +101,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
     public function review_question_not_allowed($message) {
         $output = '';
         $output .= $this->header();
+        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
         $output .= $this->notification($message);
         $output .= $this->close_window_button();
         $output .= $this->footer();
@@ -392,6 +395,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
     public function start_attempt_page(quiz $quizobj, mod_quiz_preflight_check_form $mform) {
         $output = '';
         $output .= $this->header();
+        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
         $output .= $this->quiz_intro($quizobj->get_quiz(), $quizobj->get_cm());
         ob_start();
         $mform->display();
@@ -415,6 +419,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
             $nextpage) {
         $output = '';
         $output .= $this->header();
+        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
         $output .= $this->quiz_notices($messages);
         $output .= $this->attempt_form($attemptobj, $page, $slots, $id, $nextpage);
         $output .= $this->footer();

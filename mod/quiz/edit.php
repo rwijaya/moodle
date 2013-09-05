@@ -442,6 +442,14 @@ if ($quiz_reordertool) {
 } else {
     $currenttab = 'edit';
 }
+if ($quiz_reordertool) {
+    echo $OUTPUT->heading_with_help(format_string($quiz->name),
+        'orderandpaging', 'quiz');
+} else {
+    echo $OUTPUT->heading(format_string($quiz->name));
+    echo $OUTPUT->help_icon('editingquiz', 'quiz', get_string('basicideasofquiz', 'quiz'));
+}
+
 $tabs = array(array(
     new tabobject('edit', new moodle_url($thispageurl,
             array('reordertool' => 0)), get_string('editingquiz', 'quiz')),
@@ -457,16 +465,15 @@ if ($quiz_qbanktool) {
     $bankclass = 'collapsed ';
     $quizcontentsclass = 'quizwhenbankcollapsed';
 }
+$showurl = html_writer::link($thispageurl->out(false, array('qbanktool' => '1')), get_string('show'), array('id' => 'showbankcmd'));
+$hideurl = html_writer::link($thispageurl->out(false, array('qbanktool' => '0')), get_string('hide'), array('id' => 'hidebankcmd'));
+$qbshowhidetext = get_string('questionbankcontents', 'quiz') .
+    '&nbsp;['.$showurl.$hideurl.']';
 
 echo '<div class="questionbankwindow ' . $bankclass . 'block">';
-echo '<div class="header"><div class="title"><h2>';
-echo get_string('questionbankcontents', 'quiz') .
-       '&nbsp;[<a href="' . $thispageurl->out(true, array('qbanktool' => '1')) .
-       '" id="showbankcmd">' . get_string('show').
-       '</a><a href="' . $thispageurl->out(true, array('qbanktool' => '0')) .
-       '" id="hidebankcmd">' . get_string('hide').
-       '</a>]';
-echo '</h2></div></div><div class="content">';
+echo '<div class="header"><div class="title">';
+echo $OUTPUT->heading($qbshowhidetext, 3);
+echo '</div></div><div class="content">';
 
 echo '<span id="questionbank"></span>';
 echo '<div class="container">';
@@ -499,13 +506,6 @@ if ($quiz_reordertool) {
     echo '</div>';
 }
 
-if ($quiz_reordertool) {
-    echo $OUTPUT->heading_with_help(get_string('orderingquizx', 'quiz', format_string($quiz->name)),
-            'orderandpaging', 'quiz');
-} else {
-    echo $OUTPUT->heading(get_string('editingquizx', 'quiz', format_string($quiz->name)), 2);
-    echo $OUTPUT->help_icon('editingquiz', 'quiz', get_string('basicideasofquiz', 'quiz'));
-}
 quiz_print_status_bar($quiz);
 
 $tabindex = 0;
