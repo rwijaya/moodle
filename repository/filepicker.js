@@ -740,6 +740,7 @@ M.core_filepicker.init = function(Y, options) {
             this.process_dlg.dialogdata = data;
             this.process_dlg_node.one('.fp-dlg-butrename').setContent(M.util.get_string('renameto', 'repository', data.newfile.filename));
             this.process_dlg.show();
+            this.trapFocus(this.process_dlg);
         },
         /** displays error instead of filepicker contents */
         display_error: function(errortext, errorcode) {
@@ -778,6 +779,7 @@ M.core_filepicker.init = function(Y, options) {
             this.msg_dlg_node.removeClass('fp-msg-info').removeClass('fp-msg-error').addClass('fp-msg-'+type)
             this.msg_dlg_node.one('.fp-msg-text').setContent(Y.Escape.html(msg));
             this.msg_dlg.show();
+            this.trapFocus(this.msg_dlg);
         },
         view_files: function(appenditems) {
             this.viewbar_set_enabled(true);
@@ -897,7 +899,7 @@ M.core_filepicker.init = function(Y, options) {
                 }
             }, false);
         },
-       classnamecallback : function(node) {
+        classnamecallback : function(node) {
             var classname = '';
             if (node.children) {
                 classname = classname + ' fp-folder';
@@ -1077,6 +1079,7 @@ M.core_filepicker.init = function(Y, options) {
             Y.one('#fp-file_label_'+this.options.client_id).setContent(Y.Escape.html(M.str.repository.select+' '+argstitle));
 
             this.selectui.show();
+            this.trapFocus(this.selectui);
             Y.one('#'+this.selectnode.get('id')).focus();
             var client_id = this.options.client_id;
             var selectnode = this.selectnode;
@@ -1317,6 +1320,7 @@ M.core_filepicker.init = function(Y, options) {
             // allow to move the panel dragging it by it's header:
             this.mainui.plug(Y.Plugin.Drag,{handles:['#filepicker-'+client_id+' .yui3-widget-hd']});
             this.mainui.show();
+            this.trapFocus(this.mainui);
             if (this.mainui.get('y') < 0) {
                 this.mainui.set('y', 0);
             }
@@ -1925,6 +1929,7 @@ M.core_filepicker.init = function(Y, options) {
             if (this.fpnode) {
                 this.hide();
                 this.mainui.show();
+                this.trapFocus(this.mainui);
                 this.show_recent_repository();
             } else {
                 this.launch();
@@ -1957,6 +1962,27 @@ M.core_filepicker.init = function(Y, options) {
                 M.util.set_user_preference('filepicker_' + name, value);
                 this.options.userprefs[name] = value;
             }
+        },
+        trapFocus: function (dialog) {
+            var bb = dialog.get('boundingBox');
+            Y.one('#'+dialog.get('id')).on('key', function(e) {
+                var target = e.target;
+                var can_receive_focus_selector = 'input:not([type="hidden"]), a[href], button, textarea, select, [tabindex]';
+                var firstitem = bb.one(can_receive_focus_selector);
+                var lastitem = bb.all(can_receive_focus_selector).pop();
+
+                if (e.shiftKey) {
+                    if (target === firstitem) {
+                        lastitem.focus();
+                        e.preventDefault();
+                    }
+                } else {
+                    if (target === lastitem) {
+                        firstitem.focus();
+                        e.preventDefault();
+                    }
+                }
+            }, 'down:9', this);
         }
     });
     var loading = Y.one('#filepicker-loading-'+options.client_id);
