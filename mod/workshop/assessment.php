@@ -105,7 +105,8 @@ if ($assessmenteditable and $workshop->useexamples and $workshop->examplesmode =
         // no money, no love
         $assessmenteditable = false;
         echo $output->header();
-        echo $output->heading(get_string('exampleneedsubmission', 'workshop'), 2);
+        echo $output->heading(format_string($workshop->name));
+        echo $output->heading(get_string('exampleneedsubmission', 'workshop'), 3);
         echo $output->footer();
         exit;
     } else {
@@ -114,7 +115,8 @@ if ($assessmenteditable and $workshop->useexamples and $workshop->examplesmode =
             if (is_null($example->grade)) {
                 $assessmenteditable = false;
                 echo $output->header();
-                echo $output->heading(get_string('exampleneedassessed', 'workshop'), 2);
+                echo $output->heading(format_string($workshop->name));
+                echo $output->heading(get_string('exampleneedassessed', 'workshop'), 3);
                 echo $output->footer();
                 exit;
             }
@@ -236,7 +238,8 @@ if ($canoverridegrades or $cansetassessmentweight) {
 // output starts here
 $output = $PAGE->get_renderer('mod_workshop');      // workshop renderer
 echo $output->header();
-echo $output->heading(get_string('assessedsubmission', 'workshop'), 2);
+echo $output->heading(format_string($workshop->name));
+echo $output->heading(get_string('assessedsubmission', 'workshop'), 3);
 
 $submission = $workshop->get_submission_by_id($submission->id);     // reload so can be passed to the renderer
 echo $output->render($workshop->prepare_submission($submission, has_capability('mod/workshop:viewauthornames', $workshop->context)));
