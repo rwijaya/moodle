@@ -1250,7 +1250,7 @@ class core_renderer extends renderer_base {
         if ($bc->title) {
             $attributes = array();
             if ($bc->blockinstanceid) {
-                $attributes['id'] = 'instance-'.$bc->blockinstanceid.'-header';
+                //$attributes['id'] = 'instance-'.$bc->blockinstanceid.'-header';
             }
             $title = html_writer::tag('h2', $bc->title, $attributes);
         }
