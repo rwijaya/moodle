@@ -608,7 +608,7 @@ abstract class format_section_renderer_base extends plugin_renderer_base {
      * @param int $displaysection The section number in the course which is being displayed
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
-        global $PAGE, $OUTPUT;
+        global $PAGE;
 
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
