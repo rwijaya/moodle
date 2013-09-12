@@ -16,7 +16,14 @@ body {
 .sitetopic {
     border: none;
 }
-
+.site-news-forum h2,
+.frontpage-course-list h2,
+.frontpage-category-names h2,
+.frontpage-category-combo h2 {
+    border-bottom: 1px solid #ddd;
+    font-size: 1.3em;
+    color: #333;
+}
 #notice {
     text-align: center;
 }
@@ -672,3 +679,10 @@ table#user-grades tr.avg td.vmarked {
 }
 
 .path-grade-report.dir-rtl #graded_users_selector .singleselect {margin: 0px;}
+
+.course_category_tree .category > .info a {
+    margin: 15px 0 15px 15px;
+}
+.dir-rtl .course_category_tree .category > .info a {
+    margin: 15px 0px 15px 0px;
+}

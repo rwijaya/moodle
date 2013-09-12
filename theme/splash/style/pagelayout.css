@@ -266,9 +266,6 @@ a:hover,
     line-height:1em;
     padding:10px 0;
 }
-h2,h3,h4,h5,h6{
-    text-align:left;
-}
 #region-main h2{
     font-size:1.6em;
     font-weight:400;
@@ -276,7 +273,16 @@ h2,h3,h4,h5,h6{
     margin:0 0 10px;
     padding:3px;
 }
-
+.site-news-forum h2,
+.frontpage-course-list h2,
+.frontpage-category-names h2,
+.frontpage-category-combo h2 {
+    font-size:1.6em;
+    font-weight:400;
+    line-height:1.6em;
+    margin:0 0 10px;
+    padding:3px;
+}
 #region-main .coursebox h3{
     font-size:1em;
 }

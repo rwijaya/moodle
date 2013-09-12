@@ -699,10 +699,8 @@ html>
 
 .generalbox h2,h3.sectionname,h2,h3, h2 a, h3 a, div.loginpanel h2, div.signuppanel h2 {
     font-size: 30px;
-    padding-bottom: 2px;
     margin: 3px 0 2px;
     border-bottom: none;
-    display: block;
     font-family: Georgia, serif;
     font-weight: normal;
     letter-spacing: -1px;
@@ -901,13 +899,14 @@ div.coursebox.collapsed {
     margin-bottom: 0;
 }
 
-div.coursebox > .info > .name a {
+div.coursebox > .info a {
     font-weight: inherit;
 }
 
-div.coursebox > .info > h3.name a {
+div.coursebox > .info a {
     font-size: 16px;
     font-weight: 400;
+    margin: 10px 0;
 }
 
 .coursebox div.summary {
@@ -932,12 +931,14 @@ div.course_category_tree .category > .info a {
     font-weight: 400;
     text-decoration: none;
 }
-
+.course_category_tree .category .numberofcourse {
+    font-size: 0.75em;
+}
 div.course_category_tree div.coursebox.odd {
     background: #eee;
 }
 
-div.course_category_tree div.coursebox > .info > .name > a {
+div.course_category_tree div.coursebox > .info a {
     font-size: 14px;
 }
 

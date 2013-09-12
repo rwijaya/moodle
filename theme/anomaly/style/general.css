@@ -106,7 +106,15 @@ h2.tagline {
 .sitetopic {
     border-width: 0;
 }
-
+.site-news-forum h2,
+.frontpage-course-list h2,
+.frontpage-category-names h2,
+.frontpage-category-combo h2 {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #697F55;
+    background-color: #E3E3E3;
+    padding: 1px 5px;
+}
 .coursebox {
     width: 100%;
     margin: 10px 0;

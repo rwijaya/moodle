@@ -22,6 +22,14 @@ hr {
     border-bottom: 1px dotted #808080;
     border-top: 0px;
 }
+.site-news-forum h2,
+.frontpage-course-list h2,
+.frontpage-category-names h2,
+.frontpage-category-combo h2 {
+    border-bottom: 1px solid #ddd;
+    font-size: 1.4em;
+    font-weight: bold;
+}
 /*
 Page
 -----------------------*/
