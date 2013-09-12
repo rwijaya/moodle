@@ -116,6 +116,17 @@ a:hover {
 
 /* Course
 ----------------------------*/
+.site-news-forum h2,
+.frontpage-course-list h2,
+.frontpage-category-names h2,
+.frontpage-category-combo h2 {
+    background: url([[pix:theme|headingblock]]) repeat-x 0 0;
+    color: #fff;
+    font-weight: normal;
+    border: none;
+    padding: 2px 5px;
+}
+
 .course-content .main {
     border: 1px solid #eee;
     background: #eee;
