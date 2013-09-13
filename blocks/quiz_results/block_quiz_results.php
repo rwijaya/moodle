@@ -234,7 +234,7 @@ class block_quiz_results extends block_base {
 
             if (!$inquiz) {
                 // Don't show header and link to the quiz if we ARE at the quiz...
-                $this->content->text .= '<h1><a href="'.$CFG->wwwroot.'/mod/quiz/view.php?q='.$quizid.'">'.$quiz->name.'</a></h1>';
+                $this->content->text .= '<h3><small><a href="'.$CFG->wwwroot.'/mod/quiz/view.php?q='.$quizid.'">'.$quiz->name.'</a></small></h1>';
             }
 
             if ($nameformat = B_QUIZRESULTS_NAME_FORMAT_FULL) {
@@ -386,7 +386,7 @@ class block_quiz_results extends block_base {
 
             if(!$inquiz) {
                 // Don't show header and link to the quiz if we ARE at the quiz...
-                $this->content->text .= '<h3><a href="'.$CFG->wwwroot.'/mod/quiz/view.php?q='.$quizid.'">'.$quiz->name.'</a></h3>';
+                $this->content->text .= '<h3><small><a href="'.$CFG->wwwroot.'/mod/quiz/view.php?q='.$quizid.'">'.$quiz->name.'</a></small></h3>';
             }
 
             $rank = 0;

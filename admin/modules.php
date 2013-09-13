@@ -24,6 +24,7 @@
     $strshow = get_string("show");
     $strsettings = get_string("settings");
     $stractivities = get_string("activities");
+    $strmanageactivities = get_string('course:manageactivities', 'role');
     $stractivitymodule = get_string("activitymodule");
     $strshowmodulecourse = get_string('showmodulecourse');
 
@@ -72,7 +73,7 @@
     }
 
     echo $OUTPUT->header();
-    echo $OUTPUT->heading($stractivities);
+    echo $OUTPUT->heading($strmanageactivities);
 
 /// Get and sort the existing modules
 
