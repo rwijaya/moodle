@@ -11,7 +11,8 @@ define('AJAX_SCRIPT', true);
 
 require_once('../../config.php');
 require_once('../../lib/enrollib.php');
-require_once('course_rating.php');
+require_once('../moodleblock.class.php');
+require_once('block_course_rating.php');
 
 $courseid = required_param('courseid', PARAM_INT);
 $action = required_param('action', PARAM_ALPHANUMEXT);
@@ -22,6 +23,8 @@ $action = htmlentities($action, ENT_QUOTES, 'UTF-8');
 
 if ($action == 'save') {
     require_login();
+
+    // comfirm the sesskey with the required_param('sesskey', PARAM_RAW);
     require_sesskey();
     // check current logged in user is the same as voter.
     if ($USER->id == $userid) {
@@ -39,11 +42,11 @@ if ($action == 'save') {
                 $voteid = $DB->insert_record('course_rating', $data);
 
                 $blockrating = new block_course_rating();
-                $newaverage = $blockrating->get_rating_average();
+                $newaverage = $blockrating->get_rating_average($courseid);
 
                 echo json_encode(array('message' => $newaverage));
             } else {
-                echo json_encode('error'=> true, array('message' => 'already exist'));
+                echo json_encode(array('error'=> true, 'message' => 'already exist'));
             }
         } else {
             echo json_encode(array('error'=> true, 'message' => 'You are not enrol in this course'));

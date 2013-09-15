@@ -18,7 +18,7 @@
             phpPath : '../blocks/course_rating/course_rating.php',
 
             /** Boolean vars **/
-            step:false, // if true,  mouseover binded star by star,
+            step: true, // if true,  mouseover binded star by star,
             isDisabled:false,
             showRateInfo: true,
             canRateAgain : false,
@@ -152,8 +152,6 @@
                     var rate = getNote(newWidth);
                     average.width(newWidth);
 
-                    $('.average_rating').html('<strong>Loading...</strong>');
-
                     $.post(opts.phpPath,{
                             userid : userid,
                             courseid: courseid,
@@ -161,7 +159,7 @@
                             action : 'save',
                             sesskey: sesskey
                         },
-                        function(data) {
+                        function(data) {alert(data.toSource());
                             if(!data.error) {
                                 $('.average_rating').html(data.message);
                                 if(opts.onSuccess) opts.onSuccess( element, rate );
