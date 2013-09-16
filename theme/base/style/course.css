@@ -118,7 +118,7 @@ li.section.hidden span.commands a.editing_show {cursor:default;}
 .coursebox {width: 100%;margin-bottom:15px;}
 .coursebox.collapsed {margin-bottom:0}
 .coursebox.collapsed > .content {display:none;}
-.coursebox > .info a {display:block;background-image:url([[pix:moodle|i/course]]);background-repeat: no-repeat;padding-left:21px;background-position: left top;}
+.coursebox > .info a.courseicon {display:block;background-image:url([[pix:moodle|i/course]]);background-repeat: no-repeat;padding-left:21px;background-position: left top;}
 .coursebox.remotehost .name a {background-image:url([[pix:moodle|i/mnethost]]);}
 .coursebox > .info a,
 .coursebox .content .teachers,
