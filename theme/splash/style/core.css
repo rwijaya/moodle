@@ -340,12 +340,15 @@ img.icon {
 li.activity {
     padding-bottom:5px;
 }
-.coursebox > .info > .name, #region-main .coursebox > .info > h3.name {
+.coursebox > .info > .name, #region-main .coursebox > .info > h3,
+.coursebox > .info > .name, #region-main .coursebox > .info > h4,
+.coursebox > .info > .name, #region-main .coursebox > .info > .name {
     margin: 5px;
     padding: 0;
 }
-#region-main .course_category_tree .category > .info h3.name,
-#region-main .course_category_tree .category > .info h4.name {
+#region-main .course_category_tree .category > .info > h3,
+#region-main .course_category_tree .category > .info > h4,
+#region-main .course_category_tree .category > .info > .name {
     padding: 2px 18px;
 }
 .que .info{

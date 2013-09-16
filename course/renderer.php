@@ -1132,9 +1132,11 @@ class core_course_renderer extends plugin_renderer_base {
         $classes = trim('coursebox clearfix '. $additionalclasses);
         if ($chelper->get_show_courses() >= self::COURSECAT_SHOW_COURSES_EXPANDED) {
             $nametag = 'h3';
+            $nameattributes = array();
         } else {
             $classes .= ' collapsed';
             $nametag = 'div';
+            $nameattributes = array('class' => 'name');
         }
 
         // .coursebox
@@ -1149,8 +1151,8 @@ class core_course_renderer extends plugin_renderer_base {
         // course name
         $coursename = $chelper->get_course_formatted_name($course);
         $coursenamelink = html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
-                $coursename, array('class' => $course->visible ? '' : 'dimmed'));
-        $content .= html_writer::tag($nametag, $coursenamelink, array('class' => 'name'));
+                $coursename, array('class' => $course->visible ? 'courseicon' : 'courseicon dimmed'));
+        $content .= html_writer::tag($nametag, $coursenamelink, $nameattributes);
 
         // If we display course in collapsed form but the course has summary or course contacts, display the link to the info page.
         $content .= html_writer::start_tag('div', array('class' => 'moreinfo'));
@@ -1544,7 +1546,7 @@ class core_course_renderer extends plugin_renderer_base {
                     array('title' => get_string('numberofcourses'), 'class' => 'numberofcourse'));
         }
         $content .= html_writer::start_tag('div', array('class' => 'info'));
-        $content .= html_writer::tag(($depth > 1) ? 'h4' : 'h3', $categoryname, array('class' => 'name'));
+        $content .= html_writer::tag(($depth > 1) ? 'h4' : 'h3', $categoryname);
         $content .= html_writer::end_tag('div'); // .info
 
         // add category content to the output
@@ -1568,6 +1570,11 @@ class core_course_renderer extends plugin_renderer_base {
         if (empty($categorycontent)) {
             return '';
         }
+
+        // Generate an id and the required JS call to make this a nice widget
+        //$id = html_writer::random_id('course_category_tree');
+        //$this->page->requires->js_init_call('M.util.init_toggle_class_on_click',
+        //        array($id, '.category.with_children.loaded > .info h3', 'collapsed', '.category.with_children.loaded'));
 
         // Start content generation
         $content = '';
