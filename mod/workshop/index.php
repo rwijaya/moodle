@@ -48,9 +48,8 @@ echo $OUTPUT->header();
 /// Get all the appropriate data
 
 if (! $workshops = get_all_instances_in_course('workshop', $course)) {
-    echo $output->heading(format_string($workshop->name));
-    echo $OUTPUT->heading(get_string('noworkshops', 'workshop'), 3);
-    echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
+    echo $OUTPUT->heading(get_string('modulenameplural', 'workshop'));
+    notice(get_string('noworkshops', 'workshop'), new moodle_url('/course/view.php', array('id' => $course->id)));
     echo $OUTPUT->footer();
     die();
 }

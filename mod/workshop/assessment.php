@@ -101,12 +101,13 @@ if ($assessmenteditable and $workshop->useexamples and $workshop->examplesmode =
         and !has_capability('mod/workshop:manageexamples', $workshop->context)) {
     // the reviewer must have submitted their own submission
     $reviewersubmission = $workshop->get_submission_by_author($assessment->reviewerid);
+    $output = $PAGE->get_renderer('mod_workshop');
     if (!$reviewersubmission) {
         // no money, no love
         $assessmenteditable = false;
         echo $output->header();
         echo $output->heading(format_string($workshop->name));
-        echo $output->heading(get_string('exampleneedsubmission', 'workshop'), 3);
+        notice(get_string('exampleneedsubmission', 'workshop'), new moodle_url('/mod/workshop/view.php', array('id' => $cm->id)));
         echo $output->footer();
         exit;
     } else {
@@ -116,7 +117,7 @@ if ($assessmenteditable and $workshop->useexamples and $workshop->examplesmode =
                 $assessmenteditable = false;
                 echo $output->header();
                 echo $output->heading(format_string($workshop->name));
-                echo $output->heading(get_string('exampleneedassessed', 'workshop'), 3);
+                notice(get_string('exampleneedassessed', 'workshop'), new moodle_url('/mod/workshop/view.php', array('id' => $cm->id)));
                 echo $output->footer();
                 exit;
             }
