@@ -716,7 +716,7 @@ html>
     border-bottom: none;
 }
 
-.course_category_tree .info  a {
+.course_category_tree .info > .coursename {
     display: inline;
 }
 
@@ -907,12 +907,11 @@ div.coursebox.collapsed {
     margin-bottom: 0;
 }
 
-div.coursebox > .info > h3 a
-div.coursebox > .info > .name a {
+div.coursebox > .info > .coursename {
     font-weight: inherit;
 }
 
-div.coursebox > .info > h3 a {
+div.coursebox > .info > h3.coursename a {
     font-size: 16px;
     font-weight: 400;
 }
@@ -944,8 +943,7 @@ div.course_category_tree div.coursebox.odd {
     background: #eee;
 }
 
-div.course_category_tree div.coursebox > .info > h3 a,
-div.course_category_tree div.coursebox > .info > .name > a {
+div.course_category_tree div.coursebox > .info > .coursename > a {
     font-size: 14px;
 }
 

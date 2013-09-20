@@ -162,7 +162,7 @@ a:active {
     color: #251c17;
 }
 
-.course_category_tree .coursebox > .info .name {
+.course_category_tree .coursebox > .info > .coursename {
     margin: 10px;
 }
 .course-content .main {

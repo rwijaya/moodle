@@ -263,11 +263,13 @@ td.eventskey {
 }
 
 /* Course */
-.site-news-forum h2,
-.frontpage-course-list h2,
-.frontpage-category-names h2,
-.frontpage-category-combo h2 {
+#site-news-forum h2,
+#frontpage-course-list h2,
+#frontpage-category-names h2,
+#frontpage-category-combo h2 {
     font-weight: normal;
+    border-bottom: 1px solid #eee;
+    font-size: 1.5em;
 }
 .coursebox {
     border-bottom: 1px solid #eee;
@@ -285,7 +287,7 @@ td.eventskey {
     width: 61%;
 }
 
-.coursebox > .info a {
+.coursebox > .info > h3.coursename {
     font-size: 1.2em;
     line-height: 1.4;
 }
@@ -293,13 +295,7 @@ td.eventskey {
 .coursebox .content .teachers {
     font-size: 0.95em;
 }
-.site-news-forum h2,
-.frontpage-course-list h2,
-.frontpage-category-names h2,
-.frontpage-category-combo h2 {
-    border-bottom: 1px solid #eee;
-    font-size: 1.5em;
-}
+
 #page-course-index-category .categorypicker {
     text-align: center;
     margin: 10px 0 20px;

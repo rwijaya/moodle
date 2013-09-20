@@ -160,7 +160,7 @@ ul.section li.activity .mod-indent {
  .category a .ui-li-count {
     right: 1em;
 }
-.coursebox > .info a {
+.coursebox > .info > .coursename {
     font-size: 1.2em;
 }
 .coursebox div.summary {
