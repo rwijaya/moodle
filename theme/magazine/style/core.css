@@ -696,7 +696,8 @@ html>
 }
 
 /** main headings **/
-.generalbox h2,h3.sectionname, div.loginpanel h2, div.signuppanel h2 {
+.generalbox h2,h3.sectionname, div.loginpanel h2, div.signuppanel h2,
+#site-news-forum h2, #frontpage-course-list h2, #frontpage-category-names h2, #frontpage-category-combo h2 {
     font-size: 30px;
     padding-bottom: 2px;
     margin: 3px 0 2px;
@@ -707,13 +708,6 @@ html>
     letter-spacing: -1px;
     line-height: 1em;
     background: url([[pix:theme|hr_grid]]) repeat-x 0% 89%
-}
-
-#site-news-forum h2,
-#frontpage-course-list h2,
-#frontpage-category-names h2,
-#frontpage-category-combo h2 {
-    border-bottom: none;
 }
 
 .course_category_tree .info > .coursename {

@@ -272,23 +272,18 @@ div.block.hidden div.header {
 
 /** main headings **/
 
-.generalbox h2,h3.sectionname,h2,h3, h2 a, h3 a, div.loginpanel h2, div.signuppanel h2 {
+.generalbox h2, h3.sectionname, div.loginpanel h2, div.signuppanel h2,  div.userprofile h2,
+#site-news-forum h2, #frontpage-course-list h2, #frontpage-category-names h2, #frontpage-category-combo h2 {
     letter-spacing: -1px;
     line-height: 1.3em;
+    font-size: 28px;
     border-bottom: 0px solid #eee;
     padding-bottom: 2px;
     background: url([[pix:theme|mainbar]]) repeat-x;
     background-position: 0% 100%;
 }
-#site-news-forum h2,
-#frontpage-course-list h2,
-#frontpage-category-names h2,
-#frontpage-category-combo h2 {
-    font-weight: 600;
-    font-size: 28px;
-}
 
-.generalbox h2, h3.sectionname, h2, h3, h2 a, h3 a, div.loginpanel h2, div.signuppanel h2, div.hd h3 {
+.generalbox h2, h3.sectionname, div.loginpanel h2, div.signuppanel h2, div.hd h3 {
     font-size: 22px;
     background: none;
 }

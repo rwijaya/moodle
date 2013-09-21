@@ -347,6 +347,10 @@ li.activity {
 #region-main .course_category_tree .category > .info > .coursename {
     padding: 2px 18px;
 }
+#region-main .course-content .single-section .section-navigation h3 {
+    font-size: 1.7em;
+    font-weight: bold;
+}
 .que .info{
     width: 10em;
 }

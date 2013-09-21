@@ -167,6 +167,9 @@ h2.tagline {
 .course-content .section.main .content .section_add_menus {
     text-align: right;
 }
+#region-main .course-content .single-section .section-navigation h3 {
+    font-size: 1.3em;
+}
 #page-report-outline-user .section {
     border: 1px solid #DDD;
     margin: 0 5% 1.5em 5%;
