@@ -710,7 +710,7 @@ html>
     background: url([[pix:theme|hr_grid]]) repeat-x 0% 89%
 }
 
-.course_category_tree .info > .coursename {
+.course_category_tree .info > .categoryname {
     display: inline;
 }
 
@@ -937,7 +937,7 @@ div.course_category_tree div.coursebox.odd {
     background: #eee;
 }
 
-div.course_category_tree div.coursebox > .info > .coursename > a {
+div.course_category_tree div.coursebox > .info > .categoryname > a {
     font-size: 14px;
 }
 
