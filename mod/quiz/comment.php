@@ -50,8 +50,10 @@ add_to_log($attemptobj->get_courseid(), 'quiz', 'manualgrade', 'comment.php?atte
 
 // Print the page header.
 $PAGE->set_pagelayout('popup');
+$PAGE->set_heading($attemptobj->get_course()->fullname);
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string($attemptobj->get_question_name($slot)));
+echo $OUTPUT->heading(format_string($attemptobj->get_quiz_name()));
+echo $OUTPUT->heading(format_string($attemptobj->get_question_name($slot)), 3);
 
 // Process any data that was submitted.
 if (data_submitted() && confirm_sesskey()) {

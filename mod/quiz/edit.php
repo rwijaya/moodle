@@ -447,7 +447,6 @@ if ($quiz_reordertool) {
         'orderandpaging', 'quiz');
 } else {
     echo $OUTPUT->heading(format_string($quiz->name));
-    echo $OUTPUT->help_icon('editingquiz', 'quiz', get_string('basicideasofquiz', 'quiz'));
 }
 
 $tabs = array(array(
@@ -505,7 +504,7 @@ if ($quiz_reordertool) {
             get_string('repaginatecommand', 'quiz').'...</button>';
     echo '</div>';
 }
-
+echo $OUTPUT->help_icon('editingquiz', 'quiz', get_string('basicideasofquiz', 'quiz'));
 quiz_print_status_bar($quiz);
 
 $tabindex = 0;

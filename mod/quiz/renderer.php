@@ -1162,6 +1162,14 @@ class mod_quiz_renderer extends plugin_renderer_base {
 
         return $this->heading($title) . html_writer::tag('div', $graph, array('class' => 'graph'));
     }
+/*
+    public function quiz_heading($quiz) {
+        global $OUTPUT;
+
+        $heading = $OUTPUT->heading($quiz->name);
+        return $heading;
+    }
+*/
 }
 
 class mod_quiz_links_to_other_attempts implements renderable {
