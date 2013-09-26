@@ -1965,9 +1965,9 @@ M.core_filepicker.init = function(Y, options) {
         },
         trapFocus: function (dialog) {
             var bb = dialog.get('boundingBox');
-            Y.one('#'+dialog.get('id')).on('key', function(e) {
+            var can_receive_focus_selector = 'input:not([type="hidden"]), a[href], button, textarea, select';
+            bb.delegate('key', function(e) {
                 var target = e.target;
-                var can_receive_focus_selector = 'input:not([type="hidden"]), a[href], button, textarea, select, [tabindex]';
                 var firstitem = bb.one(can_receive_focus_selector);
                 var lastitem = bb.all(can_receive_focus_selector).pop();
 
@@ -1982,7 +1982,7 @@ M.core_filepicker.init = function(Y, options) {
                         e.preventDefault();
                     }
                 }
-            }, 'down:9', this);
+            }, 'down:9', can_receive_focus_selector, this);
         }
     });
     var loading = Y.one('#filepicker-loading-'+options.client_id);
