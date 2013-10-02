@@ -41,7 +41,7 @@ echo $OUTPUT->doctype() ?>
 <!-- START OF HEADER -->
     <div id="page-header">
 		<div id="page-header-wrapper" class="wrapper clearfix">
-	        <h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+	        <h1><?php echo $PAGE->heading ?></h1>
     	    <div class="headermenu">
         		<?php
 	        	    echo $OUTPUT->login_info();

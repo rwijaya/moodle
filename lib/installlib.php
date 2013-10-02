@@ -338,7 +338,7 @@ function install_print_header($config, $stagename, $heading, $stagetext) {
             <div id="page" class="stage'.$config->stage.'">
                 <div id="page-header">
                     <div id="header" class=" clearfix">
-                        <h1 class="headermain">'.get_string('installation','install').'</h1>
+                        <h1>'.get_string('installation','install').'</h1>
                         <div class="headermenu">&nbsp;</div>
                     </div>
                     <div class="navbar clearfix">

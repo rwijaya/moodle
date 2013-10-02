@@ -73,7 +73,7 @@ echo $OUTPUT->doctype() ?>
                 	    <div id="region-main">
                     	    <div id="newheader">
                     	    	<div id="newheaderleft"></div>
-                    	    	<h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+                    	    	<h1><?php echo $PAGE->heading ?></h1>
 
                     	    </div>
                     	    <div class="region-content">

@@ -525,7 +525,7 @@ body {
 /* Gradebook
 ----------------------*/
 
-.path-grade h1.headermain {
+.path-grade h1 {
     text-align: left; /* Strangely necessary TODO: find bug */
 }
 

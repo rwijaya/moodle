@@ -136,7 +136,7 @@ li.section.hidden span.commands a.editing_show {cursor:default;}
 .coursebox.remotecoursebox .remotecourseinfo {float:left;width: 40%;}
 .coursebox .content .courseimage img {max-width:100px;max-height:100px;}
 
-.coursebox >.info >.categoryname {margin: 5px;padding:0;}
+.coursebox >.info >.coursename {margin: 5px;padding:0;}
 .coursebox .content .teachers,
 .coursebox .content .coursecat,
 .coursebox .content .summary,

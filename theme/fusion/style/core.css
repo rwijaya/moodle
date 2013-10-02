@@ -164,10 +164,10 @@ h6{
     margin-bottom: 40px;
 }
 
-.headermain {
+h1 {
     margin: 0;
     float: none;
-  font-family: "Trajan Pro", "Lucida Sans Unicode", Arial, Helvetica, Sans, FreeSans, Jamrul, Garuda, Kalimati;
+    font-family: "Trajan Pro", "Lucida Sans Unicode", Arial, Helvetica, Sans, FreeSans, Jamrul, Garuda, Kalimati;
     float: none;
     font-size: 3em;
     line-height: 1;
@@ -175,7 +175,7 @@ h6{
     color: #fff
 }
 
-#region-header.inside .headermain {
+#region-header.inside {
     font-size: 2.5em;
 }
 
