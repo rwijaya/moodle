@@ -710,7 +710,9 @@ M.core_filepicker.init = function(Y, options) {
                     }
                 }, false);
                 this.process_dlg.hide();
+                this.process_dlg.get('boundingBox').detach('key');
                 this.selectui.hide();
+                this.selectui.get('boundingBox').detach('key');
             }
             if (!this.process_dlg) {
                 this.process_dlg_node = Y.Node.createWithFilesSkin(M.core_filepicker.templates.processexistingfile);
@@ -735,12 +737,12 @@ M.core_filepicker.init = function(Y, options) {
                 } else {
                     node.one('.fp-dlg-text').setContent(M.str.repository.fileexistsdialog_filemanager);
                 }
+                this.trapFocus(this.process_dlg);
             }
             this.selectnode.removeClass('loading');
             this.process_dlg.dialogdata = data;
             this.process_dlg_node.one('.fp-dlg-butrename').setContent(M.util.get_string('renameto', 'repository', data.newfile.filename));
             this.process_dlg.show();
-            this.trapFocus(this.process_dlg);
         },
         /** displays error instead of filepicker contents */
         display_error: function(errortext, errorcode) {
@@ -772,14 +774,15 @@ M.core_filepicker.init = function(Y, options) {
                 this.msg_dlg_node.one('.fp-msg-butok').on('click', function(e) {
                     e.preventDefault();
                     this.msg_dlg.hide();
+                    this.msg_dlg.get('boundingBox').detach('key');
                 }, this);
+                this.trapFocus(this.msg_dlg);
             }
 
             this.msg_dlg.set('headerContent', header);
             this.msg_dlg_node.removeClass('fp-msg-info').removeClass('fp-msg-error').addClass('fp-msg-'+type)
             this.msg_dlg_node.one('.fp-msg-text').setContent(Y.Escape.html(msg));
             this.msg_dlg.show();
-            this.trapFocus(this.msg_dlg);
         },
         view_files: function(appenditems) {
             this.viewbar_set_enabled(true);
@@ -1079,7 +1082,6 @@ M.core_filepicker.init = function(Y, options) {
             Y.one('#fp-file_label_'+this.options.client_id).setContent(Y.Escape.html(M.str.repository.select+' '+argstitle));
 
             this.selectui.show();
-            this.trapFocus(this.selectui);
             Y.one('#'+this.selectnode.get('id')).focus();
             var client_id = this.options.client_id;
             var selectnode = this.selectnode;
@@ -1232,6 +1234,7 @@ M.core_filepicker.init = function(Y, options) {
             cancel.on('click', function(e) {
                 e.preventDefault();
                 this.selectui.hide();
+                this.selectui.get('boundingBox').detach('key');
             }, this);
         },
         wait: function() {
@@ -1340,10 +1343,12 @@ M.core_filepicker.init = function(Y, options) {
                 close        : true,
                 render       : true
             });
+            this.trapFocus(this.selectui);
             // allow to move the panel dragging it by it's header:
             this.selectui.plug(Y.Plugin.Drag,{handles:['#filepicker-select-'+client_id+' .yui3-widget-hd']});
             Y.one('#'+this.selectnode.get('id')).setAttribute('aria-labelledby', fplabel);
             this.selectui.hide();
+            this.selectui.get('boundingBox').detach('key');
             // event handler for lazy loading of thumbnails and next page
             this.fpnode.one('.fp-content').on(['scroll','resize'], this.content_scrolled, this);
             // save template for one path element and location of path bar
@@ -1919,9 +1924,11 @@ M.core_filepicker.init = function(Y, options) {
             this.selectui.hide();
             if (this.process_dlg) {
                 this.process_dlg.hide();
+                this.process_dlg.get('boundingBox').detach('key');
             }
             if (this.msg_dlg) {
                 this.msg_dlg.hide();
+                this.msg_dlg.get('boundingBox').detach('key');
             }
             this.mainui.hide();
         },
@@ -1929,7 +1936,6 @@ M.core_filepicker.init = function(Y, options) {
             if (this.fpnode) {
                 this.hide();
                 this.mainui.show();
-                this.trapFocus(this.mainui);
                 this.show_recent_repository();
             } else {
                 this.launch();
