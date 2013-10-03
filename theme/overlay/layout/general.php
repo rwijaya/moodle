@@ -83,7 +83,7 @@ echo $OUTPUT->doctype() ?>
                 	    <div id="region-main">
                     	    <div id="newheader">
                     	    	<div id="newheaderleft"></div>
-                    	    	<h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+                    	    	<h1><?php echo $PAGE->heading ?></h1>
                     	    	 <?php if ($hasnavbar) { ?>
                     	    	<div class="navbutton"> <?php echo $PAGE->button; ?></div>
                     	    	 <?php } ?>

@@ -32,7 +32,7 @@ echo $OUTPUT->doctype() ?>
 
     <div id="page-header" class="clearfix">
         <div id="page-header-wrapper">
-            <h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+            <h1><?php echo $PAGE->heading ?></h1>
             <div class="headermenu">
                 <?php
                     echo $OUTPUT->login_info();

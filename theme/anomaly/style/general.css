@@ -34,20 +34,18 @@ html, body {
     padding: 0;
     width: 100%;
 }
-h1.headermain {
+.pagelayout-frontpage h1 {
     font-size: 30px;
-    margin: 20px;
+    margin: 20px 20px 0 20px;
     font-weight: 400;
 }
-.pagelayout-frontpage h1.headermain,
+.pagelayout-frontpage h1
 h2.tagline {
     float: left;
     line-height: 1;
     padding: 0;
 }
-.pagelayout-frontpage h1.headermain {
-    margin-bottom: 0;
-}
+
 h2.tagline {
     clear: left;
     color: #bbb;

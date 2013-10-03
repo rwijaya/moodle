@@ -121,6 +121,7 @@ img.icon-post, .dir-rtl img.icon-pre { padding-left: 3px; padding-right: 0; }
 .buttons .singlebutton form,
 .buttons .singlebutton div {display: inline;}
 .buttons .singlebutton input {margin:20px 5px;}
+h1,
 .headermain {font-weight:bold;}
 #maincontent {display: block;height: 1px;overflow: hidden;}
 img.uihint {cursor: help;}
@@ -181,6 +182,7 @@ a.skip:active {position: static;display: block;}
 /**
  * Header
  */
+h1,
 .headermain {float:left;margin:15px;font-size:2.3em;}
 .headermenu {float:right;margin:10px;font-size:0.8em;text-align:right;}
 #course-header {clear:both;}
@@ -680,6 +682,7 @@ body.tag .managelink {padding: 5px;}
 /**
 * Overide for RTL layout
 **/
+.dir-rtl h1,
 .dir-rtl .headermain {float:right;}
 .dir-rtl .headermenu {float:left;}
 .dir-rtl .breadcrumb {float:right;}
@@ -1297,6 +1300,7 @@ form#installform #id_dbpass, form#installform #id_prefix
 
 html[dir=rtl] .breadcrumb,
 html[dir=rtl] .headermain,
+html[dir=rtl] h1,
 html[dir=rtl] #page-header {float: right;}
 
 html[dir=rtl] .formrow label.formlabel { float:right; }

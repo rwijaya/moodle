@@ -41,7 +41,7 @@ echo $OUTPUT->doctype() ?>
 <?php if ($hasheading || $hasnavbar || !empty($courseheader)) { ?>
     <div id="page-header">
         <?php if ($hasheading) { ?>
-        <h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+        <h1><?php echo $PAGE->heading ?></h1>
         <div class="headermenu"><?php
             if ($haslogininfo) {
                 echo $OUTPUT->login_info();

@@ -46,7 +46,7 @@ echo $OUTPUT->doctype() ?>
             echo $PAGE->headingmenu;
         ?></div>
 
-        <h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+        <h1><?php echo $PAGE->heading ?></h1>
 
         <?php if ($hastagline) { ?>
             <h2 class="tagline"><?php echo $PAGE->theme->settings->tagline;?></h2>

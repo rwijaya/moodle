@@ -54,7 +54,7 @@ echo $OUTPUT->doctype() ?>
         <div class="rounded-corner top-left"></div>
         <div class="rounded-corner top-right"></div>
         <?php if ($hasheading) { ?>
-        <h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+        <h1><?php echo $PAGE->heading ?></h1>
         <div class="headermenu"><?php
             echo $OUTPUT->login_info();
             if (!empty($PAGE->layout_options['langmenu'])) {

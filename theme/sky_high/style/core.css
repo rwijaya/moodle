@@ -80,11 +80,8 @@ a:active, a:hover, a:focus {
     padding-top: 18px;
     padding-right: 0px;
 }
-.headermain {
-    font-weight:normal;
-    margin:.8em 0.5em 0.75em;
-}
-h1.headermain {
+
+h1 {
     color: #006699;
     font-weight: normal;
     font-size: 1.85em !important;
