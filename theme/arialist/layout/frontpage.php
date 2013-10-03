@@ -57,7 +57,7 @@ echo $OUTPUT->doctype() ?>
                     <?php if (!empty($PAGE->theme->settings->logo)) { ?>
                         <a href="<?php echo $CFG->wwwroot; ?>" title="Home"><img id="logo" src="<?php echo $logourl; ?>" alt="Logo" /></a>
                     <?php } else { ?>
-                        <h1 class="headermain"><a href="<?php echo $CFG->wwwroot; ?>" title="Home"><?php echo $PAGE->heading ?></a></h1>
+                        <h1><a href="<?php echo $CFG->wwwroot; ?>" title="Home"><?php echo $PAGE->heading ?></a></h1>
                         <div class="tagline"><?php echo $tagline; ?></div>
                     <?php } ?>
                 </div>

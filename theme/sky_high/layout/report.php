@@ -56,7 +56,7 @@ echo $OUTPUT->doctype() ?>
     <div id="page-header" class="clearfix">
         <div id="page-header-wrapper">
             <?php if($logourl == NULL) { ?>
-            <h1 class="headermain">
+            <h1>
                 <?php echo $PAGE->heading ?>
             </h1>
             <?php } else { ?>

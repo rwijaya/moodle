@@ -91,7 +91,7 @@ echo $OUTPUT->doctype() ?>
                     		    <div class="region-content">
 
 									<div id="region-header" class="clearfix">
-							    	    <h1 class="headermain"><?php echo $PAGE->heading ?></h1>
+							    	    <h1><?php echo $PAGE->heading ?></h1>
 							    	    <p class="tagline"><?php echo $tagline ?></p>
 							    	</div>
 

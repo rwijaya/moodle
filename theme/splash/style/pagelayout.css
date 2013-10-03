@@ -38,7 +38,7 @@ html, body{
 #page-content #region-pre{
     padding-top:5px;
 }
-.headermain{
+h1{
     float:left;
     margin:0 0 3px;
     padding:0;
@@ -46,6 +46,7 @@ html, body{
 .langmenu{
     text-align:left;
 }
+h1,
 .headermain.inside{
     font-size:1em;
     margin-left:10px;

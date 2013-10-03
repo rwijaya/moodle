@@ -209,7 +209,7 @@ form.popupform label {margin-right: 0.5em;}
 #userselector_options {font-size: 0.75em;}
 .userinfobox {border-color: #DDDDDD;}
 .userinfobox .links {font-size: 0.7em;}
-.iplookup #header h1.headermain {font-size:1em;}
+.iplookup #header h1 {font-size:1em;}
 .iplookup #note {font-size:0.8em;font-style: italic;}
 .groupinfobox {border-color: #DDDDDD;width: 60%;margin-left: 20%;margin-right: 20%;}
 .userinfobox {width:80%;margin:10px auto;}
@@ -296,7 +296,7 @@ table#tag-management-list {margin: 10px auto;width: 80%;}
 /**
  * Overriding base
  */
-#page-header .headermain {font-size:1.5em;}
+#page-header h1 {font-size:1.5em;}
 .pagelayout-frontpage #page-header {border-bottom:2px groove #999;margin:0 0.5%;width:99%;}
 .has_custom_menu.pagelayout-frontpage #page-header {border-bottom-width:0;}
 
