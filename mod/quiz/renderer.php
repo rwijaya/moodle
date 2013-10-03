@@ -882,7 +882,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * Generates the table heading.
      */
     public function view_table_heading() {
-        return $this->heading(get_string('summaryofattempts', 'quiz'));
+        return $this->heading(get_string('summaryofattempts', 'quiz'), 3);
     }
 
     /**
@@ -1160,7 +1160,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
 
         $graph = html_writer::empty_tag('img', array('src' => $url, 'alt' => $title));
 
-        return $this->heading($title) . html_writer::tag('div', $graph, array('class' => 'graph'));
+        return $this->heading($title, 3) . html_writer::tag('div', $graph, array('class' => 'graph'));
     }
 /*
     public function quiz_heading($quiz) {
