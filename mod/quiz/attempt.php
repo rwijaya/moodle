@@ -129,6 +129,7 @@ $title = get_string('attempt', 'quiz', $attemptobj->get_attempt_number());
 $headtags = $attemptobj->get_html_head_contributions($page);
 $PAGE->set_title(format_string($attemptobj->get_quiz_name()));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
+$PAGE->set_subheading($attemptobj->get_quiz_name());
 
 if ($attemptobj->is_last_page($page)) {
     $nextpage = -1;

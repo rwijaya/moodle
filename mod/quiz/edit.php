@@ -411,6 +411,13 @@ $PAGE->requires->skip_link_to('quizcontentsblock',
         get_string('skipto', 'access', get_string('questionsinthisquiz', 'quiz')));
 $PAGE->set_title(get_string('editingquizx', 'quiz', format_string($quiz->name)));
 $PAGE->set_heading($course->fullname);
+
+if ($quiz_reordertool) {
+    $PAGE->set_subheading_with_help($quiz->name, 'orderandpaging', 'quiz');
+} else {
+    $PAGE->set_subheading($quiz->name);
+}
+
 $node = $PAGE->settingsnav->find('mod_quiz_edit', navigation_node::TYPE_SETTING);
 if ($node) {
     $node->make_active();
@@ -458,15 +465,15 @@ if ($quiz_qbanktool) {
     $quizcontentsclass = 'quizwhenbankcollapsed';
 }
 
+$showurl = html_writer::link($thispageurl->out(false, array('qbanktool' => '1')), get_string('show'), array('id' => 'showbankcmd'));
+$hideurl = html_writer::link($thispageurl->out(false, array('qbanktool' => '0')), get_string('hide'), array('id' => 'hidebankcmd'));
+$qbshowhidetext = get_string('questionbankcontents', 'quiz') .
+                             '&nbsp;['.$showurl.$hideurl.']';
+
 echo '<div class="questionbankwindow ' . $bankclass . 'block">';
-echo '<div class="header"><div class="title"><h2>';
-echo get_string('questionbankcontents', 'quiz') .
-       '&nbsp;[<a href="' . $thispageurl->out(true, array('qbanktool' => '1')) .
-       '" id="showbankcmd">' . get_string('show').
-       '</a><a href="' . $thispageurl->out(true, array('qbanktool' => '0')) .
-       '" id="hidebankcmd">' . get_string('hide').
-       '</a>]';
-echo '</h2></div></div><div class="content">';
+echo '<div class="header"><div class="title">';
+echo $OUTPUT->heading($qbshowhidetext, 3);
+echo '</div></div><div class="content">';
 
 echo '<span id="questionbank"></span>';
 echo '<div class="container">';
@@ -499,13 +506,7 @@ if ($quiz_reordertool) {
     echo '</div>';
 }
 
-if ($quiz_reordertool) {
-    echo $OUTPUT->heading_with_help(get_string('orderingquizx', 'quiz', format_string($quiz->name)),
-            'orderandpaging', 'quiz');
-} else {
-    echo $OUTPUT->heading(get_string('editingquizx', 'quiz', format_string($quiz->name)), 2);
-    echo $OUTPUT->help_icon('editingquiz', 'quiz', get_string('basicideasofquiz', 'quiz'));
-}
+echo $OUTPUT->help_icon('editingquiz', 'quiz', get_string('basicideasofquiz', 'quiz'));
 quiz_print_status_bar($quiz);
 
 $tabindex = 0;

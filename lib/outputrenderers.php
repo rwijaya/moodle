@@ -547,7 +547,11 @@ class core_renderer extends renderer_base {
         // This is an unfortunate hack. DO NO EVER add anything more here.
         // DO NOT add classes.
         // DO NOT add an id.
-        return '<div role="main">'.$this->unique_main_content_token.'</div>';
+        $maincontent = '<div role="main">';
+        $maincontent .= html_writer::tag('h2', $this->page->subheading);
+        $maincontent .= $this->unique_main_content_token;
+        $maincontent .= '</div>';
+        return $maincontent;
     }
 
     /**

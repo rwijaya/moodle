@@ -117,13 +117,13 @@ $streditingquiz = get_string('editinga', 'moodle', get_string('modulename', 'qui
 $PAGE->navbar->add($streditingquiz);
 $PAGE->set_title($streditingquiz);
 $PAGE->set_heading($course->fullname);
+$PAGE->set_subheading(get_string('addrandomquestiontoquiz', 'quiz', $quizname));
 echo $OUTPUT->header();
 
 if (!$quizname = $DB->get_field($cm->modname, 'name', array('id' => $cm->instance))) {
             print_error('invalidcoursemodule');
 }
 
-echo $OUTPUT->heading(get_string('addrandomquestiontoquiz', 'quiz', $quizname), 2, 'mdl-left');
 $mform->display();
 echo $OUTPUT->footer();
 

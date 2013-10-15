@@ -66,6 +66,7 @@ abstract class quiz_default_report {
         // Print the page header.
         $PAGE->set_title(format_string($quiz->name));
         $PAGE->set_heading($course->fullname);
+        $PAGE->set_subheading($quiz->name);
         echo $OUTPUT->header();
     }
 

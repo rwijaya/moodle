@@ -274,7 +274,7 @@ class quiz_grading_report extends quiz_default_report {
             groups_print_activity_menu($this->cm, $this->list_questions_url());
         }
 
-        echo $OUTPUT->heading(get_string('questionsthatneedgrading', 'quiz_grading'));
+        echo $OUTPUT->heading(get_string('questionsthatneedgrading', 'quiz_grading'), 3);
         if ($includeauto) {
             $linktext = get_string('hideautomaticallygraded', 'quiz_grading');
         } else {
@@ -314,7 +314,7 @@ class quiz_grading_report extends quiz_default_report {
         }
 
         if (empty($data)) {
-            echo $OUTPUT->heading(get_string('nothingfound', 'quiz_grading'));
+            echo $OUTPUT->notification(get_string('nothingfound', 'quiz_grading'));
             return;
         }
 
@@ -373,7 +373,7 @@ class quiz_grading_report extends quiz_default_report {
         $a = new stdClass();
         $a->number = $this->questions[$slot]->number;
         $a->questionname = format_string($counts->name);
-        echo $OUTPUT->heading(get_string('gradingquestionx', 'quiz_grading', $a));
+        echo $OUTPUT->heading(get_string('gradingquestionx', 'quiz_grading', $a), 3);
         echo html_writer::tag('p', html_writer::link($this->list_questions_url(),
                 get_string('backtothelistofquestions', 'quiz_grading')),
                 array('class' => 'mdl-align'));

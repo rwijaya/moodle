@@ -193,8 +193,8 @@ $PAGE->navbar->add($pagetitle);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading($course->fullname);
+$PAGE->set_subheading($quiz->name);
 echo $OUTPUT->header();
-echo $OUTPUT->heading($pagetitle);
 
 $mform->display();
 

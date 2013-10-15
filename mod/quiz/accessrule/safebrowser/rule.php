@@ -63,6 +63,7 @@ class quizaccess_safebrowser extends quiz_access_rule_base {
         $page->set_cacheable(false);
         $page->set_popup_notification_allowed(false); // Prevent message notifications.
         $page->set_heading($page->title);
+        $page->set_subheading($this->quizobj->get_quiz_name());
         $page->set_pagelayout('secure');
     }
 

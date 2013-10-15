@@ -71,6 +71,7 @@ require_capability('mod/quiz:manageoverrides', $context);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('overrides', 'quiz'));
 $PAGE->set_heading($course->fullname);
+$PAGE->set_subheading($quiz->name);
 echo $OUTPUT->header();
 
 // Delete orphaned group overrides.

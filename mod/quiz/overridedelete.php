@@ -78,6 +78,7 @@ $PAGE->set_pagelayout('admin');
 $PAGE->navbar->add($title);
 $PAGE->set_title($title);
 $PAGE->set_heading($course->fullname);
+$PAGE->set_subheading($quiz->name);
 
 echo $OUTPUT->header();
 

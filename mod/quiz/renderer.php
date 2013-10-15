@@ -556,7 +556,6 @@ class mod_quiz_renderer extends plugin_renderer_base {
     public function summary_page($attemptobj, $displayoptions) {
         $output = '';
         $output .= $this->header();
-        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
         $output .= $this->heading(get_string('summaryofattempt', 'quiz'), 3);
         $output .= $this->summary_table($attemptobj, $displayoptions);
         $output .= $this->summary_page_controls($attemptobj);
@@ -745,7 +744,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $button->class .= ' quizstartbuttondiv';
 
         $warning = '';
-        if ($popuprequired) {
+        if ($popuprequired = true) {
             $this->page->requires->js_module(quiz_get_js_module());
             $this->page->requires->js('/mod/quiz/module.js');
             $popupaction = new popup_action('click', $url, 'quizpopup', $popupoptions);
@@ -760,7 +759,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
                         'startattemptwarning' => $startattemptwarning,
                     )));
 
-            $warning = html_writer::tag('noscript', $this->heading(get_string('noscript', 'quiz')));
+            $warning = html_writer::tag('noscript', $this->notification(get_string('noscript', 'quiz')));
 
         } else if ($startattemptwarning) {
             $button->add_action(new confirm_action($startattemptwarning, null,
@@ -842,7 +841,6 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $output = '';
 
         // Print quiz name and description.
-        $output .= $this->heading(format_string($quiz->name));
         $output .= $this->quiz_intro($quiz, $cm);
 
         // Output any access messages.
@@ -879,7 +877,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * Generates the table heading.
      */
     public function view_table_heading() {
-        return $this->heading(get_string('summaryofattempts', 'quiz'));
+        return $this->heading(get_string('summaryofattempts', 'quiz'), 3);
     }
 
     /**
@@ -1052,14 +1050,13 @@ class mod_quiz_renderer extends plugin_renderer_base {
                 $a->method = quiz_get_grading_option_name($quiz->grademethod);
                 $a->mygrade = quiz_format_grade($quiz, $viewobj->mygrade);
                 $a->quizgrade = quiz_format_grade($quiz, $quiz->grade);
-                $resultinfo .= $this->heading(get_string('gradesofar', 'quiz', $a), 2, 'main');
+                $resultinfo .= $this->heading(get_string('gradesofar', 'quiz', $a), 3);
             } else {
                 $a = new stdClass();
                 $a->grade = quiz_format_grade($quiz, $viewobj->mygrade);
                 $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
                 $a = get_string('outofshort', 'quiz', $a);
-                $resultinfo .= $this->heading(get_string('yourfinalgradeis', 'quiz', $a), 2,
-                        'main');
+                $resultinfo .= $this->heading(get_string('yourfinalgradeis', 'quiz', $a), 3);
             }
         }
 
@@ -1069,11 +1066,11 @@ class mod_quiz_renderer extends plugin_renderer_base {
                     array('class' => 'overriddennotice'))."\n";
         }
         if ($viewobj->gradebookfeedback) {
-            $resultinfo .= $this->heading(get_string('comment', 'quiz'), 3, 'main');
+            $resultinfo .= $this->heading(get_string('comment', 'quiz'), 3);
             $resultinfo .= html_writer::div($viewobj->gradebookfeedback, 'quizteacherfeedback') . "\n";
         }
         if ($viewobj->feedbackcolumn) {
-            $resultinfo .= $this->heading(get_string('overallfeedback', 'quiz'), 3, 'main');
+            $resultinfo .= $this->heading(get_string('overallfeedback', 'quiz'), 3);
             $resultinfo .= html_writer::div(
                     quiz_feedback_for_grade($viewobj->mygrade, $quiz, $context),
                     'quizgradefeedback') . "\n";
@@ -1157,7 +1154,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
 
         $graph = html_writer::empty_tag('img', array('src' => $url, 'alt' => $title));
 
-        return $this->heading($title) . html_writer::tag('div', $graph, array('class' => 'graph'));
+        return $this->heading($title, 3) . html_writer::tag('div', $graph, array('class' => 'graph'));
     }
 }
 

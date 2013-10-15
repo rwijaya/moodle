@@ -75,6 +75,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property-read string $focuscontrol The id of the HTML element to be focused when the page has loaded.
  * @property-read bool $headerprinted True if the page header has already been printed.
  * @property-read string $heading The main heading that should be displayed at the top of the <body>.
+ * @property-read string $subheading The activity heading that should be displayed at the <maincontent>.
  * @property-read string $headingmenu The menu (or actions) to display in the heading
  * @property-read array $layout_options An arrays with options for the layout file.
  * @property-read array $legacythemeinuse True if the legacy browser theme is in use.
@@ -167,6 +168,11 @@ class moodle_page {
      * page within most themes.
      */
     protected $_heading = '';
+
+    /**
+     * @var string The string to use as the heading of the activity. Shown on the page content
+     */
+    protected $_subheading = '';
 
     /**
      * @var string The pagetype is used to describe the page and defaults to a representation
@@ -525,6 +531,14 @@ class moodle_page {
      */
     protected function magic_get_heading() {
         return $this->_heading;
+    }
+
+    /**
+     * Please do not call this method directly, use the ->subheading syntax. {@link moodle_page::__get()}.
+     * @return string the content/activity heading that should be displayed at page/main content <maincontent>.
+     */
+    protected function magic_get_subheading() {
+        return $this->_subheading;
     }
 
     /**
@@ -1109,6 +1123,43 @@ class moodle_page {
      */
     public function set_heading($heading) {
         $this->_heading = format_string($heading);
+    }
+
+    /**
+     * Sets the sub-heading to use for the page.
+     * This is normally used as the page/activity heading for the page's content.
+     *
+     * @param string $subheading the page/activity heading that should be displayed for the page main content.
+     */
+    public function set_subheading($subheading) {
+        $this->_subheading = format_string($subheading);
+    }
+
+    /**
+     * Create subheading with attached help button (same title text)
+     * and optional icon attached.
+     *
+     * @param string $text A heading text
+     * @param string $helpidentifier The keyword that defines a help page
+     * @param string $component component name
+     * @param string|moodle_url $icon
+     * @param string $iconalt icon alt text
+     * @param int $level The level of importance of the heading. Defaulting to 2
+     * @param string $classnames A space-separated list of CSS classes. Defaulting to null
+     */
+    public function set_subheading_with_help($text, $helpidentifier, $component = 'moodle', $icon = '', $iconalt = '', $level = 2,
+                                             $classnames = null) {
+        global $OUTPUT;
+        $image = '';
+        if ($icon) {
+            $image = $OUTPUT->pix_icon($icon, $iconalt, $component, array('class'=>'icon'));
+        }
+
+        $help = '';
+        if ($helpidentifier) {
+            $help = $OUTPUT->help_icon($helpidentifier, $component);
+        }
+        $this->_subheading = $image.format_string($text).$help;
     }
 
     /**
