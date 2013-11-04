@@ -309,7 +309,7 @@ input.titleeditor { width: 330px; vertical-align: text-bottom; }
 #course-category-listings li li li li li li li li .tree-icon {margin-left:5.5em;}
 
 #course-listing .listitem .drag-handle {margin-right:0.5em;}
-#course-listing .listitem .idnumber {color:#a1a1a8;margin-right:2em;}
+#course-listing .listitem .idnumber {color:#a1a1a8;padding-right:2em;}
 #course-listing .listitem .categoryname {display:inline-block;margin-left:1em;color:#a1a1a8;}
 #course-listing .listitem .coursename {display:inline-block;}
 
