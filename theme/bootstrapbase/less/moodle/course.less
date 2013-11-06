@@ -701,8 +701,6 @@ span.editinstructions {
     li {
         line-height:2.2em;
         > div {
-            border-bottom:1px solid #fff;
-            border-top:1px solid #fff;
             &:hover {
                 background-color:#fafafa;
             }
@@ -813,7 +811,7 @@ span.editinstructions {
         .listitem {
             .idnumber {
                 color:#a1a1a8;
-                margin-right:2em;
+                padding-right:2em;
             }
             .categoryname {
                 display:inline-block;
@@ -901,7 +899,7 @@ span.editinstructions {
             }
         }
         .category-bulk-actions {
-            margin: 0 0.5em 0.5em;
+            margin: -0.5em 0.5em 0.5em;
             background-color: #FaFaFb;
             border: 1px solid #EFEFF4;
             position:relative;
@@ -932,7 +930,6 @@ span.editinstructions {
         .pair-key {
             color:#075698;
             font-weight:bold;
-            text-align:right;
             vertical-align: top;
             span {
                 margin-right: 1rem;
@@ -940,10 +937,7 @@ span.editinstructions {
             }
         }
         .pair-value select {
-            max-width:100%;
-        }
-        &:last-child {
-            border-bottom-width:0;
+            margin-right: 2em;
         }
     }
 
@@ -951,7 +945,6 @@ span.editinstructions {
         > * {
             display:block;
             width:100%;
-            text-align:left;
         }
     }
 
@@ -979,6 +972,95 @@ span.editinstructions {
         margin: 1em;
     }
 }
+
+.dir-rtl #course-category-listings {
+    #category-listing,
+    #course-listing {
+        float: right;
+        margin-left: 0;
+    }
+
+    .listitem {
+        > div {
+            > .float-left {
+                float:right;
+            }
+            > .float-right {
+                float:left;
+                text-align:left;
+            }
+        }
+    }
+    li {
+        .tree-icon {
+            margin: 2px 0 0 6px;
+        }
+
+        // Tree item indenting to represent depth.
+        .tree-icon {margin-right:0;}
+        li .tree-icon {margin-right:1em;}
+        li li .tree-icon {margin-right:2em;}
+        li li li .tree-icon {margin-right:3em;}
+        li li li li .tree-icon {margin-right:4em;}
+        li li li li li .tree-icon {margin-right:4.5em;}
+        li li li li li li .tree-icon {margin-right:5em;}
+        li li li li li li li .tree-icon {margin-right:5.5em;}
+    }
+    #category-listing {
+        .listitem {
+            > div {
+                margin-right:0.5em;
+                margin-left: 0;
+                > .ba-checkbox {
+                  margin:-1px 0 0 0.5em;
+                }
+            }
+
+            &[data-selected='1'] > div > .ba-checkbox {
+                margin:0 0 0 0.5em;
+            }
+        }
+        .course-count {
+            margin-left:2rem;
+        }
+        .bulk-action-checkbox {
+            margin-left: -3px;
+            margin-right: 0;
+        }
+    }
+    #course-listing {
+        padding-right: 24px;
+        .listitem {
+            .idnumber {
+                color:#a1a1a8;
+                padding-right:2em;
+            }
+            .categoryname {
+                display:inline-block;
+                margin-right:1em;
+                margin-left:0;
+            }
+            .drag-handle {
+                margin: 0 6px 0 6px;
+            }
+            > div {
+                padding-left:1rem;
+            }
+        }
+        .bulk-action-checkbox {
+            vertical-align:middle;
+            margin:-2px 0 0 6px;
+        }
+    }
+  .detail-pair {
+        .pair-key {
+            span {
+                margin-right:0;
+                margin-left: 0;
+            }
+        }
+    }
+}
 /** JS MUST be enabled for this next style **/
 .jsenabled #course-category-listings .category-item-actions .menu-action-text {padding-left:0.3em;}
 
@@ -1004,7 +1086,16 @@ span.editinstructions {
         white-space: nowrap;
     }
 }
-
+.dir-rtl .coursecat-management-header {
+    h2 {
+        text-align:right;
+    }
+    > div {
+        float:left;
+        margin-right:1em;
+        margin-left: 0;
+    }
+}
 .course-being-dragged-proxy {
     border: 0;
     color: @linkColor;
