@@ -112,5 +112,32 @@ function xmldb_forum_upgrade($oldversion) {
     // Moodle v2.6.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2013110501) {
+        $table = new xmldb_table('forum');
+
+        // Adding fields to table forum_digests.
+        $table->add_field('anonymity', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+
+        // Define table forum_anonymity to be created.
+        $table = new xmldb_table('forum_anonymity');
+
+        // Adding fields to table forum_digests.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('forumid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('name', XMLDB_TYPE_TEXT, '225', null, XMLDB_NOTNULL, null, 'anonymous');
+
+        // Adding keys to table forum_digests.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('forumid', XMLDB_KEY_FOREIGN, array('forumid'), 'forum', array('id'));
+
+        // Conditionally launch create table for forum_digests.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Forum savepoint reached.
+        upgrade_mod_savepoint(true, 2013110501, 'forum');
+    }
     return true;
 }
