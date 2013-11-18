@@ -54,6 +54,25 @@ class mod_forum_mod_form extends moodleform_mod {
         $mform->addHelpButton('type', 'forumtype', 'forum');
         $mform->setDefault('type', 'general');
 
+        // Anonymity.
+        $mform->addElement('header', 'anonymityhdr', get_string('anonymity', 'forum'));
+        $mform->addElement('checkbox', 'anonymity', '', get_string('anonymityenabled','forum'),0);
+        $mform->setDefault('anonymity', 0);
+
+        //$coursecontext = context_course::instance($COURSE->id);
+        //$rolesincourse = get_assignable_roles($coursecontext);
+
+        $rolesincourse = get_anonymity_roles($this->current->id);
+        //$rolesincourse = get_anonymity_roles();
+//print_object($rolesincourse);
+        foreach ($rolesincourse as $id => $role) {
+            $anonymityroles = 'anonymityroles['.$role->id.']';
+            $mform->addElement('text', $anonymityroles, $role->label);
+            $mform->setType($anonymityroles, PARAM_TEXT);
+            $mform->setDefault($anonymityroles, $role->name);
+            $mform->disabledIf($anonymityroles, 'anonymity', 'notchecked');
+        }
+
         // Attachments and word count.
         $mform->addElement('header', 'attachmentswordcounthdr', get_string('attachmentswordcount', 'forum'));
 
