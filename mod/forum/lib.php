@@ -79,7 +79,12 @@ function forum_add_instance($forum, $mform = null) {
         $forum->assesstimefinish = 0;
     }
 
+    if (!isset($forum->anonymity)) {
+        $forum->anonymity = 0;
+    }
+
     $forum->id = $DB->insert_record('forum', $forum);
+
     $modcontext = context_module::instance($forum->coursemodule);
 
     if ($forum->type == 'single') {  // Create related discussion.
@@ -146,6 +151,9 @@ function forum_update_instance($forum, $mform) {
         $forum->assesstimefinish = 0;
     }
 
+    if (!isset($forum->anonymity)) {
+        $forum->anonymity = 0;
+    }
     $oldforum = $DB->get_record('forum', array('id'=>$forum->id));
 
     // MDL-3942 - if the aggregation type or scale (i.e. max grade) changes then recalculate the grades for the entire forum
@@ -3459,7 +3467,11 @@ function forum_print_post($post, $discussion, $forum, &$cm, $course, $ownpost=fa
     $output .= html_writer::tag('div', $postsubject, array('class'=>'subject'));
 
     $by = new stdClass();
-    $by->name = html_writer::link($postuser->profilelink, $postuser->fullname);
+    if ($forum->anonymity) {
+        $by->name = 'Anonymous';
+    } else {
+        $by->name = html_writer::link($postuser->profilelink, $postuser->fullname);
+    }
     $by->date = userdate($post->modified);
     $output .= html_writer::tag('div', get_string('bynameondate', 'forum', $by), array('class'=>'author'));
 
@@ -3743,26 +3755,31 @@ function forum_print_discussion_header(&$post, $forum, $group=-1, $datestring=""
     echo '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$post->discussion.'">'.$post->subject.'</a>';
     echo "</td>\n";
 
-    // Picture
-    $postuser = new stdClass();
-    $postuser->id = $post->userid;
-    foreach (get_all_user_name_fields() as $addname) {
-        $postuser->$addname = $post->$addname;
+    if ($forum->anonymity) {
+        echo '<td class="author" colspan="2">';
+        echo 'Anonymous';
+        echo "</td>\n";
+    } else {
+
+        // Picture
+        $postuser = new stdClass();
+        $postuser->id = $post->userid;
+        foreach (get_all_user_name_fields() as $addname) {
+            $postuser->$addname = $post->$addname;
+        }
+        $postuser->imagealt = $post->imagealt;
+        $postuser->picture = $post->picture;
+        $postuser->email = $post->email;
+        echo '<td class="picture">';
+        echo $OUTPUT->user_picture($postuser, array('courseid'=>$forum->course));
+        echo "</td>\n";
+
+        // User name
+        $fullname = fullname($postuser, has_capability('moodle/site:viewfullnames', $modcontext));
+        echo '<td class="author">';
+        echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->userid.'&amp;course='.$forum->course.'">'.$fullname.'</a>';
+        echo "</td>\n";
     }
-    $postuser->imagealt = $post->imagealt;
-    $postuser->picture = $post->picture;
-    $postuser->email = $post->email;
-
-    echo '<td class="picture">';
-    echo $OUTPUT->user_picture($postuser, array('courseid'=>$forum->course));
-    echo "</td>\n";
-
-    // User name
-    $fullname = fullname($postuser, has_capability('moodle/site:viewfullnames', $modcontext));
-    echo '<td class="author">';
-    echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->userid.'&amp;course='.$forum->course.'">'.$fullname.'</a>';
-    echo "</td>\n";
-
     // Group picture
     if ($group !== -1) {  // Groups are active - group is a group data object or NULL
         echo '<td class="picture group">';
@@ -3819,8 +3836,13 @@ function forum_print_discussion_header(&$post, $forum, $group=-1, $datestring=""
         $temp = 'um' . $addname;
         $usermodified->$addname = $post->$temp;
     }
-    echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->usermodified.'&amp;course='.$forum->course.'">'.
-         fullname($usermodified).'</a><br />';
+    if ($forum->anonymity) {
+        echo 'Anonymous<br />';
+    } else {
+        echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->usermodified.'&amp;course='.$forum->course.'">'.
+        fullname($usermodified).'</a><br />';
+    }
+
     echo '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$post->discussion.$parenturl.'">'.
           userdate($usedate, $datestring).'</a>';
     echo "</td>\n";
@@ -8500,4 +8522,40 @@ function forum_get_user_digest_options($user = null) {
     ksort($digestoptions);
 
     return $digestoptions;
+}
+
+function get_anonymity_role($forumid, $roleid) {
+    global $DB;
+
+    $role = $DB->get_record('forum_anonymity', array('forumid' => $forumid, 'roleid' => $roleid));
+
+    return $role;
+}
+
+function get_anonymity_roles($forumid = 0) {
+    global $DB, $COURSE;
+
+    $coursecontext = context_course::instance($COURSE->id);
+    $rolesincourse = get_assignable_roles($coursecontext);
+    $anonymityroles = array();
+    if (empty($forumid)) {
+        foreach ($rolesincourse as $id => $rc) {
+            $anonymityrole = new stdClass();
+            $anonymityrole->id = $id;
+            $anonymityrole->label = $rc;
+            $anonymityrole->name = 'anonymous';
+            $anonymityroles[$id] = $anonymityrole;
+        }
+    } else {
+        $getanonymityroles = $DB->get_records('forum_anonymity', array('forumid' => $forumid));
+        foreach ($getanonymityroles as $id => $rc) {
+            $anonymityrole = new stdClass();
+            $anonymityrole->id = $rc->roleid;
+            $anonymityrole->label = $rolesincourse[$rc->roleid];
+            $anonymityrole->name = $rc->name;
+            $anonymityroles[$id] = $anonymityrole;
+        }
+    }
+
+    return $anonymityroles;
 }
