@@ -3889,12 +3889,7 @@ function forum_print_discussion_header(&$post, $forum, $group=-1, $datestring=""
     $usedate = (empty($post->timemodified)) ? $post->modified : $post->timemodified;  // Just in case
     $parenturl = (empty($post->lastpostid)) ? '' : '&amp;parent='.$post->lastpostid;
     $usermodified = new stdClass();
-<<<<<<< HEAD
-    $usermodified->id = $post->usermodified;
-    $usermodified = username_load_fields_from_object($usermodified, $post, 'um');
-    echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->usermodified.'&amp;course='.$forum->course.'">'.
-         fullname($usermodified).'</a><br />';
-=======
+
     $usermodified->id        = $post->usermodified;
     foreach (get_all_user_name_fields() as $addname) {
         $temp = 'um' . $addname;
@@ -3909,7 +3904,7 @@ function forum_print_discussion_header(&$post, $forum, $group=-1, $datestring=""
         echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->usermodified.'&amp;course='.$forum->course.'">'.
         fullname($usermodified).'</a><br />';
     }
->>>>>>> test forum anonymity option 1.  Admin can set specific label for anonymous user based on their role
+
     echo '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$post->discussion.$parenturl.'">'.
           userdate($usedate, $datestring).'</a>';
     echo "</td>\n";

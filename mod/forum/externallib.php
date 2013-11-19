@@ -248,6 +248,8 @@ class mod_forum_external extends external_api {
                     }
                     // Get the subject.
                     $subject = $DB->get_field('forum_posts', 'subject', array('id' => $discussion->firstpost), MUST_EXIST);
+                    // Get forum username display.
+                    $firstusername = get_forum_username($forum, $modcontext, $arrusers[$discussion->userid]);
                     // Create object to return.
                     $return = new stdClass();
                     $return->id = (int) $discussion->id;
@@ -262,7 +264,7 @@ class mod_forum_external extends external_api {
                     $return->timestart = $discussion->timestart;
                     $return->timeend = $discussion->timeend;
                     $return->firstpost = (int) $discussion->firstpost;
-                    $return->firstuserfullname = fullname($arrusers[$discussion->userid], $canviewfullname);
+                    $return->firstuserfullname = $firstusername->name;
                     $return->firstuserimagealt = $arrusers[$discussion->userid]->imagealt;
                     $return->firstuserpicture = $arrusers[$discussion->userid]->picture;
                     $return->firstuseremail = $arrusers[$discussion->userid]->email;
@@ -287,8 +289,9 @@ class mod_forum_external extends external_api {
                         $arrusers[$lastpost->userid] = $DB->get_record('user', array('id' => $lastpost->userid),
                                 $usernamefields, MUST_EXIST);
                     }
+                    $lastusername = get_forum_username($forum, $modcontext, $arrusers[$lastpost->userid]);
                     $return->lastuserid = $lastpost->userid;
-                    $return->lastuserfullname = fullname($arrusers[$lastpost->userid], $canviewfullname);
+                    $return->lastuserfullname = $lastusername->name;
                     $return->lastuserimagealt = $arrusers[$lastpost->userid]->imagealt;
                     $return->lastuserpicture = $arrusers[$lastpost->userid]->picture;
                     $return->lastuseremail = $arrusers[$lastpost->userid]->email;

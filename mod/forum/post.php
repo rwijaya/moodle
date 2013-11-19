@@ -524,16 +524,15 @@ $draftitemid = file_get_submitted_draft_itemid('attachments');
 file_prepare_draft_area($draftitemid, $modcontext->id, 'mod_forum', 'attachment', empty($post->id)?null:$post->id, mod_forum_post_form::attachment_options($forum));
 
 //load data into form NOW!
-
+$forumusername = get_forum_username($forum, $modcontext, $USER);
 if ($USER->id != $post->userid) {   // Not the original author, so add a message to the end
     $data = new stdClass();
     $data->date = userdate($post->modified);
     if ($post->messageformat == FORMAT_HTML) {
-        $data->name = '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$USER->id.'&course='.$post->course.'">'.
-                       fullname($USER).'</a>';
+        $data->name = $forumusername->fullname;
         $post->message .= '<p><span class="edited">('.get_string('editedby', 'forum', $data).')</span></p>';
     } else {
-        $data->name = fullname($USER);
+        $data->name = $forumusername->name;
         $post->message .= "\n\n(".get_string('editedby', 'forum', $data).')';
     }
     unset($data);
@@ -668,8 +667,9 @@ if ($fromform = $mform_post->get_data()) {
         if ($realpost->userid == $USER->id) {
             $message .= '<br />'.get_string("postupdated", "forum");
         } else {
+            $forumusername = get_forum_username($forum, $modcontext, $realuser);
             $realuser = $DB->get_record('user', array('id' => $realpost->userid));
-            $message .= '<br />'.get_string("editedpostupdated", "forum", fullname($realuser));
+            $message .= '<br />'.get_string("editedpostupdated", "forum", $forumusername->fullname);
         }
 
         if ($subscribemessage = forum_post_subscription($fromform, $forum)) {
