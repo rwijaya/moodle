@@ -298,6 +298,11 @@ class forum_portfolio_caller extends portfolio_module_caller_base {
         $formattedtext = format_text($post->message, $post->messageformat, $options, $this->get('course')->id);
         $formattedtext = portfolio_rewrite_pluginfile_urls($formattedtext, $this->modcontext->id, 'mod_forum', 'post', $post->id, $format);
 
+        $forumid = $this->current->id;
+        $forum = $DB->get_record('forum', array('id' => $forumid), '*', MUST_EXIST);
+        $modcontext = context_module::instance($forum->coursemodule);
+        $forumusername = get_forum_username($forum, $modcontext, $users[$post->userid]);
+
         $output = '<table border="0" cellpadding="3" cellspacing="0" class="forumpost">';
 
         $output .= '<tr class="header"><td>';// can't print picture.
@@ -310,7 +315,7 @@ class forum_portfolio_caller extends portfolio_module_caller_base {
         }
         $output .= '<div class="subject">'.format_string($post->subject).'</div>';
 
-        $fullname = fullname($users[$post->userid], $viewfullnames);
+        $fullname = $forumusername->name;
         $by = new stdClass();
         $by->name = $fullname;
         $by->date = userdate($post->modified, '', $this->user->timezone);
