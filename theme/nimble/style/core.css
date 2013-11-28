@@ -120,6 +120,9 @@ h1.headermain {
     border-bottom: 1px solid #fff;
     margin: 0;
 }
+.block-region {
+    min-height: 400px;
+}
 
 /* Calendar */
 

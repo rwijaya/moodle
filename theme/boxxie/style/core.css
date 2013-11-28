@@ -126,6 +126,14 @@ a:active {
     padding: 5px 10px;
 }
 
+.block-region {
+    min-height: 350px;
+}
+
+#page-content #region-post .region-content {
+    padding: 20px;
+}
+
 .block_js_expansion .block_tree {
     overflow: auto;
 }
