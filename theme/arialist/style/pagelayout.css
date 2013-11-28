@@ -65,8 +65,7 @@ body {
 }
 
 #page-content #region-post .region-content {
-    overflow: hidden;
-    padding: 20px 0 20px 10px;
+    padding: 20px;
 }
 
 #page-footer {

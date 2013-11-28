@@ -55,7 +55,6 @@ body {
 
 #page-content #region-post {
     float: left;
-    overflow: hidden;
     position: relative;
     left: 100%;
     width: 28%;
@@ -67,7 +66,6 @@ body {
 }
 
 #page-content #region-post .region-content {
-    overflow: hidden;
     padding: 0 0 0 10px;
 }
 

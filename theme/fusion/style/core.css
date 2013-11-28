@@ -247,12 +247,16 @@ margin-bottom: 1em;
 }
 
 .block .header h2 {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, Sans, FreeSans, Jamrul, Garuda, Kalimati;
-  font-weight: normal;
-  text-transform: uppercase;
-font-size: 1.2em;
-color: #777;
-margin: 0;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, Sans, FreeSans, Jamrul, Garuda, Kalimati;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 1.2em;
+    color: #777;
+    margin: 0;
+}
+
+.block-region {
+    min-height: 350px;
 }
 
 /* Courses

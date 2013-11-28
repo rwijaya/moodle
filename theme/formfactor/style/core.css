@@ -161,3 +161,7 @@ body, h1, h2, h3, h4, h5, h6, p, ul, ol, dl, input, textarea {
 #custommenu .yui3-menu-horizontal.javascript-disabled .yui3-menu-content {
     border-width: 0;
 }
+
+.block-region {
+    min-height: 400px;
+}
