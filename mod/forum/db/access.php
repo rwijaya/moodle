@@ -345,5 +345,16 @@ $capabilities = array(
             'frontpage' => CAP_ALLOW
         )
     ),
+    'mod/forum:roleplaying' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'frontpage' => CAP_ALLOW
+        )
+    ),
 );
 

@@ -112,5 +112,16 @@ function xmldb_forum_upgrade($oldversion) {
     // Moodle v2.6.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2013110501) {
+        // Define table forum_digests to be created.
+        $table = new xmldb_table('forum');
+
+        // Adding fields to table forum_digests.
+        $table->add_field('roleplaying', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+
+        // Forum savepoint reached.
+        upgrade_mod_savepoint(true, 2013110501, 'forum');
+    }
+
     return true;
 }

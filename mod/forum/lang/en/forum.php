@@ -200,6 +200,7 @@ $string['forumposts'] = 'Forum posts';
 $string['forum:rate'] = 'Rate posts';
 $string['forum:replynews'] = 'Reply to news';
 $string['forum:replypost'] = 'Reply to posts';
+$string['forumroleplaying'] = 'Forum role playing';
 $string['forums'] = 'Forums';
 $string['forum:splitdiscussions'] = 'Split discussions';
 $string['forum:startdiscussion'] = 'Start new discussions';

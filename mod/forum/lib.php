@@ -7771,6 +7771,11 @@ function forum_extend_settings_navigation(settings_navigation $settingsnav, navi
         $url = new moodle_url(rss_get_url($PAGE->cm->context->id, $userid, "mod_forum", $forumobject->id));
         $forumnode->add($string, $url, settings_navigation::TYPE_SETTING, null, null, new pix_icon('i/rss', ''));
     }
+    if (has_capability('mod/forum:roleplaying', $PAGE->cm->context)) {
+        $link = new moodle_url('/mod/forum/role_playing.php', array('id'=>$PAGE->cm->id));
+        $string = get_string('forumroleplaying', 'forum');
+        $forumnode->add($string, $link, settings_navigation::TYPE_SETTING);
+    }
 }
 
 /**
