@@ -123,5 +123,29 @@ function xmldb_forum_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2013110501, 'forum');
     }
 
+    if ($oldversion < 2013110502) {
+        // Define table forum_digests to be created.
+        $table = new xmldb_table('forum_role_playing');
+
+        // Adding fields to table forum_digests.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('forum', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('rolename', XMLDB_TYPE_TEXT, '225', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table forum_digests.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+        $table->add_key('forum', XMLDB_KEY_FOREIGN, array('forum'), 'forum', array('id'));
+
+        // Conditionally launch create table for forum_digests.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Forum savepoint reached.
+        upgrade_mod_savepoint(true, 2013110502, 'forum');
+    }
+
     return true;
 }

@@ -55,7 +55,6 @@ class mod_forum_mod_form extends moodleform_mod {
         $mform->setDefault('type', 'general');
 
         $mform->addElement('advcheckbox', 'roleplaying', get_string('forumroleplaying', 'forum'));
-        $mform->setDefault('roleplaying', false);
 
         // Attachments and word count.
         $mform->addElement('header', 'attachmentswordcounthdr', get_string('attachmentswordcount', 'forum'));

@@ -97,6 +97,10 @@ function forum_add_instance($forum, $mform = null) {
         $forum->assesstimefinish = 0;
     }
 
+    if (empty($forum->roleplaying)) {
+        $forum->roleplaying = 0;
+    }
+    print_object($forum);
     $forum->id = $DB->insert_record('forum', $forum);
     $modcontext = context_module::instance($forum->coursemodule);
 
@@ -164,6 +168,9 @@ function forum_update_instance($forum, $mform) {
         $forum->assesstimefinish = 0;
     }
 
+    if (!isset($forum->roleplaying)) {
+        $forum->roleplaying = 0;
+    }
     $oldforum = $DB->get_record('forum', array('id'=>$forum->id));
 
     // MDL-3942 - if the aggregation type or scale (i.e. max grade) changes then recalculate the grades for the entire forum
@@ -7771,10 +7778,13 @@ function forum_extend_settings_navigation(settings_navigation $settingsnav, navi
         $url = new moodle_url(rss_get_url($PAGE->cm->context->id, $userid, "mod_forum", $forumobject->id));
         $forumnode->add($string, $url, settings_navigation::TYPE_SETTING, null, null, new pix_icon('i/rss', ''));
     }
-    if (has_capability('mod/forum:roleplaying', $PAGE->cm->context)) {
-        $link = new moodle_url('/mod/forum/role_playing.php', array('id'=>$PAGE->cm->id));
-        $string = get_string('forumroleplaying', 'forum');
-        $forumnode->add($string, $link, settings_navigation::TYPE_SETTING);
+    // Role playing setting.
+    if ($forumobject->roleplaying) {
+        if (has_capability('mod/forum:roleplaying', $PAGE->cm->context)) {
+            $link = new moodle_url('/mod/forum/role_playing.php', array('cmid'=>$PAGE->cm->id));
+            $string = get_string('forumroleplaying', 'forum');
+            $forumnode->add($string, $link, settings_navigation::TYPE_SETTING);
+        }
     }
 }
 
