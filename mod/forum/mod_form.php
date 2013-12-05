@@ -66,7 +66,7 @@ class mod_forum_mod_form extends moodleform_mod {
         //$rolesincourse = get_anonymity_roles();
 //print_object($rolesincourse);
         foreach ($rolesincourse as $id => $role) {
-            $anonymityroles = 'anonymityroles['.$role->id.']';
+            $anonymityroles = 'anonymityroles['.$role->roleid.']';
             $mform->addElement('text', $anonymityroles, $role->label);
             $mform->setType($anonymityroles, PARAM_TEXT);
             $mform->setDefault($anonymityroles, $role->name);

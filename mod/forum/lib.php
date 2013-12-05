@@ -8682,7 +8682,7 @@ function get_forum_username($forum, $modcontext, $user) {
             $role = get_anonymity_roles($forum->id);
         }
         $role = current($role);
-        $postuser = get_anonymity_role($forum->id, $role->id);
+        $postuser = get_anonymity_role($forum->id, $role->roleid);
         $postuser->imagealt = '';
         $postuser->picture = '';
         $postuser->email = '';
