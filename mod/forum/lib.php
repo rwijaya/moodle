@@ -96,19 +96,19 @@ function forum_add_instance($forum, $mform = null) {
         $forum->assesstimestart  = 0;
         $forum->assesstimefinish = 0;
     }
-
+    $forum->id = $DB->insert_record('forum', $forum);
     if ($forum->anonymity) {
-        $anonymityrole = $mform->get_data()->anonymityroles;
+        $anonymityroles = $mform->get_data()->anonymityroles;
         foreach ($anonymityroles as $key => $name) {
             $newname = new stdClass();
             $newname->forumid = $forum->id;
-            $newname->role = $key;
+            $newname->roleid = $key;
             $newname->name = $name;
 
             $DB->insert_record('forum_anonymity', $newname);
         }
     }
-    $forum->id = $DB->insert_record('forum', $forum);
+
 
 
 
@@ -3502,7 +3502,7 @@ function forum_print_post($post, $discussion, $forum, &$cm, $course, $ownpost=fa
                                                    'aria-label' => $discussionbyuser));
     $output .= html_writer::start_tag('div', array('class'=>'row header clearfix'));
     $output .= html_writer::start_tag('div', array('class'=>'left picture'));
-    $output .= $OUTPUT->user_picture($postuser, array('courseid'=>$course->id));
+    //$output .= $OUTPUT->user_picture($postuser, array('courseid'=>$course->id));
     $output .= html_writer::end_tag('div');
 
 
@@ -3519,8 +3519,12 @@ function forum_print_post($post, $discussion, $forum, &$cm, $course, $ownpost=fa
     $by = new stdClass();
     if ($forum->anonymity) {
         $roles = get_user_roles($modcontext, $postuser->id);
-        $role = current($roles);
-        $anonymity = get_anonymity_role($forum->id, $role->roleid);
+
+        if (empty($roles)) {
+            $roles = get_anonymity_roles($forum->id);
+        }
+        $currentrole = current($roles);
+        $anonymity = get_anonymity_role($forum->id, $currentrole->roleid);
         $by->name = $anonymity->name;
     } else {
         $by->name = html_writer::link($postuser->profilelink, $postuser->fullname);
@@ -3813,8 +3817,13 @@ function forum_print_discussion_header(&$post, $forum, $group=-1, $datestring=""
     if ($forum->anonymity) {
         echo '<td class="author" colspan="2">';
         $roles = get_user_roles($modcontext, $post->userid);
-        $role = current($roles);
-        $anonymity = get_anonymity_role($forum->id, $role->roleid);
+        $currentrole = new stdClass;
+        if (empty($roles)) {
+            $roles = get_anonymity_roles($forum->id);
+        }
+        $currentrole = current($roles);
+
+        $anonymity = get_anonymity_role($forum->id, $currentrole->roleid);
         echo $anonymity->name;
         echo "</td>\n";
     } else {
@@ -3897,8 +3906,11 @@ function forum_print_discussion_header(&$post, $forum, $group=-1, $datestring=""
     }
     if ($forum->anonymity) {
         $roles = get_user_roles($modcontext, $post->userid);
-        $role = current($roles);
-        $anonymity = get_anonymity_role($forum->id, $role->roleid);
+        if (empty($roles)) {
+            $roles = get_anonymity_roles($forum->id);
+        }
+        $currentrole = current($roles);
+        $anonymity = get_anonymity_role($forum->id, $currentrole->roleid);
         echo $anonymity->name . "<br />";
     } else {
         echo '<a href="'.$CFG->wwwroot.'/user/view.php?id='.$post->usermodified.'&amp;course='.$forum->course.'">'.
@@ -8635,11 +8647,14 @@ function get_anonymity_roles($forumid = 0) {
 
     $coursecontext = context_course::instance($COURSE->id);
     $rolesincourse = get_assignable_roles($coursecontext);
+    if (empty($rolesincourse)) {
+        $rolesincourse = get_all_roles($coursecontext);
+    }
     $anonymityroles = array();
     if (empty($forumid)) {
         foreach ($rolesincourse as $id => $rc) {
             $anonymityrole = new stdClass();
-            $anonymityrole->id = $id;
+            $anonymityrole->roleid = $id;
             $anonymityrole->label = $rc;
             $anonymityrole->name = 'anonymous';
             $anonymityroles[$id] = $anonymityrole;
@@ -8648,12 +8663,43 @@ function get_anonymity_roles($forumid = 0) {
         $getanonymityroles = $DB->get_records('forum_anonymity', array('forumid' => $forumid));
         foreach ($getanonymityroles as $id => $rc) {
             $anonymityrole = new stdClass();
-            $anonymityrole->id = $rc->roleid;
+            $anonymityrole->roleid = $rc->roleid;
             $anonymityrole->label = $rolesincourse[$rc->roleid];
             $anonymityrole->name = $rc->name;
+            $anonymityrole->fullname = $rc->name;
             $anonymityroles[$id] = $anonymityrole;
         }
     }
 
     return $anonymityroles;
 }
+
+function get_forum_username($forum, $modcontext, $user) {
+    if ($forum->anonymity) {
+
+        $role = get_user_roles($modcontext, $user->id);
+        if (empty($role)) {
+            $role = get_anonymity_roles($forum->id);
+        }
+        $role = current($role);
+        $postuser = get_anonymity_role($forum->id, $role->id);
+        $postuser->imagealt = '';
+        $postuser->picture = '';
+        $postuser->email = '';
+
+    } else {
+        $fullanme = fullname($user, has_capability('moodle/site:viewfullnames', $modcontext));
+
+        $postuser->fullname = $fullname;
+        $postuser->name = $fullname;
+        $postuser->imagealt = '';
+        $postuser->picture = '';
+        $postuser->email = '';
+
+    }
+
+    return $postuser;
+
+}
+
+

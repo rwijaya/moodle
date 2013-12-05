@@ -116,7 +116,12 @@ function xmldb_forum_upgrade($oldversion) {
         $table = new xmldb_table('forum');
 
         // Adding fields to table forum_digests.
-        $table->add_field('anonymity', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+        $field = new xmldb_field('anonymity', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+
+        // Conditionally launch add field displaywordcount.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
 
         // Define table forum_anonymity to be created.
         $table = new xmldb_table('forum_anonymity');
@@ -125,7 +130,7 @@ function xmldb_forum_upgrade($oldversion) {
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('forumid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('roleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('name', XMLDB_TYPE_TEXT, '225', null, XMLDB_NOTNULL, null, 'anonymous');
+        $table->add_field('name', XMLDB_TYPE_TEXT, '225', null, XMLDB_NOTNULL, null);
 
         // Adding keys to table forum_digests.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
